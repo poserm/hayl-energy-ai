@@ -41,3 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# development logs
+app.log
+*.log
+/tmp/*.log
+
+# Prisma migrations (keep schema, exclude generated migrations)
+/prisma/migrations/*/migration.sql
