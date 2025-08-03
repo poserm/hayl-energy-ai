@@ -80,12 +80,8 @@ class MonitoringService {
     try {
       // Note: Install @vercel/analytics for production
       // npm install @vercel/analytics
-      const { Analytics } = await import('@vercel/analytics/react').catch(() => ({ Analytics: null }))
-      
-      if (!Analytics) {
-        console.warn('Vercel Analytics not installed. Run: npm install @vercel/analytics')
-        return
-      }
+      console.warn('Vercel Analytics disabled for this build')
+      return
 
       console.log('Vercel Analytics initialized for performance monitoring')
     } catch (error) {
