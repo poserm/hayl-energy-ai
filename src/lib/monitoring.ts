@@ -44,12 +44,8 @@ class MonitoringService {
     try {
       // Note: Install @sentry/nextjs for production
       // npm install @sentry/nextjs
-      const Sentry = await import('@sentry/nextjs').catch(() => null)
-      
-      if (!Sentry) {
-        console.warn('Sentry not installed. Run: npm install @sentry/nextjs')
-        return
-      }
+      console.warn('Sentry disabled for this build')
+      return
 
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
@@ -164,7 +160,7 @@ class MonitoringService {
    */
   private async sendToSentry(error: Error, details: ErrorDetails) {
     try {
-      const Sentry = await import('@sentry/nextjs').catch(() => null)
+      // const Sentry = await import('@sentry/nextjs').catch(() => null)
       if (!Sentry) return
 
       Sentry.withScope((scope) => {
@@ -196,7 +192,7 @@ class MonitoringService {
    */
   private async sendCustomEvent(eventName: string, data: Record<string, any>) {
     try {
-      const Sentry = await import('@sentry/nextjs').catch(() => null)
+      // const Sentry = await import('@sentry/nextjs').catch(() => null)
       if (!Sentry) return
 
       Sentry.addBreadcrumb({
@@ -236,7 +232,7 @@ class MonitoringService {
     try {
       // Check Sentry connection
       if (process.env.SENTRY_DSN) {
-        const Sentry = await import('@sentry/nextjs').catch(() => null)
+        // const Sentry = await import('@sentry/nextjs').catch(() => null)
         health.sentry = !!Sentry
       }
 
