@@ -13,26 +13,52 @@ export async function initializeDatabase() {
     await prisma.$connect()
     console.log('✅ Database connected successfully')
     
-    // Check if User table exists by running a simple query
-    await prisma.user.findFirst()
-    console.log('✅ Database tables are accessible')
+    // Try to create tables using raw SQL if they don't exist
+    try {
+      await prisma.user.findFirst()
+      console.log('✅ Database tables are accessible')
+    } catch (tableError) {
+      console.log('⚠️ Tables not found, attempting to create them...')
+      
+      // Create User table
+      await prisma.$executeRaw`
+        CREATE TABLE IF NOT EXISTS "User" (
+          "id" TEXT NOT NULL,
+          "email" TEXT NOT NULL,
+          "password" TEXT NOT NULL,
+          "name" TEXT,
+          "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+          "verificationToken" TEXT,
+          "tokenExpiresAt" TIMESTAMP(3),
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+        )
+      `
+      
+      // Create unique indexes
+      await prisma.$executeRaw`
+        CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email")
+      `
+      
+      await prisma.$executeRaw`
+        CREATE UNIQUE INDEX IF NOT EXISTS "User_verificationToken_key" ON "User"("verificationToken")
+      `
+      
+      console.log('✅ Database tables created successfully')
+      
+      // Test table access again
+      await prisma.user.findFirst()
+      console.log('✅ Database tables are now accessible')
+    }
     
     return { success: true, message: 'Database initialized successfully' }
   } catch (error) {
     console.error('❌ Database initialization failed:', error)
     
-    // If tables don't exist, this will help identify the issue
-    if (error instanceof Error && error.message.includes('does not exist')) {
-      return { 
-        success: false, 
-        message: 'Database tables not found. Run `prisma db push` to create them.',
-        error: error.message
-      }
-    }
-    
     return { 
       success: false, 
-      message: 'Database connection failed',
+      message: 'Database initialization failed',
       error: error instanceof Error ? error.message : 'Unknown error'
     }
   } finally {
