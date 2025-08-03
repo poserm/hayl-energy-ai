@@ -1,5 +1,15 @@
 require('@testing-library/jest-dom')
 
+// Mock Web APIs
+const { TextEncoder, TextDecoder } = require('util')
+global.TextEncoder = TextEncoder
+global.TextDecoder = TextDecoder
+
+// Mock URL for tests
+const { URL, URLSearchParams } = require('url')
+global.URL = URL
+global.URLSearchParams = URLSearchParams
+
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -14,6 +24,29 @@ jest.mock('next/navigation', () => ({
     get: jest.fn(),
   }),
   usePathname: () => '/',
+}))
+
+// Mock jose library
+jest.mock('jose', () => ({
+  SignJWT: jest.fn().mockImplementation(() => ({
+    setProtectedHeader: jest.fn().mockReturnThis(),
+    setIssuedAt: jest.fn().mockReturnThis(),
+    setIssuer: jest.fn().mockReturnThis(),
+    setAudience: jest.fn().mockReturnThis(),
+    setExpirationTime: jest.fn().mockReturnThis(),
+    setJti: jest.fn().mockReturnThis(),
+    sign: jest.fn().mockResolvedValue('mock.jwt.token'),
+  })),
+  jwtVerify: jest.fn().mockResolvedValue({
+    payload: {
+      userId: 'test-user-id',
+      email: 'test@example.com',
+      type: 'access',
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 900, // 15 minutes
+    },
+  }),
+  JWTPayload: {},
 }))
 
 // Mock environment variables for tests

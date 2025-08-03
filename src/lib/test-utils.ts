@@ -25,7 +25,9 @@ export class TestUtils {
       requestHeaders.set('content-type', 'application/json')
     }
 
-    return new NextRequest(url, requestInit as any)
+    // Convert relative URL to absolute URL for NextRequest
+    const absoluteUrl = url.startsWith('http') ? url : `http://localhost:3000${url}`
+    return new NextRequest(absoluteUrl, requestInit as any)
   }
 
   static async createTestUser(email: string, password: string, name?: string) {
@@ -85,6 +87,7 @@ export class TestUtils {
       email: 'test@example.com',
       password: '$2a$12$mockhashedpassword',
       name: 'Test User',
+      emailVerified: true,
       createdAt: new Date(),
       updatedAt: new Date(),
       ...overrides,
@@ -148,6 +151,10 @@ export class TestUtils {
     expect(user.createdAt).toBeDefined()
     expect(user.password).toBeUndefined() // Should never return password
   }
+
+  static async hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 12)
+  }
 }
 
 // Mock implementations for testing
@@ -178,6 +185,16 @@ export const mockJWT = {
 // Test data factories
 export const TestDataFactory = {
   user: (overrides: Partial<any> = {}) => ({
+    id: `user-${Math.random().toString(36).substr(2, 9)}`,
+    email: TestUtils.generateTestEmail(),
+    password: TestUtils.generateTestPassword(),
+    name: 'Test User',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }),
+
+  createUser: (overrides: Partial<any> = {}) => ({
     id: `user-${Math.random().toString(36).substr(2, 9)}`,
     email: TestUtils.generateTestEmail(),
     password: TestUtils.generateTestPassword(),

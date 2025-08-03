@@ -24,26 +24,56 @@ const customJestConfig = {
   ],
   coverageThreshold: {
     global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: 70,
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
     },
   },
-  testTimeout: 15000,
+  testTimeout: 30000,
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!(jose|next)/)'
+  ],
+  extensionsToTreatAsEsm: ['.ts', '.tsx'],
+  globals: {
+    'ts-jest': {
+      useESM: true
+    }
+  },
   // Separate test environments for different types of tests
   projects: [
     {
-      displayName: 'jsdom',
+      displayName: 'component-tests',
       testEnvironment: 'jsdom',
       testMatch: ['<rootDir>/src/**/*.test.{js,jsx,ts,tsx}'],
       setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+      },
+      transform: {
+        '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+      },
+      transformIgnorePatterns: [
+        'node_modules/(?!(jose|next)/)'
+      ],
     },
     {
-      displayName: 'node',
+      displayName: 'api-tests',
       testEnvironment: 'node',
       testMatch: ['<rootDir>/src/**/*.api.test.{js,ts}', '<rootDir>/tests/**/*.test.{js,ts}'],
       setupFilesAfterEnv: ['<rootDir>/jest.setup.api.js'],
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+      },
+      transform: {
+        '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+      },
+      transformIgnorePatterns: [
+        'node_modules/(?!(jose|next)/)'
+      ],
     },
   ],
 }

@@ -19,7 +19,30 @@ jest.mock('@/lib/rate-limit', () => ({
   },
 }))
 
-const mockBcrypt = bcrypt as jest.Mocked<typeof bcrypt>
+jest.mock('@/lib/cors', () => ({
+  authCors: {
+    middleware: jest.fn((handler) => handler),
+  },
+}))
+
+jest.mock('@/lib/security-headers', () => ({
+  authSecurityHeaders: {
+    middleware: jest.fn((handler) => handler),
+    applyHeaders: jest.fn((response) => response),
+  },
+}))
+
+jest.mock('@/lib/sanitization', () => ({
+  authSanitizer: {
+    sanitizeObject: jest.fn((obj) => obj),
+  },
+}))
+
+jest.mock('@/lib/auth-logger', () => ({
+  logLogin: jest.fn(),
+}))
+
+const mockBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
 
 describe('/api/auth/login', () => {
   beforeEach(() => {
@@ -53,7 +76,15 @@ describe('/api/auth/login', () => {
       TestUtils.assertValidToken(data.token)
 
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { email: loginData.email }
+        where: { email: loginData.email },
+        select: {
+          id: true,
+          email: true,
+          password: true,
+          name: true,
+          emailVerified: true,
+          createdAt: true
+        }
       })
       expect(mockBcrypt.compare).toHaveBeenCalledWith(
         loginData.password,

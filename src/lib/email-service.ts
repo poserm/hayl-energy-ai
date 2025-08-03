@@ -19,8 +19,7 @@ export class EmailService {
   }
 
   /**
-   * Send email using console log (for development)
-   * In production, replace with actual email service (SendGrid, AWS SES, etc.)
+   * Send email using appropriate service based on environment
    */
   async sendEmail({ to, subject, html, text }: SendEmailOptions): Promise<boolean> {
     try {
@@ -39,29 +38,154 @@ export class EmailService {
         return true
       }
 
-      // Production: Implement actual email sending
-      // Example integrations:
-      
-      // SendGrid
-      // const sgMail = require('@sendgrid/mail')
-      // sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-      // await sgMail.send({ to, subject, html, text })
-      
-      // AWS SES
-      // const aws = require('aws-sdk')
-      // const ses = new aws.SES()
-      // await ses.sendEmail({...}).promise()
-      
-      // Nodemailer
-      // const nodemailer = require('nodemailer')
-      // const transporter = nodemailer.createTransporter({...})
-      // await transporter.sendMail({ to, subject, html, text })
+      // Production: SendGrid Integration
+      if (process.env.SENDGRID_API_KEY) {
+        return await this.sendWithSendGrid({ to, subject, html, text })
+      }
 
-      console.log(`Production email would be sent to: ${to}`)
-      return true
+      // Production: AWS SES Integration
+      if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
+        return await this.sendWithAWSSES({ to, subject, html, text })
+      }
+
+      // Fallback: Nodemailer SMTP
+      if (process.env.SMTP_HOST) {
+        return await this.sendWithSMTP({ to, subject, html, text })
+      }
+
+      console.error('No email service configured for production')
+      return false
 
     } catch (error) {
       console.error('Email sending failed:', error)
+      return false
+    }
+  }
+
+  /**
+   * Send email using SendGrid (Recommended for production)
+   */
+  private async sendWithSendGrid({ to, subject, html, text }: SendEmailOptions): Promise<boolean> {
+    try {
+      // Note: In actual implementation, install @sendgrid/mail
+      // npm install @sendgrid/mail
+      
+      const sgMail = await import('@sendgrid/mail').catch(() => null)
+      if (!sgMail) {
+        console.error('SendGrid not installed. Run: npm install @sendgrid/mail')
+        return false
+      }
+
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY!)
+
+      const msg = {
+        to,
+        from: {
+          email: process.env.FROM_EMAIL || 'noreply@hayl-energy-ai.com',
+          name: 'Hayl Energy AI'
+        },
+        subject,
+        text,
+        html,
+        replyTo: process.env.SUPPORT_EMAIL || 'support@hayl-energy-ai.com',
+        trackingSettings: {
+          clickTracking: { enable: true },
+          openTracking: { enable: true }
+        }
+      }
+
+      await sgMail.send(msg)
+      console.log(`Email sent successfully to ${to} via SendGrid`)
+      return true
+
+    } catch (error) {
+      console.error('SendGrid email failed:', error)
+      return false
+    }
+  }
+
+  /**
+   * Send email using AWS SES
+   */
+  private async sendWithAWSSES({ to, subject, html, text }: SendEmailOptions): Promise<boolean> {
+    try {
+      // Note: In actual implementation, install aws-sdk
+      // npm install aws-sdk
+      
+      const AWS = await import('aws-sdk').catch(() => null)
+      if (!AWS) {
+        console.error('AWS SDK not installed. Run: npm install aws-sdk')
+        return false
+      }
+
+      const ses = new AWS.SES({
+        region: process.env.AWS_REGION || 'us-east-1',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+      })
+
+      const params = {
+        Source: process.env.AWS_SES_FROM_EMAIL || 'noreply@hayl-energy-ai.com',
+        Destination: { ToAddresses: [to] },
+        Message: {
+          Subject: { Data: subject, Charset: 'UTF-8' },
+          Body: {
+            Text: { Data: text, Charset: 'UTF-8' },
+            Html: { Data: html, Charset: 'UTF-8' }
+          }
+        },
+        ReplyToAddresses: [process.env.SUPPORT_EMAIL || 'support@hayl-energy-ai.com']
+      }
+
+      await ses.sendEmail(params).promise()
+      console.log(`Email sent successfully to ${to} via AWS SES`)
+      return true
+
+    } catch (error) {
+      console.error('AWS SES email failed:', error)
+      return false
+    }
+  }
+
+  /**
+   * Send email using SMTP (Nodemailer fallback)
+   */
+  private async sendWithSMTP({ to, subject, html, text }: SendEmailOptions): Promise<boolean> {
+    try {
+      // Note: In actual implementation, install nodemailer
+      // npm install nodemailer
+      
+      const nodemailer = await import('nodemailer').catch(() => null)
+      if (!nodemailer) {
+        console.error('Nodemailer not installed. Run: npm install nodemailer')
+        return false
+      }
+
+      const transporter = nodemailer.createTransporter({
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_PORT === '465',
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS
+        }
+      })
+
+      const mailOptions = {
+        from: `"Hayl Energy AI" <${process.env.FROM_EMAIL || 'noreply@hayl-energy-ai.com'}>`,
+        to,
+        subject,
+        text,
+        html,
+        replyTo: process.env.SUPPORT_EMAIL || 'support@hayl-energy-ai.com'
+      }
+
+      await transporter.sendMail(mailOptions)
+      console.log(`Email sent successfully to ${to} via SMTP`)
+      return true
+
+    } catch (error) {
+      console.error('SMTP email failed:', error)
       return false
     }
   }
