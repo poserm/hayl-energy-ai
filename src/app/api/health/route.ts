@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { checkDatabaseHealth } from '@/lib/db-init'
 import { monitoring } from '@/lib/monitoring'
 
 export async function GET() {
@@ -23,8 +23,12 @@ export async function GET() {
 
     // Database connectivity check
     try {
-      await prisma.$queryRaw`SELECT 1`
-      health.checks.database = true
+      const dbHealth = await checkDatabaseHealth()
+      health.checks.database = dbHealth.healthy
+      if (!dbHealth.healthy) {
+        console.error('Database health check failed:', dbHealth.error)
+        health.status = 'degraded'
+      }
     } catch (error) {
       console.error('Database health check failed:', error)
       health.checks.database = false
