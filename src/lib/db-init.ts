@@ -13,43 +13,54 @@ export async function initializeDatabase() {
     await prisma.$connect()
     console.log('✅ Database connected successfully')
     
-    // Try to create tables using raw SQL if they don't exist
+    // First, let's check what tables exist
     try {
+      const tables = await prisma.$queryRaw<Array<{table_name: string}>>`
+        SELECT table_name FROM information_schema.tables 
+        WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+      `
+      console.log('Existing tables:', tables.map(t => t.table_name))
+      
+      // Check if auth_users table exists
+      const authUsersExists = tables.some(t => t.table_name === 'auth_users')
+      
+      if (!authUsersExists) {
+        console.log('⚠️ auth_users table not found, creating it...')
+        
+        // Create auth_users table (mapped from User model)
+        await prisma.$executeRaw`
+          CREATE TABLE "auth_users" (
+            "id" TEXT NOT NULL,
+            "email" TEXT NOT NULL,
+            "password" TEXT NOT NULL,
+            "name" TEXT,
+            "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+            "verificationToken" TEXT,
+            "tokenExpiresAt" TIMESTAMP(3),
+            "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            CONSTRAINT "auth_users_pkey" PRIMARY KEY ("id")
+          )
+        `
+        
+        // Create unique indexes
+        await prisma.$executeRaw`
+          CREATE UNIQUE INDEX "auth_users_email_key" ON "auth_users"("email")
+        `
+        
+        await prisma.$executeRaw`
+          CREATE UNIQUE INDEX "auth_users_verificationToken_key" ON "auth_users"("verificationToken")
+        `
+        
+        console.log('✅ Database tables created successfully')
+      }
+      
+      // Test table access
       await prisma.user.findFirst()
       console.log('✅ Database tables are accessible')
     } catch (tableError) {
-      console.log('⚠️ Tables not found, attempting to create them...')
-      
-      // Create auth_users table (mapped from User model)
-      await prisma.$executeRaw`
-        CREATE TABLE IF NOT EXISTS "auth_users" (
-          "id" TEXT NOT NULL,
-          "email" TEXT NOT NULL,
-          "password" TEXT NOT NULL,
-          "name" TEXT,
-          "emailVerified" BOOLEAN NOT NULL DEFAULT false,
-          "verificationToken" TEXT,
-          "tokenExpiresAt" TIMESTAMP(3),
-          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          CONSTRAINT "auth_users_pkey" PRIMARY KEY ("id")
-        )
-      `
-      
-      // Create unique indexes
-      await prisma.$executeRaw`
-        CREATE UNIQUE INDEX IF NOT EXISTS "auth_users_email_key" ON "auth_users"("email")
-      `
-      
-      await prisma.$executeRaw`
-        CREATE UNIQUE INDEX IF NOT EXISTS "auth_users_verificationToken_key" ON "auth_users"("verificationToken")
-      `
-      
-      console.log('✅ Database tables created successfully')
-      
-      // Test table access again
-      await prisma.user.findFirst()
-      console.log('✅ Database tables are now accessible')
+      console.error('Error during table creation:', tableError)
+      throw tableError
     }
     
     return { success: true, message: 'Database initialized successfully' }
