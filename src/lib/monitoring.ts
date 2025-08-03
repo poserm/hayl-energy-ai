@@ -234,8 +234,8 @@ class MonitoringService {
 
       // Check Vercel Analytics
       if (process.env.VERCEL_ANALYTICS_ID) {
-        const analytics = await import('@vercel/analytics/react').catch(() => null)
-        health.analytics = !!analytics
+        // const analytics = await import('@vercel/analytics/react').catch(() => null)
+        health.analytics = false // Disabled for this build
       }
     } catch (error) {
       console.error('Health check failed:', error)
