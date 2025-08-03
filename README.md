@@ -1,3 +1,9 @@
+# 🚀 Hayl Energy AI
+
+**Live at: https://haylenergyai.com**
+
+Smart Energy Management Platform with AI-powered optimization, real-time monitoring, and predictive analytics.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
