@@ -11,12 +11,44 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { PasswordStrength, calculatePasswordStrength, type PasswordStrength as PasswordStrengthType } from '@/components/ui/PasswordStrength'
 import { cn } from '@/lib/utils'
 
+type Step = 'account' | 'role' | 'experience' | 'complete'
+
+interface SignupData {
+  name: string
+  email: string
+  password: string
+  confirmPassword: string
+  role: string
+  experienceLevel: string
+}
+
+const cleanEnergyRoles = [
+  'Project Development',
+  'Project Sales', 
+  'Policy',
+  'Finance',
+  'Engineering',
+  'Operations & Maintenance',
+  'Business Development',
+  'Regulatory Affairs',
+  'Other, please specify'
+]
+
+const experienceLevels = [
+  'Entry Level',
+  'Mid-Level',
+  'Senior or Executive Level'
+]
+
 export default function SignupPage() {
-  const [formData, setFormData] = useState({
+  const [currentStep, setCurrentStep] = useState<Step>('account')
+  const [formData, setFormData] = useState<SignupData>({
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: '',
+    experienceLevel: ''
   })
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrengthType | null>(null)
   const [validationErrors, setValidationErrors] = useState<string[]>([])
@@ -32,7 +64,7 @@ export default function SignupPage() {
     }
   }, [user, router])
 
-  const validateForm = () => {
+  const validateAccountStep = () => {
     const errors: string[] = []
     
     if (!formData.email) {
@@ -62,18 +94,31 @@ export default function SignupPage() {
     return errors.length === 0
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!validateForm() || isSubmitting) {
-      return
+  const handleNext = () => {
+    if (currentStep === 'account' && validateAccountStep()) {
+      setCurrentStep('role')
+    } else if (currentStep === 'role' && formData.role) {
+      setCurrentStep('experience')
+    } else if (currentStep === 'experience' && formData.experienceLevel) {
+      handleSubmit()
     }
-    
+  }
+
+  const handleBack = () => {
+    if (currentStep === 'role') {
+      setCurrentStep('account')
+    } else if (currentStep === 'experience') {
+      setCurrentStep('role')
+    }
+  }
+
+  const handleSubmit = async () => {
     setIsSubmitting(true)
     clearError()
     
     try {
       await signup(formData.email, formData.password, formData.name || undefined)
+      setCurrentStep('complete')
     } finally {
       setIsSubmitting(false)
     }
@@ -91,18 +136,18 @@ export default function SignupPage() {
     }
   }
 
-  const getPasswordConfirmError = () => {
-    if (formData.confirmPassword && formData.password !== formData.confirmPassword) {
-      return 'Passwords do not match'
-    }
-    return undefined
+  const handleRoleSelect = (role: string) => {
+    setFormData(prev => ({ ...prev, role }))
   }
 
-  const getPasswordConfirmSuccess = () => {
-    if (formData.confirmPassword && formData.password === formData.confirmPassword && formData.password.length > 0) {
-      return 'Passwords match'
-    }
-    return undefined
+  const handleExperienceSelect = (experienceLevel: string) => {
+    setFormData(prev => ({ ...prev, experienceLevel }))
+  }
+
+  const getStepProgress = () => {
+    const steps = ['account', 'role', 'experience']
+    const currentIndex = steps.indexOf(currentStep)
+    return ((currentIndex + 1) / steps.length) * 100
   }
 
   if (loading && !user) {
@@ -115,195 +160,379 @@ export default function SignupPage() {
     )
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-lg w-full space-y-8">
-        {/* Header */}
+  const renderAccountStep = () => (
+    <div className="space-y-6">
+      <div className="text-left">
+        <h1 className="text-2xl font-bold text-neutral-900 mb-2">
+          Get started
+        </h1>
+        <p className="text-neutral-600 text-sm mb-8">
+          Create your account now.
+        </p>
+      </div>
+
+      {/* Error Alert */}
+      {(validationErrors.length > 0 || error) && (
+        <Alert variant="error" title="Please fix the following errors:" closable onClose={() => {
+          setValidationErrors([])
+          clearError()
+        }}>
+          <ul className="list-disc pl-5 space-y-1">
+            {validationErrors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+            {error && <li>{error}</li>}
+          </ul>
+        </Alert>
+      )}
+
+      <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); handleNext(); }}>
+        {/* Name Input */}
+        <div className="space-y-2">
+          <label htmlFor="name" className="block text-sm font-medium text-neutral-700">
+            Full name
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            value={formData.name}
+            onChange={handleInputChange}
+            placeholder="John Doe"
+            autoComplete="name"
+            className="block w-full px-3 py-3 border border-neutral-300 rounded-lg shadow-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+          />
+        </div>
+
+        {/* Email Input */}
+        <div className="space-y-2">
+          <label htmlFor="email" className="block text-sm font-medium text-neutral-700">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder="Enter your email"
+            autoComplete="email"
+            required
+            className="block w-full px-3 py-3 border border-neutral-300 rounded-lg shadow-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+          />
+        </div>
+
+        {/* Password Input */}
+        <div className="space-y-2">
+          <label htmlFor="password" className="block text-sm font-medium text-neutral-700">
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            placeholder="••••••••••"
+            autoComplete="new-password"
+            required
+            className="block w-full px-3 py-3 border border-neutral-300 rounded-lg shadow-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+          />
+          {formData.password && (
+            <PasswordStrength 
+              password={formData.password} 
+              onStrengthChange={setPasswordStrength}
+            />
+          )}
+        </div>
+
+        {/* Confirm Password Input */}
+        <div className="space-y-2">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-neutral-700">
+            Confirm Password
+          </label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            placeholder="••••••••••"
+            autoComplete="new-password"
+            required
+            className="block w-full px-3 py-3 border border-neutral-300 rounded-lg shadow-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+          />
+        </div>
+
+        {/* Terms and Conditions */}
+        <div className="flex items-start">
+          <input
+            type="checkbox"
+            id="accept-terms"
+            checked={acceptTerms}
+            onChange={(e) => setAcceptTerms(e.target.checked)}
+            className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded mt-1 transition-colors duration-200"
+          />
+          <label htmlFor="accept-terms" className="ml-3 text-sm text-neutral-600">
+            I agree to the{' '}
+            <Link href="/terms" className="font-medium text-primary-600 hover:text-primary-500 transition-colors duration-200">
+              Terms of Service
+            </Link>
+            {' '}and{' '}
+            <Link href="/privacy" className="font-medium text-primary-600 hover:text-primary-500 transition-colors duration-200">
+              Privacy Policy
+            </Link>
+          </label>
+        </div>
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={!formData.email || !formData.password || !formData.confirmPassword || !acceptTerms}
+          className="w-full bg-neutral-900 text-white py-3 px-4 rounded-lg font-medium hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+        >
+          Sign up
+        </button>
+
+        {/* Admin Signup Option */}
+        <button
+          type="button"
+          className="w-full bg-white text-neutral-900 py-3 px-4 rounded-lg font-medium border border-neutral-300 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 transition-colors duration-200"
+        >
+          Sign up as Company admin
+        </button>
+
+        {/* Login Link */}
         <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white text-2xl font-bold">H</span>
+          <span className="text-sm text-neutral-600">
+            Already have an account?{' '}
+            <Link 
+              href="/login" 
+              className="font-medium text-neutral-900 hover:text-primary-600 transition-colors duration-200 underline"
+            >
+              Log in
+            </Link>
+          </span>
+        </div>
+      </form>
+    </div>
+  )
+
+  const renderRoleStep = () => (
+    <div className="space-y-6">
+      {/* Progress indicator */}
+      <div className="flex items-center justify-between text-sm text-neutral-600 mb-8">
+        <span>Step 1</span>
+        <div className="flex-1 mx-4">
+          <div className="h-1 bg-neutral-200 rounded-full">
+            <div className="h-1 bg-neutral-900 rounded-full" style={{ width: '33%' }}></div>
+          </div>
+        </div>
+        <span>of 3</span>
+      </div>
+
+      <div className="text-left">
+        <h1 className="text-2xl font-bold text-neutral-900 mb-8">
+          What best describes your primary role in the clean energy industry?
+        </h1>
+      </div>
+
+      <div className="space-y-3">
+        {cleanEnergyRoles.map((role) => (
+          <button
+            key={role}
+            type="button"
+            onClick={() => handleRoleSelect(role)}
+            className={cn(
+              "w-full p-4 text-left border rounded-lg transition-colors duration-200 hover:bg-neutral-50",
+              formData.role === role
+                ? "border-primary-500 bg-primary-50 text-primary-900"
+                : "border-neutral-300"
+            )}
+          >
+            <div className="flex items-center">
+              <div className={cn(
+                "w-4 h-4 rounded border-2 mr-3 flex items-center justify-center",
+                formData.role === role
+                  ? "border-primary-500 bg-primary-500"
+                  : "border-neutral-300"
+              )}>
+                {formData.role === role && (
+                  <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 8 8">
+                    <path d="M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z"/>
+                  </svg>
+                )}
+              </div>
+              <span className="font-medium">{role}</span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-4 pt-6">
+        <button
+          type="button"
+          onClick={handleBack}
+          className="flex-1 bg-white text-neutral-900 py-3 px-4 rounded-lg font-medium border border-neutral-300 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 transition-colors duration-200"
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          onClick={handleNext}
+          disabled={!formData.role}
+          className="flex-1 bg-neutral-900 text-white py-3 px-4 rounded-lg font-medium hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  )
+
+  const renderExperienceStep = () => (
+    <div className="space-y-6">
+      {/* Progress indicator */}
+      <div className="flex items-center justify-between text-sm text-neutral-600 mb-8">
+        <span>Step 2</span>
+        <div className="flex-1 mx-4">
+          <div className="h-1 bg-neutral-200 rounded-full">
+            <div className="h-1 bg-neutral-900 rounded-full" style={{ width: '66%' }}></div>
+          </div>
+        </div>
+        <span>of 3</span>
+      </div>
+
+      <div className="text-left">
+        <h1 className="text-2xl font-bold text-neutral-900 mb-8">
+          Which level best describes your category of expertise in the industry?
+        </h1>
+      </div>
+
+      <div className="space-y-3">
+        {experienceLevels.map((level) => (
+          <button
+            key={level}
+            type="button"
+            onClick={() => handleExperienceSelect(level)}
+            className={cn(
+              "w-full p-4 text-left border rounded-lg transition-colors duration-200 hover:bg-neutral-50",
+              formData.experienceLevel === level
+                ? "border-primary-500 bg-primary-50 text-primary-900"
+                : "border-neutral-300"
+            )}
+          >
+            <div className="flex items-center">
+              <div className={cn(
+                "w-4 h-4 rounded border-2 mr-3 flex items-center justify-center",
+                formData.experienceLevel === level
+                  ? "border-primary-500 bg-primary-500"
+                  : "border-neutral-300"
+              )}>
+                {formData.experienceLevel === level && (
+                  <svg className="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 8 8">
+                    <path d="M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z"/>
+                  </svg>
+                )}
+              </div>
+              <span className="font-medium">{level}</span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      <div className="flex gap-4 pt-6">
+        <button
+          type="button"
+          onClick={handleBack}
+          className="flex-1 bg-white text-neutral-900 py-3 px-4 rounded-lg font-medium border border-neutral-300 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 transition-colors duration-200"
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          onClick={handleNext}
+          disabled={!formData.experienceLevel || isSubmitting}
+          className="flex-1 bg-neutral-900 text-white py-3 px-4 rounded-lg font-medium hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+        >
+          {isSubmitting ? 'Creating Account...' : 'Continue'}
+        </button>
+      </div>
+    </div>
+  )
+
+  const renderCompleteStep = () => (
+    <div className="text-center space-y-6">
+      {/* Success icon */}
+      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+        <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      
+      <div>
+        <h1 className="text-2xl font-bold text-neutral-900 mb-2">
+          Account Created Successfully!
+        </h1>
+        <p className="text-neutral-600 text-sm">
+          Please check your email to verify your account before signing in.
+        </p>
+      </div>
+
+      <Link href="/login?signup=success">
+        <button className="w-full bg-neutral-900 text-white py-3 px-4 rounded-lg font-medium hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 transition-colors duration-200">
+          Continue to Sign In
+        </button>
+      </Link>
+    </div>
+  )
+
+  return (
+    <div className="min-h-screen flex">
+      {/* Left side - Form */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-sm w-full">
+          {/* Header */}
+          <div className="flex items-center mb-8">
+            <Link href="/" className="flex items-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center shadow-lg mr-2">
+                <span className="text-white text-sm font-bold">H</span>
+              </div>
+              <span className="text-xl font-bold text-neutral-900">Hayl Energy AI</span>
+            </Link>
+            <div className="flex items-center ml-auto text-sm text-neutral-500">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              United States
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-neutral-900 mb-2">
-            Create your account
-          </h2>
-          <p className="text-neutral-600">
-            Join Hayl Energy AI and start optimizing your energy usage
-          </p>
+
+          {currentStep === 'account' && renderAccountStep()}
+          {currentStep === 'role' && renderRoleStep()}
+          {currentStep === 'experience' && renderExperienceStep()}
+          {currentStep === 'complete' && renderCompleteStep()}
+        </div>
+      </div>
+
+      {/* Right side - Illustration/Background */}
+      <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center bg-gradient-to-br from-primary-50 to-secondary-50 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-primary-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse-slow"></div>
+          <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-secondary-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
         </div>
         
-        {/* Signup Form */}
-        <div className="bg-white py-8 px-6 shadow-2xl rounded-2xl border border-neutral-100">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Error Alert */}
-            {(validationErrors.length > 0 || error) && (
-              <Alert variant="error" title="Please fix the following errors:" closable onClose={() => {
-                setValidationErrors([])
-                clearError()
-              }}>
-                <ul className="list-disc pl-5 space-y-1">
-                  {validationErrors.map((error, index) => (
-                    <li key={index}>{error}</li>
-                  ))}
-                  {error && <li>{error}</li>}
-                </ul>
-              </Alert>
-            )}
-
-            {/* Name Input */}
-            <Input
-              label="Full Name"
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="Enter your full name (optional)"
-              autoComplete="name"
-              startIcon={
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              }
-              helperText="Optional, but helps personalize your experience"
-            />
-
-            {/* Email Input */}
-            <Input
-              label="Email Address"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="Enter your email address"
-              autoComplete="email"
-              required
-              startIcon={
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                </svg>
-              }
-            />
-
-            {/* Password Input */}
-            <div className="space-y-3">
-              <Input
-                label="Password"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                placeholder="Create a strong password"
-                autoComplete="new-password"
-                required
-                showPasswordToggle
-                startIcon={
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                }
-              />
-              
-              {/* Password Strength Indicator */}
-              {formData.password && (
-                <PasswordStrength 
-                  password={formData.password} 
-                  onStrengthChange={setPasswordStrength}
-                />
-              )}
+        {/* Placeholder for illustration */}
+        <div className="relative z-10 w-80 h-80 bg-white rounded-2xl shadow-2xl flex items-center justify-center border border-neutral-200">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+              </svg>
             </div>
-
-            {/* Confirm Password Input */}
-            <Input
-              label="Confirm Password"
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              placeholder="Confirm your password"
-              autoComplete="new-password"
-              required
-              showPasswordToggle
-              error={getPasswordConfirmError()}
-              success={getPasswordConfirmSuccess()}
-              startIcon={
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              }
-            />
-
-            {/* Terms and Conditions */}
-            <div className="flex items-start">
-              <input
-                type="checkbox"
-                id="accept-terms"
-                checked={acceptTerms}
-                onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 rounded mt-1 transition-colors duration-200"
-              />
-              <label htmlFor="accept-terms" className="ml-3 text-sm text-neutral-600">
-                I agree to the{' '}
-                <Link href="/terms" className="font-medium text-primary-600 hover:text-primary-500 transition-colors duration-200">
-                  Terms of Service
-                </Link>
-                {' '}and{' '}
-                <Link href="/privacy" className="font-medium text-primary-600 hover:text-primary-500 transition-colors duration-200">
-                  Privacy Policy
-                </Link>
-              </label>
-            </div>
-
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              fullWidth
-              size="lg"
-              loading={isSubmitting}
-              disabled={!formData.email || !formData.password || !formData.confirmPassword || !acceptTerms}
-              className="mt-6"
-            >
-              {isSubmitting ? 'Creating Account...' : 'Create Account'}
-            </Button>
-
-            {/* Login Link */}
-            <div className="text-center">
-              <span className="text-sm text-neutral-600">
-                Already have an account?{' '}
-                <Link 
-                  href="/login" 
-                  className="font-medium text-primary-600 hover:text-primary-500 transition-colors duration-200"
-                >
-                  Sign in here
-                </Link>
-              </span>
-            </div>
-          </form>
-
-          {/* Benefits Section */}
-          <div className="mt-8 pt-6 border-t border-neutral-200">
-            <h3 className="text-sm font-medium text-neutral-700 mb-4 text-center">
-              What you'll get with Hayl Energy AI:
-            </h3>
-            <div className="space-y-3">
-              {[
-                { icon: '⚡', text: 'Real-time energy monitoring and analytics' },
-                { icon: '🤖', text: 'AI-powered optimization recommendations' },
-                { icon: '📊', text: 'Detailed consumption reports and insights' },
-                { icon: '💰', text: 'Cost-saving suggestions and tracking' }
-              ].map((benefit, index) => (
-                <div key={index} className="flex items-center text-sm text-neutral-600">
-                  <span className="text-lg mr-3">{benefit.icon}</span>
-                  {benefit.text}
-                </div>
-              ))}
-            </div>
+            <h3 className="text-xl font-bold text-neutral-900 mb-2">Join the Community</h3>
+            <p className="text-neutral-600 text-sm">Connect with clean energy professionals</p>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center text-sm text-neutral-500">
-          © 2024 Hayl Energy AI. All rights reserved.
         </div>
       </div>
     </div>
