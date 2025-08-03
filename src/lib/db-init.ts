@@ -20,9 +20,9 @@ export async function initializeDatabase() {
     } catch (tableError) {
       console.log('⚠️ Tables not found, attempting to create them...')
       
-      // Create User table
+      // Create auth_users table (mapped from User model)
       await prisma.$executeRaw`
-        CREATE TABLE IF NOT EXISTS "User" (
+        CREATE TABLE IF NOT EXISTS "auth_users" (
           "id" TEXT NOT NULL,
           "email" TEXT NOT NULL,
           "password" TEXT NOT NULL,
@@ -32,17 +32,17 @@ export async function initializeDatabase() {
           "tokenExpiresAt" TIMESTAMP(3),
           "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
           "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+          CONSTRAINT "auth_users_pkey" PRIMARY KEY ("id")
         )
       `
       
       // Create unique indexes
       await prisma.$executeRaw`
-        CREATE UNIQUE INDEX IF NOT EXISTS "User_email_key" ON "User"("email")
+        CREATE UNIQUE INDEX IF NOT EXISTS "auth_users_email_key" ON "auth_users"("email")
       `
       
       await prisma.$executeRaw`
-        CREATE UNIQUE INDEX IF NOT EXISTS "User_verificationToken_key" ON "User"("verificationToken")
+        CREATE UNIQUE INDEX IF NOT EXISTS "auth_users_verificationToken_key" ON "auth_users"("verificationToken")
       `
       
       console.log('✅ Database tables created successfully')
