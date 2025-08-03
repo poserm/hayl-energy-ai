@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
@@ -21,7 +22,18 @@ export default function Home() {
   }, [user, router])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0">
+        <Image
+          src="/background.png"
+          alt="Clean energy background"
+          fill
+          className="object-cover opacity-20"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-50/90 via-white/95 to-secondary-50/90"></div>
+      </div>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse-slow"></div>
@@ -34,10 +46,14 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl font-bold">H</span>
-              </div>
+            <div className="flex items-center space-x-3">
+              <Image
+                src="/logo.png"
+                alt="Hayl Energy AI Logo"
+                width={40}
+                height={40}
+                className="rounded-lg shadow-md"
+              />
               <span className="text-2xl font-bold text-gradient">Hayl Energy AI</span>
             </div>
 
@@ -62,7 +78,7 @@ export default function Home() {
                 </Button>
               </Link>
               <Link href="/signup">
-                <Button size="md" className="bg-gradient-brand hover:opacity-90 shadow-brand">
+                <Button size="md" className="bg-gradient-brand hover:opacity-90 shadow-brand text-white font-semibold">
                   Get Started
                 </Button>
               </Link>
@@ -92,7 +108,7 @@ export default function Home() {
               {/* CTA Buttons */}
               <div className={`flex flex-col sm:flex-row gap-4 justify-center mb-16 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                 <Link href="/signup">
-                  <Button size="xl" className="bg-gradient-brand hover:opacity-90 shadow-brand text-lg px-8 py-4">
+                  <Button size="xl" className="bg-gradient-brand hover:opacity-90 shadow-brand text-white font-semibold text-lg px-8 py-4">
                     Start Free Trial
                     <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5-5 5M6 12h12" />
@@ -206,7 +222,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup">
-                <Button size="xl" className="bg-white text-primary-600 hover:bg-primary-50 text-lg px-8 py-4">
+                <Button size="xl" className="bg-white text-primary-600 hover:bg-primary-50 text-lg px-8 py-4 font-semibold shadow-lg">
                   Start Your Free Trial
                 </Button>
               </Link>
@@ -225,10 +241,14 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white text-lg font-bold">H</span>
-                </div>
+              <div className="flex items-center space-x-3 mb-4">
+                <Image
+                  src="/logo.png"
+                  alt="Hayl Energy AI Logo"
+                  width={32}
+                  height={32}
+                  className="rounded-lg"
+                />
                 <span className="text-xl font-bold">Hayl Energy AI</span>
               </div>
               <p className="text-neutral-400 mb-4 max-w-md">

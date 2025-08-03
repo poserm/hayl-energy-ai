@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { Alert } from '@/components/ui/Alert'
 
@@ -70,16 +71,31 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex">
+      <div className="min-h-screen flex relative">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0">
+          <Image
+            src="/background.png"
+            alt="Clean energy background"
+            fill
+            className="object-cover opacity-15"
+            priority
+          />
+        </div>
+        
         {/* Left side - Success message */}
-        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white/95 backdrop-blur-sm relative z-10">
           <div className="max-w-sm w-full text-center">
             {/* Header */}
             <div className="flex items-center justify-center mb-8">
               <Link href="/" className="flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center shadow-lg mr-2">
-                  <span className="text-white text-sm font-bold">H</span>
-                </div>
+                <Image
+                  src="/logo.png"
+                  alt="Hayl Energy AI Logo"
+                  width={32}
+                  height={32}
+                  className="rounded-lg shadow-md mr-3"
+                />
                 <span className="text-xl font-bold text-neutral-900">Hayl Energy AI</span>
               </Link>
             </div>
@@ -111,20 +127,24 @@ export default function ResetPasswordPage() {
         </div>
 
         {/* Right side - Illustration/Background */}
-        <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center bg-gradient-to-br from-primary-50 to-secondary-50 relative overflow-hidden">
+        <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center bg-gradient-to-br from-primary-50/80 to-secondary-50/80 relative overflow-hidden backdrop-blur-sm">
           {/* Animated background elements */}
           <div className="absolute inset-0">
             <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-primary-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse-slow"></div>
             <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-secondary-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
           </div>
           
-          {/* Placeholder for illustration */}
-          <div className="relative z-10 w-80 h-80 bg-white rounded-2xl shadow-2xl flex items-center justify-center border border-neutral-200">
+          {/* Illustration with logo */}
+          <div className="relative z-10 w-80 h-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl flex items-center justify-center border border-neutral-200">
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <Image
+                  src="/logo.png"
+                  alt="Hayl Energy AI Logo"
+                  width={32}
+                  height={32}
+                  className="rounded-lg"
+                />
               </div>
               <h3 className="text-xl font-bold text-neutral-900 mb-2">All Set!</h3>
               <p className="text-neutral-600 text-sm">Your account is ready to go</p>
@@ -136,16 +156,31 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex relative">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0">
+        <Image
+          src="/background.png"
+          alt="Clean energy background"
+          fill
+          className="object-cover opacity-15"
+          priority
+        />
+      </div>
+      
       {/* Left side - Form */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white/95 backdrop-blur-sm relative z-10">
         <div className="max-w-sm w-full">
           {/* Header */}
           <div className="flex items-center mb-8">
             <Link href="/" className="flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center shadow-lg mr-2">
-                <span className="text-white text-sm font-bold">H</span>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Hayl Energy AI Logo"
+                width={32}
+                height={32}
+                className="rounded-lg shadow-md mr-3"
+              />
               <span className="text-xl font-bold text-neutral-900">Hayl Energy AI</span>
             </Link>
             <div className="flex items-center ml-auto text-sm text-neutral-500">
@@ -248,20 +283,24 @@ export default function ResetPasswordPage() {
       </div>
 
       {/* Right side - Illustration/Background */}
-      <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center bg-gradient-to-br from-primary-50 to-secondary-50 relative overflow-hidden">
+      <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center bg-gradient-to-br from-primary-50/80 to-secondary-50/80 relative overflow-hidden backdrop-blur-sm">
         {/* Animated background elements */}
         <div className="absolute inset-0">
           <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-primary-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse-slow"></div>
           <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-secondary-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
         </div>
         
-        {/* Placeholder for illustration */}
-        <div className="relative z-10 w-80 h-80 bg-white rounded-2xl shadow-2xl flex items-center justify-center border border-neutral-200">
+        {/* Illustration with logo */}
+        <div className="relative z-10 w-80 h-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl flex items-center justify-center border border-neutral-200">
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
+              <Image
+                src="/logo.png"
+                alt="Hayl Energy AI Logo"
+                width={32}
+                height={32}
+                className="rounded-lg"
+              />
             </div>
             <h3 className="text-xl font-bold text-neutral-900 mb-2">New Password</h3>
             <p className="text-neutral-600 text-sm">Create a strong, secure password</p>

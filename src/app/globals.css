@@ -23,4 +23,68 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Enhanced scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Smooth animations for better UX */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Improve focus visibility for accessibility */
+*:focus {
+  outline-offset: 2px;
+}
+
+/* Ensure images are properly optimized */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Custom background overlay utilities */
+.bg-energy-pattern {
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(14, 165, 233, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(34, 197, 94, 0.1) 0%, transparent 50%);
+}
+
+/* Enhanced button focus states for better accessibility */
+.focus-brand:focus {
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+  outline: none;
+}
+
+/* Loading animation improvements */
+@keyframes shimmer-improved {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(100%) skewX(-15deg);
+  }
+}
+
+.animate-shimmer-improved {
+  animation: shimmer-improved 2s linear infinite;
 }

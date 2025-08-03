@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 
@@ -25,13 +26,24 @@ export default function DashboardPage() {
 
   if (loading || dashboardLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="flex items-center space-x-2">
-          <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <div className="min-h-screen flex items-center justify-center relative">
+        {/* Background Image with Overlay */}
+        <div className="absolute inset-0">
+          <Image
+            src="/background.png"
+            alt="Clean energy background"
+            fill
+            className="object-cover opacity-20"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-50/90 to-secondary-50/90"></div>
+        </div>
+        <div className="flex items-center space-x-2 relative z-10">
+          <svg className="animate-spin h-8 w-8 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span className="text-lg text-gray-600">Loading dashboard...</span>
+          <span className="text-lg text-neutral-700">Loading dashboard...</span>
         </div>
       </div>
     )
@@ -42,24 +54,40 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen relative">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0">
+        <Image
+          src="/background.png"
+          alt="Clean energy background"
+          fill
+          className="object-cover opacity-10"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-50/95 via-white/98 to-secondary-50/95"></div>
+      </div>
+      
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-neutral-200 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-full flex items-center justify-center mr-4">
-                <span className="text-white text-lg font-bold">H</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">Hayl Energy AI</h1>
+              <Image
+                src="/logo.png"
+                alt="Hayl Energy AI Logo"
+                width={40}
+                height={40}
+                className="rounded-lg shadow-md mr-4"
+              />
+              <h1 className="text-2xl font-bold text-neutral-900">Hayl Energy AI</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="text-sm text-gray-600">
-                Welcome, <span className="font-medium text-gray-900">{user.name || user.email}</span>
+              <div className="text-sm text-neutral-600">
+                Welcome, <span className="font-medium text-neutral-900">{user.name || user.email}</span>
               </div>
               <button
                 onClick={handleLogout}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                className="bg-neutral-200 hover:bg-neutral-300 text-neutral-700 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
               >
                 Sign Out
               </button>
@@ -69,14 +97,14 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Welcome Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-green-600 rounded-lg p-6 mb-8">
+        <div className="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg p-6 mb-8 shadow-lg">
           <div className="text-white">
             <h2 className="text-3xl font-bold mb-2">
               Welcome to your Energy Dashboard
             </h2>
-            <p className="text-blue-100">
+            <p className="text-primary-100">
               Monitor, analyze, and optimize your energy consumption with AI-powered insights.
             </p>
           </div>
