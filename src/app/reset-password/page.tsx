@@ -90,7 +90,7 @@ export default function ResetPasswordPage() {
             <div className="flex items-center justify-center mb-8">
               <Link href="/" className="flex items-center">
                 <Image
-                  src="/logo.png"
+                  src="/hayl-logo-new.svg"
                   alt="Hayl Energy AI Logo"
                   width={32}
                   height={32}
@@ -139,7 +139,7 @@ export default function ResetPasswordPage() {
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Image
-                  src="/logo.png"
+                  src="/hayl-logo-new.svg"
                   alt="Hayl Energy AI Logo"
                   width={32}
                   height={32}
@@ -175,7 +175,7 @@ export default function ResetPasswordPage() {
           <div className="flex items-center mb-8">
             <Link href="/" className="flex items-center">
               <Image
-                src="/logo.png"
+                src="/hayl-logo-new.svg"
                 alt="Hayl Energy AI Logo"
                 width={32}
                 height={32}
@@ -295,7 +295,7 @@ export default function ResetPasswordPage() {
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Image
-                src="/logo.png"
+                src="/hayl-logo-new.svg"
                 alt="Hayl Energy AI Logo"
                 width={32}
                 height={32}

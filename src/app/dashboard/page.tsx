@@ -73,7 +73,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
               <Image
-                src="/logo.png"
+                src="/hayl-logo-new.svg"
                 alt="Hayl Energy AI Logo"
                 width={40}
                 height={40}
@@ -102,10 +102,10 @@ export default function DashboardPage() {
         <div className="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg p-6 mb-8 shadow-lg">
           <div className="text-white">
             <h2 className="text-3xl font-bold mb-2">
-              Welcome to your Energy Dashboard
+              Welcome to your Market Data Hub
             </h2>
             <p className="text-primary-100">
-              Monitor, analyze, and optimize your energy consumption with AI-powered insights.
+              Track energy market trends, policies, and insights with AI-powered analytics.
             </p>
           </div>
         </div>

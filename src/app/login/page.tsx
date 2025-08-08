@@ -100,7 +100,7 @@ export default function LoginPage() {
             {/* Logo */}
             <div className="flex items-center mb-8">
               <Image
-                src="/logo.png"
+                src="/hayl-logo-new.svg"
                 alt="Hayl Energy AI Logo"
                 width={32}
                 height={32}
@@ -108,10 +108,14 @@ export default function LoginPage() {
               />
               <span className="text-xl font-bold text-neutral-900">Hayl Energy AI</span>
               <div className="flex items-center ml-auto text-sm text-neutral-500">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                United States
+                <Image
+                  src="/hayl-logo-new.svg"
+                  alt="Hayl Energy AI Logo"
+                  width={16}
+                  height={16}
+                  className="mr-1"
+                />
+                HAYL
               </div>
             </div>
             
@@ -240,15 +244,15 @@ export default function LoginPage() {
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Image
-                src="/logo.png"
+                src="/hayl-logo-new.svg"
                 alt="Hayl Energy AI Logo"
                 width={32}
                 height={32}
                 className="rounded-lg"
               />
             </div>
-            <h3 className="text-xl font-bold text-neutral-900 mb-2">Clean Energy AI</h3>
-            <p className="text-neutral-600 text-sm">Powering the future of renewable energy</p>
+            <h3 className="text-xl font-bold text-neutral-900 mb-2">Energy Market Intelligence</h3>
+            <p className="text-neutral-600 text-sm">Real-time data for smarter energy decisions</p>
           </div>
         </div>
       </div>

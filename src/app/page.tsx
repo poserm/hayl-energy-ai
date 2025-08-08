@@ -48,7 +48,7 @@ export default function Home() {
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <Image
-                src="/logo.png"
+                src="/hayl-logo-new.svg"
                 alt="Hayl Energy AI Logo"
                 width={40}
                 height={40}
@@ -95,13 +95,12 @@ export default function Home() {
             <div className="text-center">
               <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-neutral-900 mb-8 leading-tight">
-                  Revolutionize Your{' '}
-                  <span className="text-gradient">Clean Energy</span>{' '}
-                  Operations
+                  Revolutionizing{' '}
+                  <span className="text-gradient">Data Access</span>{' '}
+                  and Insights
                 </h1>
                 <p className="text-xl lg:text-2xl text-neutral-600 mb-12 max-w-4xl mx-auto leading-relaxed">
-                  Harness the power of AI to optimize renewable energy projects, accelerate development timelines, 
-                  and maximize ROI in the clean energy transition.
+                  Harness the power of AI to track energy industry trends, policy changes, and customer behavior—so you can make faster, smarter decisions.
                 </p>
               </div>
 
@@ -128,10 +127,10 @@ export default function Home() {
               {/* Stats */}
               <div className={`grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto transition-all duration-1000 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                 {[
-                  { value: '50+', label: 'Energy Projects Optimized' },
-                  { value: '25%', label: 'Average Cost Reduction' },
-                  { value: '60%', label: 'Faster Development' },
-                  { value: '98%', label: 'Prediction Accuracy' }
+                  { value: '50+', label: 'Market Data Sources' },
+                  { value: '25%', label: 'Faster Decision Making' },
+                  { value: '60%', label: 'Improved Market Insights' },
+                  { value: '98%', label: 'Data Accuracy' }
                 ].map((stat, index) => (
                   <div key={index} className="text-center">
                     <div className="text-3xl lg:text-4xl font-bold text-gradient mb-2">{stat.value}</div>
@@ -148,10 +147,10 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-20">
               <h2 className="text-3xl lg:text-5xl font-bold text-neutral-900 mb-6">
-                Intelligent Energy Solutions
+                Your Intelligent Data Hub
               </h2>
               <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
-                Our AI-powered platform provides comprehensive tools for every stage of your clean energy projects
+                Our AI-powered platform offers a comprehensive, user-friendly, and up-to-date tool to simplify data access and empower smarter decisions.
               </p>
             </div>
 
@@ -160,32 +159,32 @@ export default function Home() {
                 {
                   icon: (
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                  ),
+                  title: 'Centralized Intelligence',
+                  description: 'AI-powered platform that seamlessly collects, centralizes, and delivers critical data—all in one intelligent hub.',
+                  features: []
+                },
+                {
+                  icon: (
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   ),
-                  title: 'Smart Site Selection',
-                  description: 'AI-driven analysis of location data, weather patterns, and grid connectivity to identify optimal sites for renewable energy projects.',
-                  features: ['Wind & solar resource mapping', 'Grid impact analysis', 'Environmental assessments']
+                  title: 'Reliable Real-Time Data',
+                  description: 'Power smarter, faster decisions with real-time data you can trust.',
+                  features: []
                 },
                 {
                   icon: (
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                   ),
-                  title: 'Performance Analytics',
-                  description: 'Real-time monitoring and predictive analytics to maximize energy output and identify optimization opportunities.',
-                  features: ['Real-time performance tracking', 'Predictive maintenance alerts', 'ROI optimization']
-                },
-                {
-                  icon: (
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                    </svg>
-                  ),
-                  title: 'Financial Modeling',
-                  description: 'Advanced financial analysis and risk assessment tools to support investment decisions and project financing.',
-                  features: ['LCOE calculations', 'Risk analysis', 'Investment portfolio optimization']
+                  title: 'Simple, Accessible by Design',
+                  description: 'A straightforward, user-friendly experience designed for simplicity and speed.',
+                  features: []
                 }
               ].map((feature, index) => (
                 <div key={index} className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group border border-neutral-100">
@@ -193,17 +192,7 @@ export default function Home() {
                     {feature.icon}
                   </div>
                   <h3 className="text-xl font-bold text-neutral-900 mb-4">{feature.title}</h3>
-                  <p className="text-neutral-600 mb-6 leading-relaxed">{feature.description}</p>
-                  <ul className="space-y-2">
-                    {feature.features.map((item, idx) => (
-                      <li key={idx} className="flex items-center text-sm text-neutral-600">
-                        <svg className="w-4 h-4 text-secondary-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-neutral-600 leading-relaxed">{feature.description}</p>
                 </div>
               ))}
             </div>
@@ -215,10 +204,10 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6">
-              Ready to Transform Your Energy Projects?
+              Ready to Optimize Your Energy Market Strategy?
             </h2>
             <p className="text-xl text-primary-100 mb-12 max-w-2xl mx-auto">
-              Join leading energy companies using AI to accelerate the clean energy transition
+              Join leading energy market players using Hayl AI to stay ahead with reliable, real-time market data
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/signup">
@@ -239,11 +228,11 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-neutral-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
               <div className="flex items-center space-x-3 mb-4">
                 <Image
-                  src="/logo.png"
+                  src="/hayl-logo-new.svg"
                   alt="Hayl Energy AI Logo"
                   width={32}
                   height={32}
@@ -251,17 +240,6 @@ export default function Home() {
                 />
                 <span className="text-xl font-bold">Hayl Energy AI</span>
               </div>
-              <p className="text-neutral-400 mb-4 max-w-md">
-                Empowering the clean energy transition through intelligent automation and data-driven insights.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Product</h3>
-              <ul className="space-y-2 text-neutral-400">
-                <li><Link href="#features" className="hover:text-white transition-colors">Features</Link></li>
-                <li><Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link href="#api" className="hover:text-white transition-colors">API</Link></li>
-              </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-4">Company</h3>
