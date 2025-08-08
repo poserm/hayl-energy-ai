@@ -75,6 +75,25 @@ img {
   outline: none;
 }
 
+/* Force white text on gradient buttons for better contrast */
+.btn-gradient-brand {
+  background: linear-gradient(135deg, #0ea5e9, #22c55e) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn-gradient-brand:hover {
+  opacity: 0.9 !important;
+}
+
+.btn-gradient-brand:focus {
+  color: white !important;
+}
+
+.btn-gradient-brand:active {
+  color: white !important;
+}
+
 /* Loading animation improvements */
 @keyframes shimmer-improved {
   0% {

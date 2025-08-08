@@ -78,7 +78,7 @@ export default function Home() {
                 </Button>
               </Link>
               <Link href="/signup">
-                <Button size="md" className="bg-gradient-brand hover:opacity-90 shadow-brand text-white font-semibold">
+                <Button size="md" className="btn-gradient-brand shadow-brand font-bold">
                   Get Started
                 </Button>
               </Link>
@@ -108,7 +108,7 @@ export default function Home() {
               {/* CTA Buttons */}
               <div className={`flex flex-col sm:flex-row gap-4 justify-center mb-16 transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                 <Link href="/signup">
-                  <Button size="xl" className="bg-gradient-brand hover:opacity-90 shadow-brand text-white font-semibold text-lg px-8 py-4">
+                  <Button size="xl" className="btn-gradient-brand shadow-brand font-bold text-lg px-8 py-4">
                     Start Free Trial
                     <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5-5 5M6 12h12" />
