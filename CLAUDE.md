@@ -4,16 +4,29 @@ This file contains information for Claude Code to remember across sessions.
 
 ## Project Overview
 - **Project Name**: Hayl Energy AI
-- **Type**: Next.js 15.4.4 TypeScript Authentication System
-- **Database**: PostgreSQL with Prisma ORM
+- **Type**: Next.js 15.4.4 TypeScript Energy Market Intelligence Platform
+- **Database**: PostgreSQL with Prisma ORM (auth) + FastAPI backend (energy data)
 - **Authentication**: JWT-based with HTTP-only cookies
+- **Energy Focus**: Virginia utilities and comprehensive US energy market analysis
 - **Styling**: Tailwind CSS
 - **Testing**: Jest with comprehensive test suite
 
 ## Development Commands
 ```bash
-# Development
-npm run dev
+# Frontend Development (auth + energy UI)
+npm run dev                     # Next.js app on :3000
+
+# Backend Services
+# Terminal 1: Energy Data API (in hayl-energy-backend/)
+cd hayl-energy-backend && uvicorn app.main:app --reload --port 8001
+
+# Database Management
+npx prisma generate            # Auth database
+npx prisma db push
+npx prisma studio              # Auth data visualization
+
+# Energy Database (separate FastAPI backend)
+# Access via pgAdmin or database client for energy data visualization
 
 # Testing
 npm test
@@ -27,19 +40,24 @@ npm run start
 
 # Linting
 npm run lint
-
-# Database
-npx prisma generate
-npx prisma db push
-npx prisma studio
 ```
 
 ## Architecture Decisions
 1. **App Router**: Using Next.js 13+ App Router instead of Pages Router
 2. **JWT Strategy**: Access tokens (15min) + Refresh tokens (7 days)
-3. **Security**: bcryptjs with 12 salt rounds, rate limiting, security headers
-4. **State Management**: React Context with multiple specialized hooks
-5. **Testing**: Separate environments for unit (jsdom) and integration (node) tests
+3. **Hybrid Backend**: Prisma (auth) + FastAPI (energy data) for optimal performance
+4. **Virginia Focus**: Energy market intelligence centered on Virginia utilities
+5. **Security**: bcryptjs with 12 salt rounds, rate limiting, security headers
+6. **State Management**: React Context with multiple specialized hooks
+7. **Testing**: Separate environments for unit (jsdom) and integration (node) tests
+
+## Energy Market Integration ✅ **NEW**
+Complete energy market intelligence system with:
+- **Virginia Utilities**: Dominion Energy, Appalachian Power, NOVEC, REC, SVEC
+- **Technology Coverage**: Coal, Natural Gas, Nuclear, Solar, Wind, Hydro, Storage
+- **Geographic Analysis**: Virginia counties and service territories
+- **Market Analytics**: Capacity trends, technology mix, utility comparison
+- **Database Visualization**: pgAdmin for energy data, Prisma Studio for auth data
 
 ## Key Files Created
 - `middleware.ts` - Route protection and automatic redirects

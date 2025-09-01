@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # FastAPI Backend
+  backend:
+    build: .
+    container_name: hayl-energy-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://hayl_admin:HaylEnergy2024!@db:5432/hayl_energy_ai_db
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - ENVIRONMENT=development
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./app:/app
+      - ./data:/app/data  # Mount data directory for CSV/Excel files
+    networks:
+      - hayl-network
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: hayl-energy-database
+    environment:
+      - POSTGRES_DB=hayl_energy_ai_db
+      - POSTGRES_USER=hayl_admin
+      - POSTGRES_PASSWORD=HaylEnergy2024!
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-sql:/docker-entrypoint-initdb.d
+    networks:
+      - hayl-network
+    restart: unless-stopped
+
+  # Redis for caching and rate limiting
+  redis:
+    image: redis:7-alpine
+    container_name: hayl-energy-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - hayl-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # nginx reverse proxy (optional for production)
+  nginx:
+    image: nginx:alpine
+    container_name: hayl-energy-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro  # SSL certificates
+    depends_on:
+      - backend
+    networks:
+      - hayl-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  hayl-network:
+    driver: bridge

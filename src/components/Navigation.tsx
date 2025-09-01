@@ -78,6 +78,8 @@ export function AuthNavigation({
               {user ? (
                 <>
                   <NavLink href="/dashboard">Dashboard</NavLink>
+                  <NavLink href="/energy">Virginia Energy</NavLink>
+                  <NavLink href="/analytics">Market Analytics</NavLink>
                   <div className="flex items-center space-x-4 ml-4 pl-4 border-l border-gray-200">
                     <span className="text-sm text-gray-600">
                       Welcome, {user.name || user.email.split('@')[0]}
@@ -142,6 +144,12 @@ export function AuthNavigation({
                   <>
                     <NavLink href="/dashboard" onClick={() => setIsMenuOpen(false)}>
                       Dashboard
+                    </NavLink>
+                    <NavLink href="/energy" onClick={() => setIsMenuOpen(false)}>
+                      Virginia Energy
+                    </NavLink>
+                    <NavLink href="/analytics" onClick={() => setIsMenuOpen(false)}>
+                      Market Analytics
                     </NavLink>
                     <div className="px-4 py-2 border-t border-gray-200 mt-2 pt-2">
                       <p className="text-sm text-gray-600 mb-2">

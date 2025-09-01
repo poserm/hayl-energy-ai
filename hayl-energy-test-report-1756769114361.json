@@ -1,0 +1,214 @@
+{
+  "timestamp": "2025-09-01T23:25:08.139Z",
+  "services": {
+    "Next.js Frontend (Port 3000)": {
+      "status": "NOT_RUNNING",
+      "port": 3000
+    },
+    "FastAPI Backend (Port 8001)": {
+      "status": "NOT_RUNNING",
+      "port": 8001
+    },
+    "PostgreSQL Database": {
+      "status": "RUNNING",
+      "port": null
+    }
+  },
+  "authentication": {
+    "signup": {
+      "status": "FAIL",
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/api/auth/signup failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "unverifiedLogin": {
+      "status": "FAIL",
+      "expected": "Should block unverified users",
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/api/auth/login failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "protectedRoute": {
+      "status": "FAIL",
+      "expected": "Should redirect or deny access",
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/dashboard failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "meEndpoint": {
+      "status": "FAIL",
+      "expected": "Should require authentication",
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/api/auth/me failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    }
+  },
+  "energyMarket": {
+    "virginiaPage": {
+      "status": "FAIL",
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/energy failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "analyticsPage": {
+      "status": "FAIL",
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    }
+  },
+  "apiIntegration": {
+    "energyApiClient": {
+      "status": "PASS",
+      "file": "/home/mikyas/projects/Hayl-energy-ai/hayl-energy-ai/src/lib/energy-api.ts",
+      "exists": true
+    },
+    "staticFallback": {
+      "status": "PASS",
+      "description": "Static data fallback for API unavailability"
+    },
+    "authIntegration": {
+      "status": "PASS",
+      "description": "JWT token integration with API calls"
+    }
+  },
+  "database": {
+    "prismaSchema": {
+      "status": "PASS",
+      "file": "/home/mikyas/projects/Hayl-energy-ai/hayl-energy-ai/prisma/schema.prisma"
+    },
+    "initialization": {
+      "status": "FAIL",
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/api/db/init failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    }
+  },
+  "frontend": {
+    "/": {
+      "status": "FAIL",
+      "httpStatus": 0,
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/ failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "/login": {
+      "status": "FAIL",
+      "httpStatus": 0,
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/login failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "/signup": {
+      "status": "FAIL",
+      "httpStatus": 0,
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/signup failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "/energy": {
+      "status": "FAIL",
+      "httpStatus": 0,
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/energy failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "/analytics": {
+      "status": "FAIL",
+      "httpStatus": 0,
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/analytics failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "/dashboard": {
+      "status": "FAIL",
+      "httpStatus": 0,
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/dashboard failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "/verify-email": {
+      "status": "FAIL",
+      "httpStatus": 0,
+      "response": {
+        "status": 0,
+        "ok": false,
+        "data": null,
+        "error": "request to http://localhost:3000/verify-email failed, reason: connect ECONNREFUSED 127.0.0.1:3000"
+      }
+    },
+    "static/favicon.ico": {
+      "status": "FAIL",
+      "httpStatus": 0
+    },
+    "static/hayl-logo-new.svg": {
+      "status": "FAIL",
+      "httpStatus": 0
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "category": "Services",
+      "issue": "Next.js frontend not running on port 3000",
+      "solution": "Run `npm run dev` in the main project directory"
+    },
+    {
+      "priority": "HIGH",
+      "category": "Services",
+      "issue": "FastAPI backend not running on port 8001",
+      "solution": "Run the backend service: `cd hayl-energy-backend && python -m uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload`"
+    },
+    {
+      "priority": "HIGH",
+      "category": "Authentication",
+      "issue": "User registration not working",
+      "solution": "Check database connection and verify user registration API endpoint"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Database",
+      "issue": "Database initialization failing",
+      "solution": "Check DATABASE_URL environment variable and run `npx prisma db push`"
+    }
+  ]
+}
