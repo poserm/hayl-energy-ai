@@ -54,7 +54,7 @@ describe('Dashboard Components', () => {
         />
       )
       
-      const addButton = screen.getByText('Add State')
+      const addButton = screen.getByText('Add New State')
       fireEvent.click(addButton)
       
       expect(screen.getByPlaceholderText('Search states...')).toBeInTheDocument()
@@ -69,11 +69,14 @@ describe('Dashboard Components', () => {
         />
       )
       
-      // Find the X button by its icon
-      const removeButton = screen.getByRole('button', { 
-        hidden: true 
-      })
-      fireEvent.click(removeButton)
+      // Find the X button for removing Virginia
+      const removeButtons = screen.getAllByRole('button')
+      const removeButton = removeButtons.find(button => 
+        button.querySelector('svg') && button.parentElement?.textContent?.includes('Virginia')
+      )
+      if (removeButton) {
+        fireEvent.click(removeButton)
+      }
       
       expect(mockOnChange).toHaveBeenCalledWith([])
     })
@@ -143,7 +146,7 @@ describe('Dashboard Components', () => {
         />
       )
       
-      expect(screen.getByText('No data available')).toBeInTheDocument()
+      expect(screen.getByText('No Data Available')).toBeInTheDocument()
     })
 
     it('renders donut chart correctly', () => {

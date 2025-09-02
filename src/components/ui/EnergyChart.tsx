@@ -30,36 +30,42 @@ export default function EnergyChart({
   const total = useMemo(() => data.reduce((sum, d) => sum + d.value, 0), [data])
 
   const renderBarChart = () => (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {data.map((item, index) => {
         const percentage = maxValue > 0 ? (item.value / maxValue) * 100 : 0
         const valuePercentage = total > 0 ? (item.value / total) * 100 : 0
         
         return (
-          <div key={index} className="flex items-center space-x-3">
-            <div className="w-24 text-sm font-medium text-gray-700 truncate flex-shrink-0">
-              {item.label}
+          <div key={index} className="group">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center space-x-3">
+                <div 
+                  className="w-4 h-4 rounded-full shadow-sm"
+                  style={{ backgroundColor: item.color }}
+                />
+                <span className="text-sm font-semibold text-gray-800 group-hover:text-purple-600 transition-colors">
+                  {item.label}
+                </span>
+              </div>
+              <div className="text-sm font-bold text-gray-900">
+                {item.value.toLocaleString()} MW
+              </div>
             </div>
-            <div className="flex-1 flex items-center space-x-2">
-              <div className="flex-1 bg-gray-200 rounded-full h-6 relative overflow-hidden">
+            <div className="flex items-center space-x-3">
+              <div className="flex-1 bg-gray-100 rounded-full h-8 relative overflow-hidden shadow-inner">
                 <div
-                  className="h-full rounded-full transition-all duration-500 ease-out"
+                  className="h-full rounded-full chart-bar-animated shadow-sm"
                   style={{
                     width: `${percentage}%`,
-                    backgroundColor: item.color
+                    background: `linear-gradient(90deg, ${item.color}, ${item.color}dd)`
                   }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-xs font-medium text-gray-800">
-                    {item.value.toLocaleString()} MW
+                  <span className="text-xs font-bold text-white drop-shadow-sm">
+                    {valuePercentage.toFixed(1)}%
                   </span>
                 </div>
               </div>
-              {showPercentages && (
-                <div className="w-12 text-xs font-medium text-gray-600 text-right">
-                  {valuePercentage.toFixed(1)}%
-                </div>
-              )}
             </div>
           </div>
         )
@@ -144,17 +150,26 @@ export default function EnergyChart({
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 mb-6">{title}</h3>
+    <div className={`glassmorphism rounded-2xl p-8 ${className}`}>
+      <div className="flex items-center justify-between mb-8">
+        <h3 className="text-2xl font-bold gradient-text">{title}</h3>
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-green-400 rounded-full pulsing-dot"></div>
+          <span className="text-sm font-medium text-gray-600">Live Data</span>
+        </div>
+      </div>
       <div style={{ height: `${height}px` }} className="flex items-center justify-center">
         {data.length > 0 ? (
           type === 'bar' ? renderBarChart() : renderPieChart()
         ) : (
-          <div className="text-center text-gray-500">
-            <svg className="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-            <p className="mt-2 text-sm">No data available</p>
+          <div className="text-center text-gray-400">
+            <div className="glassmorphism rounded-xl p-8">
+              <svg className="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              <p className="text-lg font-semibold text-gray-600">No Data Available</p>
+              <p className="text-sm text-gray-500">Select states to view analytics</p>
+            </div>
           </div>
         )}
       </div>
