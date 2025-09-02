@@ -56,8 +56,8 @@ class DataLoader:
                 if any(keyword in sheet_name.lower() for keyword in ['operating', 'planned', 'retired']):
                     logger.info(f"Processing sheet: {sheet_name}")
                     
-                    # Read the sheet
-                    df = pd.read_excel(excel_path, sheet_name=sheet_name)
+                    # Read the sheet (skip first 2 header rows)
+                    df = pd.read_excel(excel_path, sheet_name=sheet_name, skiprows=2)
                     logger.info(f"Loaded {len(df)} rows from {sheet_name}")
                     
                     # Determine source sheet type
@@ -95,7 +95,7 @@ class DataLoader:
                     entity_name=self._safe_str(row.get('Entity Name')),
                     plant_id=self._safe_int(row.get('Plant ID')),
                     plant_name=self._safe_str(row.get('Plant Name')),
-                    plant_state=self._safe_str(row.get('State')),
+                    plant_state=self._safe_str(row.get('Plant State')),
                     county=self._safe_str(row.get('County')),
                     balancing_authority_code=self._safe_str(row.get('Balancing Authority Code')),
                     sector=self._safe_str(row.get('Sector')),

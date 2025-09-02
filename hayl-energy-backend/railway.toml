@@ -1,0 +1,14 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[variables]
+DATABASE_URL = "postgres://7a571ce585e0cb50feb02b7f3cac367b0cf701b3fccb98a4e2ae1adc49c5859a:sk_nN4lztrkcDCw-wciq6Qak@db.prisma.io:5432/?sslmode=require"
+JWT_SECRET = "your-super-secret-jwt-key-should-be-very-long-and-random"
+JWT_REFRESH_SECRET = "your-super-secret-refresh-jwt-key-should-be-different"
+ENVIRONMENT = "production"
+CORS_ORIGINS = "https://hayl-energy-ai.vercel.app,http://localhost:3000"
