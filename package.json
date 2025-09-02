@@ -28,6 +28,7 @@
     "production:check": "npm run type-check && npm run lint && npm run test && npm run build"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@prisma/client": "^6.12.0",
     "@sendgrid/mail": "^8.1.5",
     "@tailwindcss/postcss": "^4.1.11",

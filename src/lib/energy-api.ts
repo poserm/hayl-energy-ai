@@ -134,6 +134,30 @@ class EnergyApiClient {
     const response = await this.request<EnergyApiResponse<any>>('/api/v1/geography/virginia')
     return response.data
   }
+
+  // Multi-state analysis
+  async getStateUtilities(states: string[]): Promise<UtilityData[]> {
+    if (states.length === 0) return []
+    const stateParams = states.map(s => `states=${encodeURIComponent(s)}`).join('&')
+    const response = await this.request<EnergyApiResponse<UtilityData[]>>(`/api/v1/utilities?${stateParams}`)
+    return response.data
+  }
+
+  async getStateTechnologyMix(states: string[]): Promise<TechnologyMix[]> {
+    if (states.length === 0) return []
+    const stateParams = states.map(s => `states=${encodeURIComponent(s)}`).join('&')
+    const response = await this.request<EnergyApiResponse<TechnologyMix[]>>(`/api/v1/technology-mix?${stateParams}`)
+    return response.data
+  }
+
+  async getStatesComparison(states: string[]): Promise<any> {
+    if (states.length === 0) return { states: [], metrics: [] }
+    const response = await this.request<EnergyApiResponse<any>>('/api/v1/analytics/states-comparison', {
+      method: 'POST',
+      body: JSON.stringify({ states })
+    })
+    return response.data
+  }
 }
 
 export const energyApi = new EnergyApiClient()
