@@ -5,10 +5,8 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 const createPrismaClient = () => {
-  // Handle missing DATABASE_URL during build
-  const databaseUrl = process.env.NODE_ENV === 'production' 
-    ? process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL
-    : process.env.DATABASE_URL
+  // Always use DATABASE_URL - it's configured in Vercel
+  const databaseUrl = process.env.DATABASE_URL
 
   // During build only (not runtime), return mock if no database URL
   if (!databaseUrl && typeof window === 'undefined' && process.env.VERCEL_ENV === undefined) {

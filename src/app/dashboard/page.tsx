@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useEnergyDashboard } from '@/hooks/useEnergyDashboard'
@@ -277,7 +278,104 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+
+        {/* Major Generation Facilities */}
+        {selectedStates.length > 0 && (
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900">Major Generation Facilities</h3>
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span>Top Generators by Capacity</span>
+              </div>
+            </div>
+            
+            <GeneratorsList states={selectedStates} />
+          </div>
+        )}
       </main>
+    </div>
+  )
+}
+
+// Generators List Component
+function GeneratorsList({ states }: { states: string[] }) {
+  const [generators, setGenerators] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const fetchGenerators = async () => {
+      setLoading(true)
+      try {
+        const response = await fetch('/api/energy/generators', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ states, limit: 15 })
+        })
+        const data = await response.json()
+        setGenerators(data.generators || [])
+      } catch (error) {
+        console.error('Failed to fetch generators:', error)
+        setGenerators([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (states.length > 0) {
+      fetchGenerators()
+    }
+  }, [states])
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-8">
+        <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+    )
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full">
+        <thead>
+          <tr className="border-b border-gray-200">
+            <th className="text-left py-3 px-4 font-medium text-gray-700">Plant Name</th>
+            <th className="text-left py-3 px-4 font-medium text-gray-700">Utility</th>
+            <th className="text-left py-3 px-4 font-medium text-gray-700">Technology</th>
+            <th className="text-right py-3 px-4 font-medium text-gray-700">Capacity (MW)</th>
+            <th className="text-left py-3 px-4 font-medium text-gray-700">State</th>
+          </tr>
+        </thead>
+        <tbody>
+          {generators.map((generator, index) => (
+            <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-3 px-4 font-medium text-gray-900">
+                {generator.plantName}
+              </td>
+              <td className="py-3 px-4 text-gray-600">
+                {generator.utilityName}
+              </td>
+              <td className="py-3 px-4 text-gray-600">
+                {generator.technology}
+              </td>
+              <td className="py-3 px-4 text-right font-semibold text-blue-600">
+                {Math.round(generator.capacity.nameplate)}
+              </td>
+              <td className="py-3 px-4">
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                  {generator.state}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }
