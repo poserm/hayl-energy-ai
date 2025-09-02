@@ -54,7 +54,7 @@ describe('Dashboard Components', () => {
         />
       )
       
-      const addButton = screen.getByText('Add New State')
+      const addButton = screen.getByText('Add State')
       fireEvent.click(addButton)
       
       expect(screen.getByPlaceholderText('Search states...')).toBeInTheDocument()
