@@ -5,13 +5,21 @@ export async function POST(request: NextRequest) {
   try {
     const { states, utility, technology, limit = 50 } = await request.json()
     
+    // Map state names to codes (same as energy-api.ts)
+    const stateMap: { [key: string]: string } = {
+      'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
+      'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
+      'Minnesota': 'MN', 'Massachusetts': 'MA'
+    }
+    
     // Build filters
     const filters: any = {
       nameplate_capacity_mw: { not: null }
     }
 
     if (states && states.length > 0) {
-      filters.plant_state = { in: states.map((s: string) => s.toUpperCase()) }
+      const stateCodes = states.map((s: string) => stateMap[s] || s.toUpperCase())
+      filters.plant_state = { in: stateCodes }
     }
 
     if (utility) {
@@ -40,16 +48,17 @@ export async function POST(request: NextRequest) {
       take: Number(limit)
     })
 
-    // Transform data for frontend
+    // Transform data for frontend (correct field names for GeneratorCard)
     const transformedGenerators = generators.map(gen => ({
       id: gen.id,
-      utilityName: gen.entity_name,
+      entityName: gen.entity_name, // Changed from utilityName
       plantName: gen.plant_name,
       state: gen.plant_state,
       technology: gen.technology,
       capacity: {
         nameplate: Number(gen.nameplate_capacity_mw || 0)
       },
+      nameplate_capacity_mw: Number(gen.nameplate_capacity_mw || 0),
       sourceSheet: gen.source_sheet
     }))
 

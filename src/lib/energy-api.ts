@@ -192,9 +192,18 @@ class EnergyApiClient {
   async getStateUtilities(states: string[]): Promise<UtilityData[]> {
     if (states.length === 0) return []
     
+    // Map state names to codes
+    const stateMap: { [key: string]: string } = {
+      'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
+      'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
+      'Minnesota': 'MN', 'Massachusetts': 'MA'
+    }
+    
+    const stateCodes = states.map(state => stateMap[state] || state)
+    
     try {
       // Use Prisma API to get real utilities data
-      return await this.getUtilitiesFromPrisma(states)
+      return await this.getUtilitiesFromPrisma(stateCodes)
     } catch (error) {
       console.warn('Failed to fetch from Prisma, using static data')
       // Fallback to static data

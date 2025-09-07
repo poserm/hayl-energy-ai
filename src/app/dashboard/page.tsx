@@ -7,11 +7,30 @@ import { useEnergyDashboard } from '@/hooks/useEnergyDashboard'
 import StateSelector from '@/components/ui/StateSelector'
 import EnergyChart from '@/components/ui/EnergyChart'
 import MetricCard from '@/components/ui/MetricCard'
+import UtilityCard from '@/components/ui/UtilityCard'
+import UtilityMap from '@/components/ui/UtilityMap'
+import GeneratorCard from '@/components/ui/GeneratorCard'
+import GeneratorMap from '@/components/ui/GeneratorMap'
+import TabNavigation from '@/components/ui/TabNavigation'
+import DetailPanel from '@/components/ui/DetailPanel'
+import ShowMoreControls, { useShowMore } from '@/components/ui/ShowMoreControls'
+import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
 import Image from 'next/image'
 
 export default function DashboardPage() {
   const { user, logout, loading } = useAuth()
   const router = useRouter()
+  const [selectedUtility, setSelectedUtility] = useState<any>(null)
+  const [selectedGenerator, setSelectedGenerator] = useState<any>(null)
+  const [activeTab, setActiveTab] = useState<'utilities' | 'generators'>('utilities')
+  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
+  const [detailPanelOpen, setDetailPanelOpen] = useState(false)
+  const [generators, setGenerators] = useState<any[]>([])
+  const [generatorsLoading, setGeneratorsLoading] = useState(false)
+  const [focusArea, setFocusArea] = useState('Project Sales')
+  const [region, setRegion] = useState('PJM')
+  const [activeView, setActiveView] = useState<'dashboard' | 'utility-analysis'>('dashboard')
+  const [selectedUtilityAnalysis, setSelectedUtilityAnalysis] = useState<any>(null)
   
   const {
     selectedStates,
@@ -19,8 +38,76 @@ export default function DashboardPage() {
     dashboardData,
     getCapacityChartData,
     getTechnologyChartData,
-    getStateMetrics
-  } = useEnergyDashboard(['Virginia'])
+    getStateMetrics,
+    refreshData
+  } = useEnergyDashboard(['Indiana'])
+
+  // Pagination hooks (after dashboardData is available)
+  const utilityShowMore = useShowMore(dashboardData?.utilities?.length || 0, 8, 8)
+  const generatorShowMore = useShowMore(generators.length, 8, 8)
+
+  // Fetch generators data with debouncing
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout
+    
+    const fetchGenerators = async () => {
+      if (selectedStates.length === 0) {
+        setGenerators([])
+        return
+      }
+      
+      setGeneratorsLoading(true)
+      try {
+        const stateMap: { [key: string]: string } = {
+          'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
+          'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
+          'Minnesota': 'MN', 'Massachusetts': 'MA'
+        }
+        const stateCodes = selectedStates.map(state => stateMap[state] || state)
+        
+        const response = await fetch('/api/energy/generators', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ states: stateCodes, limit: 100 })
+        })
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        setGenerators(data.generators || [])
+      } catch (error) {
+        console.error('Failed to fetch generators:', error)
+        setGenerators([])
+      } finally {
+        setGeneratorsLoading(false)
+      }
+    }
+
+    // Debounce API calls
+    timeoutId = setTimeout(fetchGenerators, 300)
+    
+    return () => clearTimeout(timeoutId)
+  }, [selectedStates])
+
+  const handleUtilitySelect = (utility: any) => {
+    setSelectedUtility(utility)
+    setSelectedGenerator(null)
+    setDetailPanelOpen(true)
+  }
+
+  const handleGeneratorSelect = (generator: any) => {
+    setSelectedGenerator(generator)
+    setSelectedUtility(null)
+    setDetailPanelOpen(true)
+  }
+
+  const handleDetailClose = () => {
+    setDetailPanelOpen(false)
+    setSelectedUtility(null)
+    setSelectedGenerator(null)
+  }
 
   const handleLogout = async () => {
     await logout()
@@ -55,32 +142,54 @@ export default function DashboardPage() {
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <Image
-                src="/hayl-logo-new.svg"
-                alt="Hayl Energy AI"
-                width={40}
-                height={40}
-                className="rounded-lg"
-              />
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Energy Intelligence</h1>
-                <p className="text-sm text-gray-600">Multi-state market analytics</p>
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-4">
+                <Image
+                  src="/hayl-logo-new.svg"
+                  alt="Hayl Energy AI"
+                  width={40}
+                  height={40}
+                  className="rounded-lg"
+                />
+                <h1 className="text-2xl font-bold text-gray-900">HAYL ENERGY AI</h1>
+              </div>
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="2" y="5" width="20" height="14" rx="1" fill="#B91C1C"/>
+                  <rect x="2" y="5" width="20" height="1.5" fill="#DC2626"/>
+                  <rect x="2" y="7.5" width="20" height="1.5" fill="#DC2626"/>
+                  <rect x="2" y="10.5" width="20" height="1.5" fill="#DC2626"/>
+                  <rect x="2" y="13.5" width="20" height="1.5" fill="#DC2626"/>
+                  <rect x="2" y="16.5" width="20" height="1.5" fill="#DC2626"/>
+                  <rect x="2" y="5" width="9" height="8" fill="#1E40AF"/>
+                  {[...Array(50)].map((_, i) => {
+                    const row = Math.floor(i / 6);
+                    const col = i % 6;
+                    const x = 3 + col * 1.2;
+                    const y = 6 + row * 0.8;
+                    if (x > 10 || y > 12) return null;
+                    return (
+                      <circle key={i} cx={x} cy={y} r="0.15" fill="white"/>
+                    );
+                  })}
+                </svg>
+                <span>United States</span>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
+              <nav className="flex items-center space-x-6 text-sm">
+                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Home</a>
+                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Explore</a>
+                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Connections</a>
+                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Settings</a>
+              </nav>
               <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm font-medium text-gray-700">
-                  {user.name || user.email.split('@')[0]}
-                </span>
+                <button className="p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
               </div>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                Sign Out
-              </button>
             </div>
           </div>
         </div>
@@ -88,214 +197,389 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        {/* Welcome Section */}
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-bold text-gray-900">Welcome, {user.name || user.email.split('@')[0]}</h2>
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <label className="text-sm text-gray-600">Focus area:</label>
+              <select 
+                value={focusArea}
+                onChange={(e) => setFocusArea(e.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="Project Sales">Project Sales</option>
+                <option value="Market Analysis">Market Analysis</option>
+                <option value="Regulatory Updates">Regulatory Updates</option>
+              </select>
+            </div>
+            <div className="flex items-center space-x-2">
+              <label className="text-sm text-gray-600">Region:</label>
+              <select 
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="PJM">PJM</option>
+                <option value="ERCOT">ERCOT</option>
+                <option value="ISO-NE">ISO-NE</option>
+                <option value="CAISO">CAISO</option>
+                <option value="MISO">MISO</option>
+              </select>
+            </div>
+          </div>
+        </div>
         
-        {/* Auto-loading indicator */}
+        {/* Auto-loading indicator with better styling */}
         {dashboardData.loading && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 shadow-sm">
             <div className="flex items-center space-x-3">
-              <svg className="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span className="text-blue-800 font-medium">Data updating automatically...</span>
+              <div className="relative">
+                <svg className="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+              <div>
+                <span className="text-blue-800 font-medium">Updating energy data...</span>
+                <div className="text-xs text-blue-600 mt-0.5">Real-time market intelligence</div>
+              </div>
             </div>
           </div>
         )}
 
-        {/* State Selection */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">State Selection</h2>
-          <StateSelector
-            selectedStates={selectedStates}
-            onStatesChange={updateSelectedStates}
-          />
+        {/* State Selection Pills */}
+        <div className="flex items-center space-x-4">
+          {(['Indiana', 'Texas'] as const).map((state) => (
+            <button
+              key={state}
+              onClick={() => {
+                if (selectedStates.includes(state)) {
+                  updateSelectedStates(selectedStates.filter(s => s !== state))
+                } else {
+                  updateSelectedStates([...selectedStates, state])
+                }
+              }}
+              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                selectedStates.includes(state)
+                  ? 'bg-gray-900 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {state}
+            </button>
+          ))}
+          <button
+            onClick={() => {
+              const newState = prompt('Enter state name:')
+              if (newState && !selectedStates.includes(newState)) {
+                updateSelectedStates([...selectedStates, newState])
+              }
+            }}
+            className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </button>
         </div>
 
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          <MetricCard
-            title="States"
-            value={metrics.selectedStatesCount}
-            color="blue"
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200"
-            icon={
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7" />
-              </svg>
-            }
-          />
-          <MetricCard
-            title="Utilities"
-            value={metrics.totalUtilities}
-            color="green"
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200"
-            icon={
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-            }
-          />
-          <MetricCard
-            title="Total Capacity"
-            value={metrics.totalCapacity}
-            unit="MW"
-            color="purple"
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200"
-            icon={
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            }
-          />
-          <MetricCard
-            title="Customers"
-            value={metrics.totalCustomers}
-            color="orange"
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200"
-            icon={
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            }
-          />
-          <MetricCard
-            title="Avg Capacity"
-            value={Math.round(metrics.avgCapacity)}
-            unit="MW"
-            color="gray"
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200"
-            icon={
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-            }
-          />
-        </div>
-
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-            <EnergyChart
-              data={capacityData}
-              title="Utility Capacity Comparison"
-              type="bar"
-              height={400}
-            />
-          </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-            <EnergyChart
-              data={technologyData}
-              title="Technology Mix Distribution"
-              type="donut"
-              height={400}
-            />
-          </div>
-        </div>
-
-        {/* Utilities Grid */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-gray-900">
-              Utilities ({dashboardData.utilities.length})
-            </h3>
-            {selectedStates.length > 0 && (
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                <span>Auto-updating</span>
+        {/* Energy Snapshot Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          {/* Left Side - Energy Snapshot (60%) */}
+          <div className="lg:col-span-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Energy Snapshot</h3>
+                <p className="text-gray-600 max-w-lg">
+                  Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
+                </p>
+                <div className="text-3xl font-bold text-blue-600 mt-4">
+                  {Math.round(metrics.totalCapacity / 1000)} GW
+                </div>
               </div>
-            )}
-          </div>
-          
-          {dashboardData.utilities.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {dashboardData.utilities.map((utility) => (
-                <div
-                  key={utility.id}
-                  onClick={() => router.push(`/energy/utilities/${utility.id}`)}
-                  className="group cursor-pointer bg-gray-50 hover:bg-white border border-gray-200 hover:border-blue-300 rounded-xl p-6 transition-all duration-200 hover:shadow-md"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                        {utility.utilityName.split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2)}
-                      </div>
-                      <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                        {utility.state}
+              <div className="flex space-x-2">
+                <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50">
+                  Download
+                </button>
+                <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50">
+                  Compare
+                </button>
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex space-x-1 border-b border-gray-200 mb-6">
+              <button className="px-4 py-2 text-sm font-medium text-gray-900 border-b-2 border-blue-500">
+                Power supply
+              </button>
+              <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
+                Power demand
+              </button>
+            </div>
+
+            {/* Energy breakdown by technology */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+              {Object.entries(
+                generators.reduce((acc, gen) => {
+                  const tech = gen.technology || 'Other'
+                  acc[tech] = (acc[tech] || 0) + (gen.capacity?.nameplate || 0)
+                  return acc
+                }, {} as Record<string, number>)
+              )
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 6)
+                .map(([tech, capacity]) => {
+                  const colors: Record<string, string> = {
+                    'Coal': 'bg-gray-700',
+                    'Natural Gas': 'bg-blue-500',
+                    'Nuclear': 'bg-purple-500',
+                    'Solar': 'bg-yellow-500',
+                    'Wind': 'bg-green-500',
+                    'Hydro': 'bg-cyan-500',
+                    'Other': 'bg-gray-400'
+                  }
+                  return (
+                    <div key={tech} className="flex items-center space-x-2">
+                      <div className={`w-3 h-3 rounded-full ${colors[tech] || colors.Other}`} />
+                      <span className="text-sm text-gray-700">{tech}:</span>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {Math.round(capacity).toLocaleString()} MW
                       </span>
                     </div>
-                    <svg className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                  
-                  <h4 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                    {utility.utilityName}
-                  </h4>
-                  <p className="text-gray-600 mb-4 text-sm">
-                    {utility.ownershipType}
-                  </p>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center">
-                      <div className="text-xl font-bold text-blue-600">
-                        {(utility.nameplateCapacityMw / 1000).toFixed(1)}K
-                      </div>
-                      <div className="text-xs text-gray-500 font-medium">MW</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xl font-bold text-green-600">
-                        {(utility.customersCount / 1000000).toFixed(1)}M
-                      </div>
-                      <div className="text-xs text-gray-500 font-medium">Customers</div>
-                    </div>
-                  </div>
+                  )
+                })}
+            </div>
+
+            {/* Total capacity */}
+            <div className="text-xl font-semibold text-gray-900 mb-4">
+              Total: {Math.round(metrics.totalCapacity / 1000)} GW
+            </div>
+
+            {/* Bar chart placeholder */}
+            <div className="h-48 bg-gray-50 rounded-lg mb-4 flex items-end justify-between p-4">
+              {[2017, 2018, 2019, 2020, 2021, 2022, 2023].map((year) => (
+                <div key={year} className="flex flex-col items-center space-y-2">
+                  <div 
+                    className="w-12 bg-blue-500 rounded-t" 
+                    style={{ height: `${Math.random() * 100 + 50}px` }}
+                  />
+                  <span className="text-xs text-gray-600">{year}</span>
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <svg className="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7" />
-              </svg>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No States Selected</h3>
-              <p className="text-gray-600">Choose states above to view energy market data</p>
+
+            {/* Sources */}
+            <div className="text-sm text-gray-600 mb-4">
+              Sources: EIA.gov, State Energy Data System
             </div>
-          )}
+
+            {/* Explore more button */}
+            <button className="w-full py-3 text-center text-blue-600 font-medium border border-blue-600 rounded-lg hover:bg-blue-50">
+              Explore more
+            </button>
+          </div>
+
+          {/* Right Side - Interactive Map (40%) */}
+          <div className="lg:col-span-2 bg-gray-900 rounded-2xl overflow-hidden">
+            <div className="p-4">
+              <h3 className="text-white font-semibold">Interactive map</h3>
+              <p className="text-gray-400 text-sm">Now showing: Power supply</p>
+            </div>
+            <div className="h-96 bg-gray-800 flex items-center justify-center">
+              <svg viewBox="0 0 200 150" className="w-48 h-36">
+                {/* Simplified Indiana state outline */}
+                <path 
+                  d="M 50 30 L 150 30 L 150 50 L 140 60 L 140 100 L 130 110 L 120 120 L 80 120 L 70 110 L 60 100 L 60 60 L 50 50 Z" 
+                  fill="#6B7280" 
+                  stroke="#4B5563" 
+                  strokeWidth="2"
+                />
+                <text x="100" y="75" textAnchor="middle" className="fill-white text-sm">
+                  Indiana
+                </text>
+              </svg>
+            </div>
+            <div className="p-4 space-y-2">
+              <h4 className="text-white text-sm font-medium mb-2">Technology Breakdown</h4>
+              {Object.entries(
+                generators.reduce((acc, gen) => {
+                  const tech = gen.technology || 'Other'
+                  acc[tech] = (acc[tech] || 0) + (gen.capacity?.nameplate || 0)
+                  return acc
+                }, {} as Record<string, number>)
+              )
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 3)
+                .map(([tech, capacity]) => {
+                  const colors: Record<string, string> = {
+                    'Coal': 'bg-gray-700',
+                    'Natural Gas': 'bg-blue-500',
+                    'Nuclear': 'bg-purple-500',
+                    'Solar': 'bg-yellow-500',
+                    'Wind': 'bg-green-500',
+                    'Hydro': 'bg-cyan-500',
+                    'Other': 'bg-gray-400'
+                  }
+                  return (
+                    <div key={tech} className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className={`w-2 h-2 rounded-full ${colors[tech] || colors.Other}`} />
+                        <span className="text-gray-300 text-sm">{tech}</span>
+                      </div>
+                      <span className="text-white text-sm font-medium">
+                        {Math.round(capacity).toLocaleString()} MW
+                      </span>
+                    </div>
+                  )
+                })}
+            </div>
+          </div>
         </div>
 
-        {dashboardData.error && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-            <div className="flex items-center">
-              <svg className="w-5 h-5 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-              <div>
-                <h4 className="text-sm font-medium text-red-800">Data Loading Notice</h4>
-                <p className="text-sm text-red-700">{dashboardData.error}</p>
+        {/* Latest News Section */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">Latest News</h3>
+            <div className="flex items-center space-x-2">
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-blue-600 rounded-full" />
+                <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                <div className="w-2 h-2 bg-gray-300 rounded-full" />
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Major Generation Facilities */}
-        {selectedStates.length > 0 && (
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-gray-900">Major Generation Facilities</h3>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <button className="p-1 text-gray-400 hover:text-gray-600">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-                <span>Top Generators by Capacity</span>
+              </button>
+              <button className="p-1 text-gray-400 hover:text-gray-600">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {['Policy', 'Indiana income', 'Energy target', 'Policy'].map((title, index) => (
+              <div key={index} className="group cursor-pointer">
+                <div className="h-48 bg-gray-200 rounded-lg mb-3 group-hover:bg-gray-300 transition-colors" />
+                <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">{title}</h4>
+                <p className="text-sm text-gray-600">9 Dec, 2024 | CNN</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Energy Buyers Section */}
+        <div className="bg-gray-50 -mx-6 px-6 py-12">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-900 mb-3">Energy Buyers</h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Discover the largest energy consumers in your selected region, ranked by peak load demand from highest to lowest capacity requirements.
+              </p>
+            </div>
+
+            {/* Tab Navigation */}
+            <div className="flex justify-center mb-6">
+              <div className="inline-flex rounded-full bg-gray-200 p-1">
+                <button className="px-6 py-2 rounded-full bg-gray-900 text-white font-medium">
+                  Utilities
+                </button>
+                <button className="px-6 py-2 rounded-full text-gray-700 hover:text-gray-900 font-medium">
+                  Corporates
+                </button>
               </div>
             </div>
-            
-            <GeneratorsList states={selectedStates} />
+
+            {/* Filter Tags */}
+            <div className="flex justify-center space-x-6 mb-10">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-gray-400 rounded-full" />
+                <span className="text-gray-700">INVESTOR OWNED</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-gray-400 rounded-full" />
+                <span className="text-gray-700">COOPERATIVES</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-gray-400 rounded-full" />
+                <span className="text-gray-700">MUNICIPALITIES</span>
+              </div>
+            </div>
+
+            {/* Company Bubble Visualization */}
+            <div className="relative h-96 mb-10">
+              {dashboardData.utilities
+                .sort((a, b) => (b.peakLoad || b.totalCapacity || 0) - (a.peakLoad || a.totalCapacity || 0))
+                .slice(0, 5)
+                .map((utility, index) => {
+                  const sizes = ['w-64 h-64', 'w-48 h-48', 'w-40 h-40', 'w-36 h-36', 'w-32 h-32']
+                  const positions = [
+                    'left-1/4 top-1/4', 
+                    'right-1/4 top-1/4', 
+                    'left-1/3 bottom-1/4',
+                    'right-1/3 bottom-1/4',
+                    'left-1/2 top-1/2'
+                  ]
+                  
+                  return (
+                    <div
+                      key={utility.id}
+                      className={`absolute ${positions[index]} transform -translate-x-1/2 -translate-y-1/2`}
+                    >
+                      <div
+                        className={`${sizes[index]} bg-white rounded-2xl shadow-lg border border-gray-200 flex flex-col items-center justify-center p-6 hover:shadow-xl transition-shadow cursor-pointer`}
+                        onClick={() => {
+                          setSelectedUtilityAnalysis(utility)
+                          setActiveView('utility-analysis')
+                        }}
+                      >
+                        {index === 0 && (
+                          <span className="text-xs text-gray-500 uppercase mb-2">Largest company</span>
+                        )}
+                        <h4 className="text-lg font-bold text-gray-900 text-center mb-2">
+                          {utility.name}
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          Peak Load: {Math.round(utility.peakLoad || utility.totalCapacity || 0).toLocaleString()} MW
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })}
+            </div>
+
+            {/* CTA Button */}
+            <div className="text-center">
+              <button 
+                className="px-8 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
+                onClick={() => setActiveView('utility-analysis')}
+              >
+                ANALYSE BUYER
+              </button>
+            </div>
           </div>
-        )}
+        </div>
       </main>
+
+      {/* Detail Panel Modal */}
+      <DetailPanel
+        item={selectedUtility || selectedGenerator}
+        type={selectedUtility ? 'utility' : 'generator'}
+        isOpen={detailPanelOpen}
+        onClose={handleDetailClose}
+      />
+
+      {activeView === 'utility-analysis' && selectedUtilityAnalysis && (
+        <UtilityAnalysisView 
+          utility={selectedUtilityAnalysis}
+          onBack={() => {
+            setActiveView('dashboard')
+            setSelectedUtilityAnalysis(null)
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -304,15 +588,24 @@ export default function DashboardPage() {
 function GeneratorsList({ states }: { states: string[] }) {
   const [generators, setGenerators] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
+  const tableShowMore = useShowMore(generators.length, 10, 10)
 
   useEffect(() => {
     const fetchGenerators = async () => {
       setLoading(true)
       try {
+        // Map state names to codes (same as energy-api.ts)
+        const stateMap: { [key: string]: string } = {
+          'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
+          'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
+          'Minnesota': 'MN', 'Massachusetts': 'MA'
+        }
+        const stateCodes = states.map(state => stateMap[state] || state)
+        
         const response = await fetch('/api/energy/generators', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ states, limit: 15 })
+          body: JSON.stringify({ states: stateCodes, limit: 15 })
         })
         const data = await response.json()
         setGenerators(data.generators || [])
@@ -341,41 +634,51 @@ function GeneratorsList({ states }: { states: string[] }) {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full">
-        <thead>
-          <tr className="border-b border-gray-200">
-            <th className="text-left py-3 px-4 font-medium text-gray-700">Plant Name</th>
-            <th className="text-left py-3 px-4 font-medium text-gray-700">Utility</th>
-            <th className="text-left py-3 px-4 font-medium text-gray-700">Technology</th>
-            <th className="text-right py-3 px-4 font-medium text-gray-700">Capacity (MW)</th>
-            <th className="text-left py-3 px-4 font-medium text-gray-700">State</th>
-          </tr>
-        </thead>
-        <tbody>
-          {generators.map((generator, index) => (
-            <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-              <td className="py-3 px-4 font-medium text-gray-900">
-                {generator.plantName}
-              </td>
-              <td className="py-3 px-4 text-gray-600">
-                {generator.utilityName}
-              </td>
-              <td className="py-3 px-4 text-gray-600">
-                {generator.technology}
-              </td>
-              <td className="py-3 px-4 text-right font-semibold text-blue-600">
-                {Math.round(generator.capacity.nameplate)}
-              </td>
-              <td className="py-3 px-4">
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                  {generator.state}
-                </span>
-              </td>
+    <div className="space-y-4">
+      <div className="overflow-x-auto">
+        <table className="min-w-full">
+          <thead>
+            <tr className="border-b border-gray-200">
+              <th className="text-left py-3 px-4 font-medium text-gray-700">Plant Name</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">Utility</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">Technology</th>
+              <th className="text-right py-3 px-4 font-medium text-gray-700">Capacity (MW)</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">State</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {generators.slice(0, tableShowMore.visibleCount).map((generator, index) => (
+              <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                <td className="py-3 px-4 font-medium text-gray-900">
+                  {generator.plantName}
+                </td>
+                <td className="py-3 px-4 text-gray-600">
+                  {generator.utilityName}
+                </td>
+                <td className="py-3 px-4 text-gray-600">
+                  {generator.technology}
+                </td>
+                <td className="py-3 px-4 text-right font-semibold text-blue-600">
+                  {Math.round(generator.capacity.nameplate)}
+                </td>
+                <td className="py-3 px-4">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                    {generator.state}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      
+      <ShowMoreControls
+        totalItems={generators.length}
+        visibleItems={tableShowMore.visibleCount}
+        onShowMore={tableShowMore.showMore}
+        onShowLess={tableShowMore.hasLess ? tableShowMore.showLess : undefined}
+        className="pt-4 border-t border-gray-100"
+      />
     </div>
   )
 }

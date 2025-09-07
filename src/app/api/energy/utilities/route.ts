@@ -9,12 +9,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'States array required' }, { status: 400 })
     }
 
+    // Map state names to codes (same as energy-api.ts)
+    const stateMap: { [key: string]: string } = {
+      'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
+      'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
+      'Minnesota': 'MN', 'Massachusetts': 'MA'
+    }
+    const stateCodes = states.map(state => stateMap[state] || state.toUpperCase())
+
     // Get utilities with aggregated generator data
     const utilities = await prisma.generators.groupBy({
       by: ['entity_name', 'plant_state', 'sector'],
       where: {
         entity_name: { not: null },
-        plant_state: { in: states.map(s => s.toUpperCase()) },
+        plant_state: { in: stateCodes },
         nameplate_capacity_mw: { not: null }
       },
       _sum: {
@@ -37,7 +45,7 @@ export async function POST(request: NextRequest) {
     try {
       utilityNumbers = await prisma.utilities.findMany({
         where: {
-          state: { in: states.map(s => s.toUpperCase()) }
+          state: { in: stateCodes }
         },
         select: {
           utility_number: true,
@@ -55,7 +63,7 @@ export async function POST(request: NextRequest) {
       territories = await prisma.service_territories.groupBy({
         by: ['utility_name', 'state'],
         where: {
-          state: { in: states.map(s => s.toUpperCase()) }
+          state: { in: stateCodes }
         },
         _count: {
           county: true

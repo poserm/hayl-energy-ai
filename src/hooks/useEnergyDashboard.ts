@@ -29,6 +29,8 @@ export function useEnergyDashboard(initialStates: string[] = ['Virginia']) {
   })
 
   const fetchDashboardData = useCallback(async (states: string[]) => {
+    console.log('Fetching dashboard data for states:', states)
+    
     if (states.length === 0) {
       setDashboardData(prev => ({
         ...prev,
@@ -44,7 +46,11 @@ export function useEnergyDashboard(initialStates: string[] = ['Virginia']) {
 
     try {
       const [utilities, technologyMix, statesComparison] = await Promise.all([
-        energyApi.getStateUtilities(states).catch(() => {
+        energyApi.getStateUtilities(states).then(data => {
+          console.log('Utilities fetched:', data.length, 'for states:', states)
+          return data
+        }).catch((error) => {
+          console.error('Failed to fetch utilities:', error)
           // Generate mock data for non-Virginia states
           const mockUtilities = []
           
@@ -155,10 +161,16 @@ export function useEnergyDashboard(initialStates: string[] = ['Virginia']) {
   }, [])
 
   const getCapacityChartData = useCallback((): ChartData[] => {
-    return dashboardData.utilities.map(utility => ({
-      label: utility.utilityName,
+    // Get top 10 utilities by capacity for cleaner chart
+    const topUtilities = [...dashboardData.utilities]
+      .sort((a, b) => b.nameplateCapacityMw - a.nameplateCapacityMw)
+      .slice(0, 10)
+    
+    return topUtilities.map((utility, index) => ({
+      label: utility.utilityName.replace(/\s+(LLC|Inc|Co|Corp|Corporation|Company|Limited|Partnership|LP)\s*$/gi, '').trim(),
       value: utility.nameplateCapacityMw,
-      color: `hsl(${Math.random() * 360}, 70%, 50%)`
+      color: `hsl(${(index * 36) + 200}, 70%, 50%)`,
+      percentage: Math.round((utility.nameplateCapacityMw / topUtilities.reduce((sum, u) => sum + u.nameplateCapacityMw, 0)) * 100)
     }))
   }, [dashboardData.utilities])
 
