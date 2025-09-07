@@ -61,7 +61,7 @@ export default function DashboardPage() {
         const stateMap: { [key: string]: string } = {
           'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
           'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
-          'Minnesota': 'MN', 'Massachusetts': 'MA'
+          'Minnesota': 'MN', 'Massachusetts': 'MA', 'Indiana': 'IN'
         }
         const stateCodes = selectedStates.map(state => stateMap[state] || state)
         
@@ -250,10 +250,11 @@ export default function DashboardPage() {
 
         {/* State Selection Pills */}
         <div className="flex items-center space-x-4">
-          {(['Indiana', 'Texas'] as const).map((state) => (
+          {(['Indiana', 'Texas', 'Virginia', 'California'] as const).map((state) => (
             <button
               key={state}
               onClick={() => {
+                console.log('State clicked:', state, 'Current states:', selectedStates)
                 if (selectedStates.includes(state)) {
                   updateSelectedStates(selectedStates.filter(s => s !== state))
                 } else {
@@ -262,21 +263,30 @@ export default function DashboardPage() {
               }}
               className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
                 selectedStates.includes(state)
-                  ? 'bg-gray-900 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-gray-900 text-white shadow-lg'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
               }`}
             >
               {state}
+              {selectedStates.includes(state) && (
+                <span className="ml-2 text-xs">✓</span>
+              )}
             </button>
           ))}
           <button
             onClick={() => {
-              const newState = prompt('Enter state name:')
-              if (newState && !selectedStates.includes(newState)) {
+              const availableStates = ['Virginia', 'Texas', 'California', 'New York', 'Florida', 'Illinois', 'Michigan', 'North Carolina', 'Minnesota', 'Massachusetts']
+              const unselectedStates = availableStates.filter(state => !selectedStates.includes(state))
+              
+              if (unselectedStates.length > 0) {
+                const newState = unselectedStates[0] // Select first available
                 updateSelectedStates([...selectedStates, newState])
+              } else {
+                alert('All supported states are already selected')
               }
             }}
             className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            title="Add more states"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -320,7 +330,7 @@ export default function DashboardPage() {
 
             {/* Energy breakdown by technology */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-              {Object.entries(
+              {generators.length > 0 ? Object.entries(
                 generators.reduce((acc, gen) => {
                   const tech = gen.technology || 'Other'
                   acc[tech] = (acc[tech] || 0) + (gen.capacity?.nameplate || 0)
@@ -348,7 +358,14 @@ export default function DashboardPage() {
                       </span>
                     </div>
                   )
-                })}
+                }) : (
+                <div className="col-span-6 text-center py-4">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+                    <p className="text-gray-500 text-sm">Loading energy data...</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Total capacity */}
@@ -388,21 +405,48 @@ export default function DashboardPage() {
             </div>
             <div className="h-96 bg-gray-800 flex items-center justify-center">
               <svg viewBox="0 0 200 150" className="w-48 h-36">
-                {/* Simplified Indiana state outline */}
-                <path 
-                  d="M 50 30 L 150 30 L 150 50 L 140 60 L 140 100 L 130 110 L 120 120 L 80 120 L 70 110 L 60 100 L 60 60 L 50 50 Z" 
-                  fill="#6B7280" 
-                  stroke="#4B5563" 
-                  strokeWidth="2"
-                />
-                <text x="100" y="75" textAnchor="middle" className="fill-white text-sm">
-                  Indiana
-                </text>
+                {/* Dynamic state outline based on selected states */}
+                {selectedStates.includes('Indiana') && (
+                  <g>
+                    <path 
+                      d="M 50 30 L 150 30 L 150 50 L 140 60 L 140 100 L 130 110 L 120 120 L 80 120 L 70 110 L 60 100 L 60 60 L 50 50 Z" 
+                      fill="#6B7280" 
+                      stroke="#4B5563" 
+                      strokeWidth="2"
+                    />
+                    <text x="100" y="75" textAnchor="middle" className="fill-white text-sm">
+                      Indiana
+                    </text>
+                  </g>
+                )}
+                {selectedStates.includes('Texas') && !selectedStates.includes('Indiana') && (
+                  <g>
+                    <path 
+                      d="M 30 60 L 170 60 L 170 80 L 160 100 L 140 120 L 60 120 L 40 100 L 30 80 Z" 
+                      fill="#6B7280" 
+                      stroke="#4B5563" 
+                      strokeWidth="2"
+                    />
+                    <text x="100" y="90" textAnchor="middle" className="fill-white text-sm">
+                      Texas
+                    </text>
+                  </g>
+                )}
+                {selectedStates.length === 0 && (
+                  <text x="100" y="75" textAnchor="middle" className="fill-gray-400 text-sm">
+                    Select a state
+                  </text>
+                )}
+                {selectedStates.length > 1 && (
+                  <text x="100" y="75" textAnchor="middle" className="fill-white text-xs">
+                    {selectedStates.length} states
+                  </text>
+                )}
               </svg>
             </div>
             <div className="p-4 space-y-2">
               <h4 className="text-white text-sm font-medium mb-2">Technology Breakdown</h4>
-              {Object.entries(
+              {generators.length > 0 ? Object.entries(
                 generators.reduce((acc, gen) => {
                   const tech = gen.technology || 'Other'
                   acc[tech] = (acc[tech] || 0) + (gen.capacity?.nameplate || 0)
@@ -432,7 +476,15 @@ export default function DashboardPage() {
                       </span>
                     </div>
                   )
-                })}
+                }) : (
+                  <div className="text-center py-4">
+                    <div className="animate-pulse">
+                      <div className="h-3 bg-gray-600 rounded w-20 mb-2 mx-auto"></div>
+                      <div className="h-3 bg-gray-600 rounded w-16 mb-2 mx-auto"></div>
+                      <div className="h-3 bg-gray-600 rounded w-24 mx-auto"></div>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
         </div>
@@ -510,44 +562,54 @@ export default function DashboardPage() {
 
             {/* Company Bubble Visualization */}
             <div className="relative h-96 mb-10">
-              {dashboardData.utilities
-                .sort((a, b) => (b.peakLoad || b.totalCapacity || 0) - (a.peakLoad || a.totalCapacity || 0))
-                .slice(0, 5)
-                .map((utility, index) => {
-                  const sizes = ['w-64 h-64', 'w-48 h-48', 'w-40 h-40', 'w-36 h-36', 'w-32 h-32']
-                  const positions = [
-                    'left-1/4 top-1/4', 
-                    'right-1/4 top-1/4', 
-                    'left-1/3 bottom-1/4',
-                    'right-1/3 bottom-1/4',
-                    'left-1/2 top-1/2'
-                  ]
-                  
-                  return (
-                    <div
-                      key={utility.id}
-                      className={`absolute ${positions[index]} transform -translate-x-1/2 -translate-y-1/2`}
-                    >
+              {dashboardData.utilities && dashboardData.utilities.length > 0 ? (
+                dashboardData.utilities
+                  .sort((a, b) => (b.peakLoad || b.totalCapacity || 0) - (a.peakLoad || a.totalCapacity || 0))
+                  .slice(0, 5)
+                  .map((utility, index) => {
+                    const sizes = ['w-64 h-64', 'w-48 h-48', 'w-40 h-40', 'w-36 h-36', 'w-32 h-32']
+                    const positions = [
+                      'left-1/4 top-1/4', 
+                      'right-1/4 top-1/4', 
+                      'left-1/3 bottom-1/4',
+                      'right-1/3 bottom-1/4',
+                      'left-1/2 top-1/2'
+                    ]
+                    
+                    return (
                       <div
-                        className={`${sizes[index]} bg-white rounded-2xl shadow-lg border border-gray-200 flex flex-col items-center justify-center p-6 hover:shadow-xl transition-shadow cursor-pointer`}
+                        key={utility.id}
+                        className={`absolute ${positions[index]} transform -translate-x-1/2 -translate-y-1/2 cursor-pointer`}
                         onClick={() => {
+                          console.log('Selected utility:', utility)
                           setSelectedUtilityAnalysis(utility)
                           setActiveView('utility-analysis')
                         }}
                       >
-                        {index === 0 && (
-                          <span className="text-xs text-gray-500 uppercase mb-2">Largest company</span>
-                        )}
-                        <h4 className="text-lg font-bold text-gray-900 text-center mb-2">
-                          {utility.name}
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          Peak Load: {Math.round(utility.peakLoad || utility.totalCapacity || 0).toLocaleString()} MW
-                        </p>
+                        <div
+                          className={`${sizes[index]} bg-white rounded-2xl shadow-lg border border-gray-200 flex flex-col items-center justify-center p-6 hover:shadow-xl hover:scale-105 transition-all duration-300`}
+                        >
+                          {index === 0 && (
+                            <span className="text-xs text-gray-500 uppercase mb-2">Largest company</span>
+                          )}
+                          <h4 className="text-lg font-bold text-gray-900 text-center mb-2">
+                            {utility.name}
+                          </h4>
+                          <p className="text-sm text-gray-600 text-center">
+                            Peak Load: {Math.round(utility.peakLoad || utility.totalCapacity || 0).toLocaleString()} MW
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading utility companies...</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* CTA Button */}
@@ -598,7 +660,7 @@ function GeneratorsList({ states }: { states: string[] }) {
         const stateMap: { [key: string]: string } = {
           'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
           'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
-          'Minnesota': 'MN', 'Massachusetts': 'MA'
+          'Minnesota': 'MN', 'Massachusetts': 'MA', 'Indiana': 'IN'
         }
         const stateCodes = states.map(state => stateMap[state] || state)
         
