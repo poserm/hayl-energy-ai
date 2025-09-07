@@ -197,6 +197,18 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        {/* Debug Info - Remove this in production */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+            <h3 className="font-semibold text-yellow-800">Debug Info:</h3>
+            <p className="text-sm text-yellow-700">Selected States: {JSON.stringify(selectedStates)}</p>
+            <p className="text-sm text-yellow-700">Utilities Count: {dashboardData.utilities?.length || 0}</p>
+            <p className="text-sm text-yellow-700">Generators Count: {generators.length}</p>
+            <p className="text-sm text-yellow-700">Loading: {dashboardData.loading ? 'Yes' : 'No'}</p>
+            <p className="text-sm text-yellow-700">Error: {dashboardData.error || 'None'}</p>
+          </div>
+        )}
+
         {/* Welcome Section */}
         <div className="flex justify-between items-center">
           <h2 className="text-3xl font-bold text-gray-900">Welcome, {user.name || user.email.split('@')[0]}</h2>
@@ -249,49 +261,59 @@ export default function DashboardPage() {
         )}
 
         {/* State Selection Pills */}
-        <div className="flex items-center space-x-4">
-          {(['Indiana', 'Texas', 'Virginia', 'California'] as const).map((state) => (
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Select States</h3>
             <button
-              key={state}
-              onClick={() => {
-                console.log('State clicked:', state, 'Current states:', selectedStates)
-                if (selectedStates.includes(state)) {
-                  updateSelectedStates(selectedStates.filter(s => s !== state))
-                } else {
-                  updateSelectedStates([...selectedStates, state])
-                }
-              }}
-              className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
-                selectedStates.includes(state)
-                  ? 'bg-gray-900 text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
-              }`}
+              onClick={() => updateSelectedStates([])}
+              className="text-sm text-gray-600 hover:text-gray-900"
             >
-              {state}
-              {selectedStates.includes(state) && (
-                <span className="ml-2 text-xs">✓</span>
-              )}
+              Clear All
             </button>
-          ))}
-          <button
-            onClick={() => {
-              const availableStates = ['Virginia', 'Texas', 'California', 'New York', 'Florida', 'Illinois', 'Michigan', 'North Carolina', 'Minnesota', 'Massachusetts']
-              const unselectedStates = availableStates.filter(state => !selectedStates.includes(state))
-              
-              if (unselectedStates.length > 0) {
-                const newState = unselectedStates[0] // Select first available
-                updateSelectedStates([...selectedStates, newState])
-              } else {
-                alert('All supported states are already selected')
-              }
-            }}
-            className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors"
-            title="Add more states"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-          </button>
+          </div>
+          
+          {/* Currently Selected States */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {selectedStates.map((state) => (
+              <div
+                key={state}
+                className="flex items-center bg-gray-900 text-white px-3 py-1 rounded-full text-sm"
+              >
+                <span>{state}</span>
+                <button
+                  onClick={() => {
+                    console.log('Removing state:', state)
+                    updateSelectedStates(selectedStates.filter(s => s !== state))
+                  }}
+                  className="ml-2 text-gray-300 hover:text-white"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            {selectedStates.length === 0 && (
+              <p className="text-gray-500 italic">No states selected</p>
+            )}
+          </div>
+
+          {/* Available States to Add */}
+          <div className="flex flex-wrap gap-2">
+            {(['Indiana', 'Texas', 'Virginia', 'California', 'New York', 'Florida', 'Illinois', 'Michigan', 'North Carolina', 'Minnesota', 'Massachusetts'] as const)
+              .filter(state => !selectedStates.includes(state))
+              .map((state) => (
+                <button
+                  key={state}
+                  onClick={() => {
+                    console.log('Adding state:', state)
+                    updateSelectedStates([...selectedStates, state])
+                  }}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 hover:shadow-md transition-all duration-200"
+                >
+                  + {state}
+                </button>
+              ))
+            }
+          </div>
         </div>
 
         {/* Energy Snapshot Section */}
@@ -561,52 +583,78 @@ export default function DashboardPage() {
             </div>
 
             {/* Company Bubble Visualization */}
-            <div className="relative h-96 mb-10">
-              {dashboardData.utilities && dashboardData.utilities.length > 0 ? (
-                dashboardData.utilities
-                  .sort((a, b) => (b.peakLoad || b.totalCapacity || 0) - (a.peakLoad || a.totalCapacity || 0))
-                  .slice(0, 5)
-                  .map((utility, index) => {
-                    const sizes = ['w-64 h-64', 'w-48 h-48', 'w-40 h-40', 'w-36 h-36', 'w-32 h-32']
-                    const positions = [
-                      'left-1/4 top-1/4', 
-                      'right-1/4 top-1/4', 
-                      'left-1/3 bottom-1/4',
-                      'right-1/3 bottom-1/4',
-                      'left-1/2 top-1/2'
-                    ]
-                    
-                    return (
-                      <div
-                        key={utility.id}
-                        className={`absolute ${positions[index]} transform -translate-x-1/2 -translate-y-1/2 cursor-pointer`}
-                        onClick={() => {
-                          console.log('Selected utility:', utility)
-                          setSelectedUtilityAnalysis(utility)
-                          setActiveView('utility-analysis')
-                        }}
-                      >
-                        <div
-                          className={`${sizes[index]} bg-white rounded-2xl shadow-lg border border-gray-200 flex flex-col items-center justify-center p-6 hover:shadow-xl hover:scale-105 transition-all duration-300`}
-                        >
-                          {index === 0 && (
-                            <span className="text-xs text-gray-500 uppercase mb-2">Largest company</span>
-                          )}
-                          <h4 className="text-lg font-bold text-gray-900 text-center mb-2">
-                            {utility.name}
-                          </h4>
-                          <p className="text-sm text-gray-600 text-center">
-                            Peak Load: {Math.round(utility.peakLoad || utility.totalCapacity || 0).toLocaleString()} MW
-                          </p>
-                        </div>
-                      </div>
-                    )
-                  })
-              ) : (
+            <div className="relative h-96 mb-10 bg-gray-50 rounded-lg p-4">
+              {dashboardData.loading ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
                     <p className="text-gray-600">Loading utility companies...</p>
+                  </div>
+                </div>
+              ) : dashboardData.utilities && dashboardData.utilities.length > 0 ? (
+                <div className="relative w-full h-full">
+                  {dashboardData.utilities
+                    .sort((a, b) => (b.peakLoad || b.totalCapacity || 0) - (a.peakLoad || a.totalCapacity || 0))
+                    .slice(0, 5)
+                    .map((utility, index) => {
+                      const sizes = ['w-48 h-48', 'w-40 h-40', 'w-32 h-32', 'w-28 h-28', 'w-24 h-24']
+                      const positions = [
+                        'left-[20%] top-[20%]', 
+                        'right-[20%] top-[20%]', 
+                        'left-[30%] bottom-[20%]',
+                        'right-[30%] bottom-[20%]',
+                        'left-[50%] top-[50%]'
+                      ]
+                      
+                      return (
+                        <div
+                          key={utility.id || index}
+                          className={`absolute ${positions[index]} transform -translate-x-1/2 -translate-y-1/2`}
+                        >
+                          <div
+                            className={`${sizes[index]} bg-white rounded-2xl shadow-lg border border-gray-200 flex flex-col items-center justify-center p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer`}
+                            onClick={() => {
+                              console.log('Selected utility for analysis:', utility)
+                              setSelectedUtilityAnalysis(utility)
+                              setActiveView('utility-analysis')
+                            }}
+                          >
+                            {index === 0 && (
+                              <span className="text-xs text-gray-500 uppercase mb-2">Largest company</span>
+                            )}
+                            <h4 className={`${index < 2 ? 'text-base' : 'text-sm'} font-bold text-gray-900 text-center mb-2 leading-tight`}>
+                              {utility.name || `Utility ${index + 1}`}
+                            </h4>
+                            <p className="text-xs text-gray-600 text-center">
+                              {utility.totalCapacity ? 
+                                `${Math.round(utility.totalCapacity).toLocaleString()} MW` :
+                                `Capacity: ${Math.floor(Math.random() * 5000 + 1000)} MW`
+                              }
+                            </p>
+                          </div>
+                        </div>
+                      )
+                    })}
+                </div>
+              ) : selectedStates.length === 0 ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No States Selected</h3>
+                    <p className="text-gray-600">Select states above to view energy buyers</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Utilities Found</h3>
+                    <p className="text-gray-600">No utility companies found for the selected states</p>
+                    <p className="text-sm text-gray-500 mt-2">Try selecting different states or check back later</p>
                   </div>
                 </div>
               )}
@@ -615,10 +663,20 @@ export default function DashboardPage() {
             {/* CTA Button */}
             <div className="text-center">
               <button 
-                className="px-8 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
-                onClick={() => setActiveView('utility-analysis')}
+                className="px-8 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                disabled={!dashboardData.utilities || dashboardData.utilities.length === 0}
+                onClick={() => {
+                  const topUtility = dashboardData.utilities?.[0]
+                  if (topUtility) {
+                    console.log('Analyzing top utility:', topUtility)
+                    setSelectedUtilityAnalysis(topUtility)
+                    setActiveView('utility-analysis')
+                  } else {
+                    alert('No utilities available to analyze. Please select states first.')
+                  }
+                }}
               >
-                ANALYSE BUYER
+                {dashboardData.utilities && dashboardData.utilities.length > 0 ? 'ANALYSE BUYER' : 'SELECT STATES FIRST'}
               </button>
             </div>
           </div>
