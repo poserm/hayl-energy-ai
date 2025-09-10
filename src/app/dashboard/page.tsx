@@ -40,7 +40,7 @@ export default function DashboardPage() {
     getTechnologyChartData,
     getStateMetrics,
     refreshData
-  } = useEnergyDashboard(['Indiana'])
+  } = useEnergyDashboard(['Pennsylvania'])
 
   // Pagination hooks (after dashboardData is available)
   const utilityShowMore = useShowMore(dashboardData?.utilities?.length || 0, 8, 8)
@@ -59,9 +59,10 @@ export default function DashboardPage() {
       setGeneratorsLoading(true)
       try {
         const stateMap: { [key: string]: string } = {
-          'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
-          'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
-          'Minnesota': 'MN', 'Massachusetts': 'MA', 'Indiana': 'IN'
+          'Delaware': 'DE', 'Illinois': 'IL', 'Indiana': 'IN', 'Kentucky': 'KY',
+          'Maryland': 'MD', 'Michigan': 'MI', 'New Jersey': 'NJ', 'North Carolina': 'NC',
+          'Ohio': 'OH', 'Pennsylvania': 'PA', 'Tennessee': 'TN', 'Virginia': 'VA',
+          'West Virginia': 'WV', 'District of Columbia': 'DC'
         }
         const stateCodes = selectedStates.map(state => stateMap[state] || state)
         
@@ -298,7 +299,7 @@ export default function DashboardPage() {
 
           {/* Available States to Add */}
           <div className="flex flex-wrap gap-2">
-            {(['Indiana', 'Texas', 'Virginia', 'California', 'New York', 'Florida', 'Illinois', 'Michigan', 'North Carolina', 'Minnesota', 'Massachusetts'] as const)
+            {(['Delaware', 'Illinois', 'Indiana', 'Kentucky', 'Maryland', 'Michigan', 'New Jersey', 'North Carolina', 'Ohio', 'Pennsylvania', 'Tennessee', 'Virginia', 'West Virginia', 'District of Columbia'] as const)
               .filter(state => !selectedStates.includes(state))
               .map((state) => (
                 <button
@@ -716,9 +717,10 @@ function GeneratorsList({ states }: { states: string[] }) {
       try {
         // Map state names to codes (same as energy-api.ts)
         const stateMap: { [key: string]: string } = {
-          'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
-          'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
-          'Minnesota': 'MN', 'Massachusetts': 'MA', 'Indiana': 'IN'
+          'Delaware': 'DE', 'Illinois': 'IL', 'Indiana': 'IN', 'Kentucky': 'KY',
+          'Maryland': 'MD', 'Michigan': 'MI', 'New Jersey': 'NJ', 'North Carolina': 'NC',
+          'Ohio': 'OH', 'Pennsylvania': 'PA', 'Tennessee': 'TN', 'Virginia': 'VA',
+          'West Virginia': 'WV', 'District of Columbia': 'DC'
         }
         const stateCodes = states.map(state => stateMap[state] || state)
         

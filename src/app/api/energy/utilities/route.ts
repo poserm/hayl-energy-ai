@@ -11,9 +11,10 @@ export async function POST(request: NextRequest) {
 
     // Map state names to codes (same as energy-api.ts)
     const stateMap: { [key: string]: string } = {
-      'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
-      'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
-      'Minnesota': 'MN', 'Massachusetts': 'MA'
+      'Delaware': 'DE', 'Illinois': 'IL', 'Indiana': 'IN', 'Kentucky': 'KY',
+      'Maryland': 'MD', 'Michigan': 'MI', 'New Jersey': 'NJ', 'North Carolina': 'NC',
+      'Ohio': 'OH', 'Pennsylvania': 'PA', 'Tennessee': 'TN', 'Virginia': 'VA',
+      'West Virginia': 'WV', 'District of Columbia': 'DC'
     }
     const stateCodes = states.map(state => stateMap[state] || state.toUpperCase())
 

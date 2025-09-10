@@ -194,9 +194,10 @@ class EnergyApiClient {
     
     // Map state names to codes
     const stateMap: { [key: string]: string } = {
-      'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
-      'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
-      'Minnesota': 'MN', 'Massachusetts': 'MA'
+      'Delaware': 'DE', 'Illinois': 'IL', 'Indiana': 'IN', 'Kentucky': 'KY',
+      'Maryland': 'MD', 'Michigan': 'MI', 'New Jersey': 'NJ', 'North Carolina': 'NC',
+      'Ohio': 'OH', 'Pennsylvania': 'PA', 'Tennessee': 'TN', 'Virginia': 'VA',
+      'West Virginia': 'WV', 'District of Columbia': 'DC'
     }
     
     const stateCodes = states.map(state => stateMap[state] || state)
@@ -211,9 +212,10 @@ class EnergyApiClient {
       
       for (const state of states) {
         const stateMap: { [key: string]: string } = {
-          'Virginia': 'VA', 'Texas': 'TX', 'California': 'CA', 'New York': 'NY',
-          'Florida': 'FL', 'Illinois': 'IL', 'Michigan': 'MI', 'North Carolina': 'NC',
-          'Minnesota': 'MN', 'Massachusetts': 'MA'
+          'Delaware': 'DE', 'Illinois': 'IL', 'Indiana': 'IN', 'Kentucky': 'KY',
+          'Maryland': 'MD', 'Michigan': 'MI', 'New Jersey': 'NJ', 'North Carolina': 'NC',
+          'Ohio': 'OH', 'Pennsylvania': 'PA', 'Tennessee': 'TN', 'Virginia': 'VA',
+          'West Virginia': 'WV', 'District of Columbia': 'DC'
         }
         
         const stateCode = stateMap[state] || state.slice(0, 2).toUpperCase()
