@@ -466,69 +466,156 @@ export default function DashboardPage() {
               Total: {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
             </div>
 
-            {/* Real data bar chart */}
-            <div className="h-48 bg-gray-50 rounded-lg mb-4 flex items-end justify-between p-4">
+            {/* Stacked Bar Chart */}
+            <div className="bg-white rounded-lg p-4 mb-4">
               {capacityTrendsLoading ? (
-                <div className="flex items-center justify-center w-full h-full">
+                <div className="flex items-center justify-center h-80">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                 </div>
               ) : capacityTrends?.chartData ? (
-                capacityTrends.chartData.map((yearData: any) => {
-                  const maxCapacity = Math.max(...capacityTrends.chartData.map((d: any) => 
-                    d.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
-                  ))
-                  const totalForYear = yearData.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
-                  
-                  return (
-                    <div key={yearData.year} className="flex flex-col items-center space-y-2">
-                      <div className="text-xs text-gray-700 font-medium mb-1">
-                        {Math.round(totalForYear / 1000)}GW
-                      </div>
-                      <div className="flex flex-col-reverse items-center border border-gray-200 rounded" style={{ height: '120px', width: '48px' }}>
-                        {yearData.data
-                          .sort((a: any, b: any) => b.capacity - a.capacity)
-                          .map((tech: any, techIndex: number) => {
-                            const techColors: { [key: string]: string } = {
-                              'Natural Gas': 'bg-blue-500',
-                              'Coal': 'bg-gray-700',
-                              'Nuclear': 'bg-purple-500',
-                              'Solar': 'bg-yellow-500',
-                              'Wind': 'bg-green-500',
-                              'Hydro': 'bg-cyan-500',
-                              'Battery Storage': 'bg-indigo-500',
-                              'Biomass': 'bg-emerald-600',
-                              'Other': 'bg-gray-400'
-                            }
-                            const segmentHeight = maxCapacity > 0 ? (tech.capacity / maxCapacity) * 120 : 0
-                            
-                            return (
-                              <div
-                                key={`${yearData.year}-${tech.technology}`}
-                                className={`w-full ${techColors[tech.technology] || techColors.Other} hover:opacity-80 transition-opacity cursor-pointer ${techIndex === 0 ? 'rounded-b' : ''} ${techIndex === yearData.data.length - 1 ? 'rounded-t' : ''}`}
-                                style={{ height: `${segmentHeight}px`, minHeight: segmentHeight > 0 ? '2px' : '0px' }}
-                                title={`${tech.technology}: ${tech.capacity.toLocaleString()} MW (${Math.round((tech.capacity / totalForYear) * 100)}%)`}
-                              />
-                            )
-                        })}
-                      </div>
-                      <span className="text-xs text-gray-600 font-medium">{yearData.year}</span>
-                    </div>
-                  )
-                })
-              ) : (
-                // Fallback to placeholder when no data
-                [2021, 2022, 2023, 2024].map((year) => (
-                  <div key={year} className="flex flex-col items-center space-y-2">
-                    <div className="text-xs text-gray-700 font-medium mb-1">--</div>
-                    <div className="border border-gray-200 rounded" style={{ height: '120px', width: '48px' }}>
-                      <div 
-                        className="w-full bg-gray-300 rounded" 
-                        style={{ height: `${30}px` }}
-                      />
-                    </div>
-                    <span className="text-xs text-gray-600 font-medium">{year}</span>
+                <div className="h-80">
+                  {/* Chart Title */}
+                  <div className="mb-4">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Energy Capacity by Technology</h4>
                   </div>
-                ))
+                  
+                  {/* Legend */}
+                  <div className="mb-4 flex flex-wrap gap-x-4 gap-y-2">
+                    {(() => {
+                      const techOrder = ['Natural Gas', 'Coal', 'Nuclear', 'Solar', 'Wind', 'Hydro', 'Battery Storage', 'Biomass', 'Other']
+                      const techColors: { [key: string]: string } = {
+                        'Natural Gas': '#3B82F6',
+                        'Coal': '#374151',
+                        'Nuclear': '#8B5CF6',
+                        'Solar': '#EAB308',
+                        'Wind': '#10B981',
+                        'Hydro': '#06B6D4',
+                        'Battery Storage': '#6366F1',
+                        'Biomass': '#059669',
+                        'Other': '#6B7280'
+                      }
+                      
+                      // Get all technologies present in data
+                      const allTechs = new Set<string>()
+                      capacityTrends.chartData.forEach((yearData: any) => {
+                        yearData.data.forEach((tech: any) => allTechs.add(tech.technology))
+                      })
+                      
+                      return techOrder.filter(tech => allTechs.has(tech)).map(tech => (
+                        <div key={tech} className="flex items-center space-x-2">
+                          <div 
+                            className="w-3 h-3 rounded-sm" 
+                            style={{ backgroundColor: techColors[tech] }}
+                          />
+                          <span className="text-sm text-gray-700">{tech}</span>
+                        </div>
+                      ))
+                    })()}
+                  </div>
+                  
+                  {/* Chart Container */}
+                  <div className="relative">
+                    {/* Y-Axis Label */}
+                    <div className="absolute left-0 top-1/2 transform -rotate-90 -translate-y-1/2 -translate-x-8">
+                      <span className="text-sm font-medium text-gray-700">Total MW Capacity</span>
+                    </div>
+                    
+                    {/* Chart Area */}
+                    <div className="ml-16 mr-4">
+                      {(() => {
+                        const maxCapacity = Math.max(...capacityTrends.chartData.map((d: any) => 
+                          d.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
+                        ))
+                        const chartHeight = 200
+                        const techOrder = ['Natural Gas', 'Coal', 'Nuclear', 'Solar', 'Wind', 'Hydro', 'Battery Storage', 'Biomass', 'Other']
+                        const techColors: { [key: string]: string } = {
+                          'Natural Gas': '#3B82F6',
+                          'Coal': '#374151',
+                          'Nuclear': '#8B5CF6',
+                          'Solar': '#EAB308',
+                          'Wind': '#10B981',
+                          'Hydro': '#06B6D4',
+                          'Battery Storage': '#6366F1',
+                          'Biomass': '#059669',
+                          'Other': '#6B7280'
+                        }
+                        
+                        return (
+                          <div>
+                            {/* Y-Axis Scale */}
+                            <div className="flex">
+                              <div className="w-12 flex flex-col justify-between text-right pr-2" style={{ height: `${chartHeight}px` }}>
+                                {[0, 1, 2, 3, 4, 5].reverse().map(i => (
+                                  <div key={i} className="text-xs text-gray-600">
+                                    {Math.round((maxCapacity * i / 5) / 1000)}k
+                                  </div>
+                                ))}
+                              </div>
+                              
+                              {/* Chart Bars */}
+                              <div className="flex-1 flex items-end justify-between space-x-4 border-l border-b border-gray-300 pl-4 pb-2" style={{ height: `${chartHeight}px` }}>
+                                {capacityTrends.chartData.map((yearData: any) => {
+                                  const totalForYear = yearData.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
+                                  
+                                  // Create technology map for consistent ordering
+                                  const techMap: { [key: string]: number } = {}
+                                  yearData.data.forEach((tech: any) => {
+                                    techMap[tech.technology] = tech.capacity
+                                  })
+                                  
+                                  let cumulativeHeight = 0
+                                  
+                                  return (
+                                    <div key={yearData.year} className="flex flex-col items-center space-y-1 flex-1">
+                                      {/* Bar */}
+                                      <div className="relative flex flex-col-reverse w-full max-w-16" style={{ height: `${chartHeight - 20}px` }}>
+                                        {techOrder.map(tech => {
+                                          const capacity = techMap[tech] || 0
+                                          if (capacity === 0) return null
+                                          
+                                          const segmentHeight = maxCapacity > 0 ? (capacity / maxCapacity) * (chartHeight - 20) : 0
+                                          
+                                          return (
+                                            <div
+                                              key={`${yearData.year}-${tech}`}
+                                              className="w-full hover:opacity-80 transition-opacity cursor-pointer"
+                                              style={{ 
+                                                height: `${segmentHeight}px`,
+                                                backgroundColor: techColors[tech],
+                                                minHeight: segmentHeight > 0 ? '2px' : '0px'
+                                              }}
+                                              title={`${tech}: ${capacity.toLocaleString()} MW (${Math.round((capacity / totalForYear) * 100)}%)`}
+                                            />
+                                          )
+                                        })}
+                                      </div>
+                                      
+                                      {/* Year Label */}
+                                      <span className="text-sm font-medium text-gray-700">{yearData.year}</span>
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                            
+                            {/* X-Axis Label */}
+                            <div className="text-center mt-4 ml-16">
+                              <span className="text-sm font-medium text-gray-700">Year</span>
+                            </div>
+                          </div>
+                        )
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // Fallback placeholder
+                <div className="h-80 flex items-center justify-center bg-gray-50 rounded-lg">
+                  <div className="text-center">
+                    <div className="text-gray-500 mb-2">No data available</div>
+                    <div className="text-sm text-gray-400">Select states to view capacity trends</div>
+                  </div>
+                </div>
               )}
             </div>
 
