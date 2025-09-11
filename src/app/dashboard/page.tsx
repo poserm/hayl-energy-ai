@@ -33,6 +33,8 @@ export default function DashboardPage() {
   const [selectedUtilityAnalysis, setSelectedUtilityAnalysis] = useState<any>(null)
   const [capacityTrends, setCapacityTrends] = useState<any>(null)
   const [capacityTrendsLoading, setCapacityTrendsLoading] = useState(false)
+  const [mapData, setMapData] = useState<any>(null)
+  const [mapDataLoading, setMapDataLoading] = useState(false)
   
   const {
     selectedStates,
@@ -128,6 +130,44 @@ export default function DashboardPage() {
 
     // Debounce API calls
     timeoutId = setTimeout(fetchCapacityTrends, 300)
+    
+    return () => clearTimeout(timeoutId)
+  }, [selectedStates])
+
+  // Fetch map data with debouncing
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>
+    
+    const fetchMapData = async () => {
+      if (selectedStates.length === 0) {
+        setMapData(null)
+        return
+      }
+      
+      setMapDataLoading(true)
+      try {
+        const response = await fetch('/api/energy/map-generators', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ state: selectedStates[0] }) // Only use first state since we allow single selection
+        })
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        setMapData(data)
+      } catch (error) {
+        console.error('Failed to fetch map data:', error)
+        setMapData(null)
+      } finally {
+        setMapDataLoading(false)
+      }
+    }
+
+    // Debounce API calls
+    timeoutId = setTimeout(fetchMapData, 300)
     
     return () => clearTimeout(timeoutId)
   }, [selectedStates])
@@ -609,48 +649,116 @@ export default function DashboardPage() {
           <div className="lg:col-span-2 bg-gray-900 rounded-2xl overflow-hidden">
             <div className="p-4">
               <h3 className="text-white font-semibold">Interactive map</h3>
-              <p className="text-gray-400 text-sm">Now showing: Power supply</p>
+              <p className="text-gray-400 text-sm">
+                {selectedStates.length > 0 
+                  ? `Generators in ${selectedStates[0]}` 
+                  : 'Select a state to view generators'
+                }
+              </p>
             </div>
-            <div className="h-96 bg-gray-800 flex items-center justify-center">
-              <svg viewBox="0 0 200 150" className="w-48 h-36">
-                {/* Dynamic state outline based on selected states */}
-                {selectedStates.includes('Indiana') && (
-                  <g>
-                    <path 
-                      d="M 50 30 L 150 30 L 150 50 L 140 60 L 140 100 L 130 110 L 120 120 L 80 120 L 70 110 L 60 100 L 60 60 L 50 50 Z" 
-                      fill="#6B7280" 
+            <div className="h-96 bg-gray-800 flex items-center justify-center relative">
+              {mapDataLoading ? (
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
+              ) : mapData?.plants ? (
+                <div className="relative w-full h-full">
+                  <svg viewBox="0 0 400 300" className="w-full h-full">
+                    {/* State background */}
+                    <rect 
+                      x="10" 
+                      y="10" 
+                      width="380" 
+                      height="280" 
+                      fill="#374151" 
                       stroke="#4B5563" 
-                      strokeWidth="2"
+                      strokeWidth="2" 
+                      rx="8"
                     />
-                    <text x="100" y="75" textAnchor="middle" className="fill-white text-sm">
-                      Indiana
+                    
+                    {/* State label */}
+                    <text 
+                      x="200" 
+                      y="30" 
+                      textAnchor="middle" 
+                      className="fill-gray-300 text-sm font-medium"
+                    >
+                      {selectedStates[0]} - {mapData.totalPlants} Plants ({Math.round(mapData.totalCapacity / 1000)} GW)
                     </text>
-                  </g>
-                )}
-                {selectedStates.includes('Texas') && !selectedStates.includes('Indiana') && (
-                  <g>
-                    <path 
-                      d="M 30 60 L 170 60 L 170 80 L 160 100 L 140 120 L 60 120 L 40 100 L 30 80 Z" 
-                      fill="#6B7280" 
-                      stroke="#4B5563" 
-                      strokeWidth="2"
-                    />
-                    <text x="100" y="90" textAnchor="middle" className="fill-white text-sm">
-                      Texas
-                    </text>
-                  </g>
-                )}
-                {selectedStates.length === 0 && (
-                  <text x="100" y="75" textAnchor="middle" className="fill-gray-400 text-sm">
-                    Select a state
-                  </text>
-                )}
-                {selectedStates.length > 1 && (
-                  <text x="100" y="75" textAnchor="middle" className="fill-white text-xs">
-                    {selectedStates.length} states
-                  </text>
-                )}
-              </svg>
+                    
+                    {/* Generator dots */}
+                    {mapData.plants.map((plant: any, index: number) => {
+                      // Technology colors matching the bar chart
+                      const techColors: { [key: string]: string } = {
+                        'Natural Gas': '#3B82F6',
+                        'Coal': '#374151',
+                        'Nuclear': '#8B5CF6',
+                        'Solar': '#EAB308',
+                        'Wind': '#10B981',
+                        'Hydro': '#06B6D4',
+                        'Battery Storage': '#6366F1',
+                        'Biomass': '#059669',
+                        'Other': '#6B7280'
+                      }
+                      
+                      // Scale coordinates to fit in viewBox (50-350 x, 50-250 y)
+                      const x = 50 + (plant.longitude + 85) * 3.5 // Rough scaling for US coordinates
+                      const y = 50 + (45 - plant.latitude) * 4 // Flip Y and scale
+                      
+                      // Size based on capacity (2-12px radius)
+                      const radius = Math.max(2, Math.min(12, Math.sqrt(plant.totalCapacity / 1000) * 2))
+                      
+                      const color = techColors[plant.technology] || techColors.Other
+                      
+                      return (
+                        <g key={plant.plantName}>
+                          <circle
+                            cx={x}
+                            cy={y}
+                            r={radius}
+                            fill={color}
+                            stroke="#FFFFFF"
+                            strokeWidth="1"
+                            opacity="0.9"
+                            className="hover:opacity-100 cursor-pointer"
+                          >
+                            <title>
+                              {plant.plantName}
+                              {plant.county ? ` (${plant.county} County)` : ''}
+                              {'\n'}Technology: {plant.technology}
+                              {'\n'}Capacity: {plant.totalCapacity.toLocaleString()} MW
+                              {'\n'}Generators: {plant.generatorCount}
+                            </title>
+                          </circle>
+                          
+                          {/* Label for large plants */}
+                          {plant.totalCapacity > 1000 && (
+                            <text
+                              x={x}
+                              y={y + radius + 12}
+                              textAnchor="middle"
+                              className="fill-gray-300 text-xs font-medium pointer-events-none"
+                            >
+                              {plant.plantName.length > 15 
+                                ? plant.plantName.substring(0, 15) + '...' 
+                                : plant.plantName
+                              }
+                            </text>
+                          )}
+                        </g>
+                      )
+                    })}
+                  </svg>
+                </div>
+              ) : selectedStates.length === 0 ? (
+                <div className="text-center text-gray-400">
+                  <div className="text-lg mb-2">🗺️</div>
+                  <div className="text-sm">Select a state to view generators</div>
+                </div>
+              ) : (
+                <div className="text-center text-gray-400">
+                  <div className="text-lg mb-2">⚠️</div>
+                  <div className="text-sm">No generator data available</div>
+                </div>
+              )}
             </div>
             <div className="p-4 space-y-2">
               <h4 className="text-white text-sm font-medium mb-2">Technology Breakdown</h4>
