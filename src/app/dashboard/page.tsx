@@ -304,53 +304,53 @@ export default function DashboardPage() {
         {/* State Selection Pills */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Select States</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Select State</h3>
             <button
               onClick={() => updateSelectedStates([])}
               className="text-sm text-gray-600 hover:text-gray-900"
             >
-              Clear All
+              Clear
             </button>
           </div>
           
-          {/* Currently Selected States */}
+          {/* Currently Selected State */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {selectedStates.map((state) => (
-              <div
-                key={state}
-                className="flex items-center bg-gray-900 text-white px-3 py-1 rounded-full text-sm"
-              >
-                <span>{state}</span>
+            {selectedStates.length > 0 ? (
+              <div className="flex items-center bg-gray-900 text-white px-3 py-1 rounded-full text-sm">
+                <span>{selectedStates[0]}</span>
                 <button
                   onClick={() => {
-                    console.log('Removing state:', state)
-                    updateSelectedStates(selectedStates.filter(s => s !== state))
+                    console.log('Removing state:', selectedStates[0])
+                    updateSelectedStates([])
                   }}
                   className="ml-2 text-gray-300 hover:text-white"
                 >
                   ×
                 </button>
               </div>
-            ))}
-            {selectedStates.length === 0 && (
-              <p className="text-gray-500 italic">No states selected</p>
+            ) : (
+              <p className="text-gray-500 italic">No state selected</p>
             )}
           </div>
 
-          {/* Available States to Add */}
+          {/* Available States to Select */}
           <div className="flex flex-wrap gap-2">
             {(['Delaware', 'Illinois', 'Indiana', 'Kentucky', 'Maryland', 'Michigan', 'New Jersey', 'North Carolina', 'Ohio', 'Pennsylvania', 'Tennessee', 'Virginia', 'West Virginia', 'District of Columbia'] as const)
-              .filter(state => !selectedStates.includes(state))
               .map((state) => (
                 <button
                   key={state}
                   onClick={() => {
-                    console.log('Adding state:', state)
-                    updateSelectedStates([...selectedStates, state])
+                    console.log('Selecting state:', state)
+                    updateSelectedStates([state])
                   }}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 hover:shadow-md transition-all duration-200"
+                  disabled={selectedStates.includes(state)}
+                  className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
+                    selectedStates.includes(state)
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                  }`}
                 >
-                  + {state}
+                  {state}
                 </button>
               ))
             }
@@ -467,66 +467,27 @@ export default function DashboardPage() {
             </div>
 
             {/* Stacked Bar Chart */}
-            <div className="bg-white rounded-lg p-4 mb-4">
+            <div className="bg-gray-50 rounded-lg p-4 mb-4">
               {capacityTrendsLoading ? (
-                <div className="flex items-center justify-center h-80">
+                <div className="flex items-center justify-center h-48">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                 </div>
               ) : capacityTrends?.chartData ? (
-                <div className="h-80">
-                  {/* Chart Title */}
-                  <div className="mb-4">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Energy Capacity by Technology</h4>
-                  </div>
-                  
-                  {/* Legend */}
-                  <div className="mb-4 flex flex-wrap gap-x-4 gap-y-2">
-                    {(() => {
-                      const techOrder = ['Natural Gas', 'Coal', 'Nuclear', 'Solar', 'Wind', 'Hydro', 'Battery Storage', 'Biomass', 'Other']
-                      const techColors: { [key: string]: string } = {
-                        'Natural Gas': '#3B82F6',
-                        'Coal': '#374151',
-                        'Nuclear': '#8B5CF6',
-                        'Solar': '#EAB308',
-                        'Wind': '#10B981',
-                        'Hydro': '#06B6D4',
-                        'Battery Storage': '#6366F1',
-                        'Biomass': '#059669',
-                        'Other': '#6B7280'
-                      }
-                      
-                      // Get all technologies present in data
-                      const allTechs = new Set<string>()
-                      capacityTrends.chartData.forEach((yearData: any) => {
-                        yearData.data.forEach((tech: any) => allTechs.add(tech.technology))
-                      })
-                      
-                      return techOrder.filter(tech => allTechs.has(tech)).map(tech => (
-                        <div key={tech} className="flex items-center space-x-2">
-                          <div 
-                            className="w-3 h-3 rounded-sm" 
-                            style={{ backgroundColor: techColors[tech] }}
-                          />
-                          <span className="text-sm text-gray-700">{tech}</span>
-                        </div>
-                      ))
-                    })()}
-                  </div>
-                  
+                <div className="h-48">
                   {/* Chart Container */}
-                  <div className="relative">
+                  <div className="relative h-full">
                     {/* Y-Axis Label */}
-                    <div className="absolute left-0 top-1/2 transform -rotate-90 -translate-y-1/2 -translate-x-8">
+                    <div className="absolute left-0 top-1/2 transform -rotate-90 -translate-y-1/2 -translate-x-6">
                       <span className="text-sm font-medium text-gray-700">Total MW Capacity</span>
                     </div>
                     
                     {/* Chart Area */}
-                    <div className="ml-16 mr-4">
+                    <div className="ml-12 mr-4 h-full">
                       {(() => {
                         const maxCapacity = Math.max(...capacityTrends.chartData.map((d: any) => 
                           d.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
                         ))
-                        const chartHeight = 200
+                        const chartHeight = 160
                         const techOrder = ['Natural Gas', 'Coal', 'Nuclear', 'Solar', 'Wind', 'Hydro', 'Battery Storage', 'Biomass', 'Other']
                         const techColors: { [key: string]: string } = {
                           'Natural Gas': '#3B82F6',
@@ -541,10 +502,11 @@ export default function DashboardPage() {
                         }
                         
                         return (
-                          <div>
-                            {/* Y-Axis Scale */}
-                            <div className="flex">
-                              <div className="w-12 flex flex-col justify-between text-right pr-2" style={{ height: `${chartHeight}px` }}>
+                          <div className="h-full flex flex-col">
+                            {/* Chart Area */}
+                            <div className="flex flex-1">
+                              {/* Y-Axis Scale */}
+                              <div className="w-10 flex flex-col justify-between text-right pr-2" style={{ height: `${chartHeight}px` }}>
                                 {[0, 1, 2, 3, 4, 5].reverse().map(i => (
                                   <div key={i} className="text-xs text-gray-600">
                                     {Math.round((maxCapacity * i / 5) / 1000)}k
@@ -553,7 +515,7 @@ export default function DashboardPage() {
                               </div>
                               
                               {/* Chart Bars */}
-                              <div className="flex-1 flex items-end justify-between space-x-4 border-l border-b border-gray-300 pl-4 pb-2" style={{ height: `${chartHeight}px` }}>
+                              <div className="flex-1 flex items-end justify-between space-x-8 border-l border-b border-gray-300 pl-4 pb-2" style={{ height: `${chartHeight}px` }}>
                                 {capacityTrends.chartData.map((yearData: any) => {
                                   const totalForYear = yearData.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
                                   
@@ -563,31 +525,44 @@ export default function DashboardPage() {
                                     techMap[tech.technology] = tech.capacity
                                   })
                                   
-                                  let cumulativeHeight = 0
+                                  // Calculate stacked segments
+                                  const segments: Array<{tech: string, capacity: number, height: number, startY: number}> = []
+                                  let currentY = 0
+                                  
+                                  techOrder.forEach(tech => {
+                                    const capacity = techMap[tech] || 0
+                                    if (capacity > 0) {
+                                      const segmentHeight = maxCapacity > 0 ? (capacity / maxCapacity) * (chartHeight - 20) : 0
+                                      segments.push({
+                                        tech,
+                                        capacity,
+                                        height: segmentHeight,
+                                        startY: currentY
+                                      })
+                                      currentY += segmentHeight
+                                    }
+                                  })
                                   
                                   return (
-                                    <div key={yearData.year} className="flex flex-col items-center space-y-1 flex-1">
-                                      {/* Bar */}
-                                      <div className="relative flex flex-col-reverse w-full max-w-16" style={{ height: `${chartHeight - 20}px` }}>
-                                        {techOrder.map(tech => {
-                                          const capacity = techMap[tech] || 0
-                                          if (capacity === 0) return null
-                                          
-                                          const segmentHeight = maxCapacity > 0 ? (capacity / maxCapacity) * (chartHeight - 20) : 0
-                                          
-                                          return (
-                                            <div
-                                              key={`${yearData.year}-${tech}`}
-                                              className="w-full hover:opacity-80 transition-opacity cursor-pointer"
-                                              style={{ 
-                                                height: `${segmentHeight}px`,
-                                                backgroundColor: techColors[tech],
-                                                minHeight: segmentHeight > 0 ? '2px' : '0px'
-                                              }}
-                                              title={`${tech}: ${capacity.toLocaleString()} MW (${Math.round((capacity / totalForYear) * 100)}%)`}
-                                            />
-                                          )
-                                        })}
+                                    <div key={yearData.year} className="flex flex-col items-center space-y-2 flex-1">
+                                      {/* Single Stacked Bar */}
+                                      <div 
+                                        className="relative w-12 border border-gray-200" 
+                                        style={{ height: `${chartHeight - 20}px` }}
+                                      >
+                                        {segments.map((segment, index) => (
+                                          <div
+                                            key={`${yearData.year}-${segment.tech}`}
+                                            className="absolute w-full hover:opacity-80 transition-opacity cursor-pointer"
+                                            style={{ 
+                                              height: `${segment.height}px`,
+                                              backgroundColor: techColors[segment.tech],
+                                              bottom: `${segment.startY}px`,
+                                              minHeight: segment.height > 0 ? '1px' : '0px'
+                                            }}
+                                            title={`${segment.tech}: ${segment.capacity.toLocaleString()} MW (${Math.round((segment.capacity / totalForYear) * 100)}%)`}
+                                          />
+                                        ))}
                                       </div>
                                       
                                       {/* Year Label */}
@@ -599,7 +574,7 @@ export default function DashboardPage() {
                             </div>
                             
                             {/* X-Axis Label */}
-                            <div className="text-center mt-4 ml-16">
+                            <div className="text-center mt-2 ml-10">
                               <span className="text-sm font-medium text-gray-700">Year</span>
                             </div>
                           </div>
@@ -610,10 +585,10 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 // Fallback placeholder
-                <div className="h-80 flex items-center justify-center bg-gray-50 rounded-lg">
+                <div className="h-48 flex items-center justify-center">
                   <div className="text-center">
                     <div className="text-gray-500 mb-2">No data available</div>
-                    <div className="text-sm text-gray-400">Select states to view capacity trends</div>
+                    <div className="text-sm text-gray-400">Select a state to view capacity trends</div>
                   </div>
                 </div>
               )}
