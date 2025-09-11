@@ -478,36 +478,40 @@ export default function DashboardPage() {
                     d.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
                   ))
                   const totalForYear = yearData.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
-                  const heightPercent = maxCapacity > 0 ? (totalForYear / maxCapacity) * 100 : 0
                   
                   return (
                     <div key={yearData.year} className="flex flex-col items-center space-y-2">
-                      <div className="flex flex-col-reverse items-center" style={{ height: '150px' }}>
-                        {yearData.data.map((tech: any, techIndex: number) => {
-                          const techColors: { [key: string]: string } = {
-                            'Natural Gas': 'bg-blue-500',
-                            'Coal': 'bg-gray-700',
-                            'Nuclear': 'bg-purple-500',
-                            'Solar': 'bg-yellow-500',
-                            'Wind': 'bg-green-500',
-                            'Hydro': 'bg-cyan-500',
-                            'Battery Storage': 'bg-indigo-500',
-                            'Biomass': 'bg-emerald-600',
-                            'Other': 'bg-gray-400'
-                          }
-                          const segmentHeight = maxCapacity > 0 ? (tech.capacity / maxCapacity) * 150 : 0
-                          
-                          return (
-                            <div
-                              key={`${yearData.year}-${tech.technology}`}
-                              className={`w-12 ${techColors[tech.technology] || techColors.Other}`}
-                              style={{ height: `${segmentHeight}px` }}
-                              title={`${tech.technology}: ${tech.capacity.toLocaleString()} MW`}
-                            />
-                          )
+                      <div className="text-xs text-gray-700 font-medium mb-1">
+                        {Math.round(totalForYear / 1000)}GW
+                      </div>
+                      <div className="flex flex-col-reverse items-center border border-gray-200 rounded" style={{ height: '120px', width: '48px' }}>
+                        {yearData.data
+                          .sort((a: any, b: any) => b.capacity - a.capacity)
+                          .map((tech: any, techIndex: number) => {
+                            const techColors: { [key: string]: string } = {
+                              'Natural Gas': 'bg-blue-500',
+                              'Coal': 'bg-gray-700',
+                              'Nuclear': 'bg-purple-500',
+                              'Solar': 'bg-yellow-500',
+                              'Wind': 'bg-green-500',
+                              'Hydro': 'bg-cyan-500',
+                              'Battery Storage': 'bg-indigo-500',
+                              'Biomass': 'bg-emerald-600',
+                              'Other': 'bg-gray-400'
+                            }
+                            const segmentHeight = maxCapacity > 0 ? (tech.capacity / maxCapacity) * 120 : 0
+                            
+                            return (
+                              <div
+                                key={`${yearData.year}-${tech.technology}`}
+                                className={`w-full ${techColors[tech.technology] || techColors.Other} hover:opacity-80 transition-opacity cursor-pointer ${techIndex === 0 ? 'rounded-b' : ''} ${techIndex === yearData.data.length - 1 ? 'rounded-t' : ''}`}
+                                style={{ height: `${segmentHeight}px`, minHeight: segmentHeight > 0 ? '2px' : '0px' }}
+                                title={`${tech.technology}: ${tech.capacity.toLocaleString()} MW (${Math.round((tech.capacity / totalForYear) * 100)}%)`}
+                              />
+                            )
                         })}
                       </div>
-                      <span className="text-xs text-gray-600">{yearData.year}</span>
+                      <span className="text-xs text-gray-600 font-medium">{yearData.year}</span>
                     </div>
                   )
                 })
@@ -515,11 +519,14 @@ export default function DashboardPage() {
                 // Fallback to placeholder when no data
                 [2021, 2022, 2023, 2024].map((year) => (
                   <div key={year} className="flex flex-col items-center space-y-2">
-                    <div 
-                      className="w-12 bg-gray-300 rounded-t" 
-                      style={{ height: `${50}px` }}
-                    />
-                    <span className="text-xs text-gray-600">{year}</span>
+                    <div className="text-xs text-gray-700 font-medium mb-1">--</div>
+                    <div className="border border-gray-200 rounded" style={{ height: '120px', width: '48px' }}>
+                      <div 
+                        className="w-full bg-gray-300 rounded" 
+                        style={{ height: `${30}px` }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-600 font-medium">{year}</span>
                   </div>
                 ))
               )}
