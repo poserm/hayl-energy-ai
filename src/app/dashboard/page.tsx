@@ -15,6 +15,7 @@ import TabNavigation from '@/components/ui/TabNavigation'
 import DetailPanel from '@/components/ui/DetailPanel'
 import ShowMoreControls, { useShowMore } from '@/components/ui/ShowMoreControls'
 import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
+import GoogleMap from '@/components/GoogleMap'
 import Image from 'next/image'
 
 export default function DashboardPage() {
@@ -656,109 +657,12 @@ export default function DashboardPage() {
                 }
               </p>
             </div>
-            <div className="h-96 bg-gray-800 flex items-center justify-center relative">
-              {mapDataLoading ? (
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
-              ) : mapData?.plants ? (
-                <div className="relative w-full h-full">
-                  <svg viewBox="0 0 400 300" className="w-full h-full">
-                    {/* State background */}
-                    <rect 
-                      x="10" 
-                      y="10" 
-                      width="380" 
-                      height="280" 
-                      fill="#374151" 
-                      stroke="#4B5563" 
-                      strokeWidth="2" 
-                      rx="8"
-                    />
-                    
-                    {/* State label */}
-                    <text 
-                      x="200" 
-                      y="30" 
-                      textAnchor="middle" 
-                      className="fill-gray-300 text-sm font-medium"
-                    >
-                      {selectedStates[0]} - {mapData.totalPlants} Plants ({Math.round(mapData.totalCapacity / 1000)} GW)
-                    </text>
-                    
-                    {/* Generator dots */}
-                    {mapData.plants.map((plant: any, index: number) => {
-                      // Technology colors matching the bar chart
-                      const techColors: { [key: string]: string } = {
-                        'Natural Gas': '#3B82F6',
-                        'Coal': '#374151',
-                        'Nuclear': '#8B5CF6',
-                        'Solar': '#EAB308',
-                        'Wind': '#10B981',
-                        'Hydro': '#06B6D4',
-                        'Battery Storage': '#6366F1',
-                        'Biomass': '#059669',
-                        'Other': '#6B7280'
-                      }
-                      
-                      // Scale coordinates to fit in viewBox (50-350 x, 50-250 y)
-                      const x = 50 + (plant.longitude + 85) * 3.5 // Rough scaling for US coordinates
-                      const y = 50 + (45 - plant.latitude) * 4 // Flip Y and scale
-                      
-                      // Size based on capacity (2-12px radius)
-                      const radius = Math.max(2, Math.min(12, Math.sqrt(plant.totalCapacity / 1000) * 2))
-                      
-                      const color = techColors[plant.technology] || techColors.Other
-                      
-                      return (
-                        <g key={plant.plantName}>
-                          <circle
-                            cx={x}
-                            cy={y}
-                            r={radius}
-                            fill={color}
-                            stroke="#FFFFFF"
-                            strokeWidth="1"
-                            opacity="0.9"
-                            className="hover:opacity-100 cursor-pointer"
-                          >
-                            <title>
-                              {plant.plantName}
-                              {plant.county ? ` (${plant.county} County)` : ''}
-                              {'\n'}Technology: {plant.technology}
-                              {'\n'}Capacity: {plant.totalCapacity.toLocaleString()} MW
-                              {'\n'}Generators: {plant.generatorCount}
-                            </title>
-                          </circle>
-                          
-                          {/* Label for large plants */}
-                          {plant.totalCapacity > 1000 && (
-                            <text
-                              x={x}
-                              y={y + radius + 12}
-                              textAnchor="middle"
-                              className="fill-gray-300 text-xs font-medium pointer-events-none"
-                            >
-                              {plant.plantName.length > 15 
-                                ? plant.plantName.substring(0, 15) + '...' 
-                                : plant.plantName
-                              }
-                            </text>
-                          )}
-                        </g>
-                      )
-                    })}
-                  </svg>
-                </div>
-              ) : selectedStates.length === 0 ? (
-                <div className="text-center text-gray-400">
-                  <div className="text-lg mb-2">🗺️</div>
-                  <div className="text-sm">Select a state to view generators</div>
-                </div>
-              ) : (
-                <div className="text-center text-gray-400">
-                  <div className="text-lg mb-2">⚠️</div>
-                  <div className="text-sm">No generator data available</div>
-                </div>
-              )}
+            <div className="h-96 bg-gray-800 rounded-b-2xl overflow-hidden">
+              <GoogleMap 
+                selectedState={selectedStates[0] || ''} 
+                plants={mapData?.plants || []} 
+                loading={mapDataLoading}
+              />
             </div>
             <div className="p-4 space-y-2">
               <h4 className="text-white text-sm font-medium mb-2">Technology Breakdown</h4>
