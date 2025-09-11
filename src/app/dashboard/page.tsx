@@ -31,6 +31,8 @@ export default function DashboardPage() {
   const [region, setRegion] = useState('PJM')
   const [activeView, setActiveView] = useState<'dashboard' | 'utility-analysis'>('dashboard')
   const [selectedUtilityAnalysis, setSelectedUtilityAnalysis] = useState<any>(null)
+  const [capacityTrends, setCapacityTrends] = useState<any>(null)
+  const [capacityTrendsLoading, setCapacityTrendsLoading] = useState(false)
   
   const {
     selectedStates,
@@ -88,6 +90,44 @@ export default function DashboardPage() {
 
     // Debounce API calls
     timeoutId = setTimeout(fetchGenerators, 300)
+    
+    return () => clearTimeout(timeoutId)
+  }, [selectedStates])
+
+  // Fetch capacity trends data with debouncing
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>
+    
+    const fetchCapacityTrends = async () => {
+      if (selectedStates.length === 0) {
+        setCapacityTrends(null)
+        return
+      }
+      
+      setCapacityTrendsLoading(true)
+      try {
+        const response = await fetch('/api/energy/capacity-trends', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ states: selectedStates })
+        })
+        
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        setCapacityTrends(data)
+      } catch (error) {
+        console.error('Failed to fetch capacity trends:', error)
+        setCapacityTrends(null)
+      } finally {
+        setCapacityTrendsLoading(false)
+      }
+    }
+
+    // Debounce API calls
+    timeoutId = setTimeout(fetchCapacityTrends, 300)
     
     return () => clearTimeout(timeoutId)
   }, [selectedStates])
@@ -353,14 +393,44 @@ export default function DashboardPage() {
 
             {/* Energy breakdown by technology */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-              {generators.length > 0 ? Object.entries(
+              {capacityTrends?.technologyBreakdown ? capacityTrends.technologyBreakdown
+                .slice(0, 6)
+                .map((tech: any) => {
+                  const colors: Record<string, string> = {
+                    'Natural Gas': 'bg-blue-500',
+                    'Coal': 'bg-gray-700',
+                    'Nuclear': 'bg-purple-500',
+                    'Solar': 'bg-yellow-500',
+                    'Wind': 'bg-green-500',
+                    'Hydro': 'bg-cyan-500',
+                    'Battery Storage': 'bg-indigo-500',
+                    'Biomass': 'bg-emerald-600',
+                    'Other': 'bg-gray-400'
+                  }
+                  return (
+                    <div key={tech.technology} className="flex items-center space-x-2">
+                      <div className={`w-3 h-3 rounded-full ${colors[tech.technology] || colors.Other}`} />
+                      <span className="text-sm text-gray-700">{tech.technology}:</span>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {tech.capacity.toLocaleString()} MW
+                      </span>
+                    </div>
+                  )
+                }) : capacityTrendsLoading ? (
+                <div className="col-span-6 text-center py-4">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+                    <p className="text-gray-500 text-sm">Loading energy data...</p>
+                  </div>
+                </div>
+              ) : generators.length > 0 ? Object.entries(
                 generators.reduce((acc, gen) => {
                   const tech = gen.technology || 'Other'
                   acc[tech] = (acc[tech] || 0) + (gen.capacity?.nameplate || 0)
                   return acc
                 }, {} as Record<string, number>)
               )
-                .sort(([, a], [, b]) => b - a)
+                .sort(([, a], [, b]) => (b as number) - (a as number))
                 .slice(0, 6)
                 .map(([tech, capacity]) => {
                   const colors: Record<string, string> = {
@@ -377,7 +447,7 @@ export default function DashboardPage() {
                       <div className={`w-3 h-3 rounded-full ${colors[tech] || colors.Other}`} />
                       <span className="text-sm text-gray-700">{tech}:</span>
                       <span className="text-sm font-semibold text-gray-900">
-                        {Math.round(capacity).toLocaleString()} MW
+                        {Math.round(capacity as number).toLocaleString()} MW
                       </span>
                     </div>
                   )
@@ -393,20 +463,66 @@ export default function DashboardPage() {
 
             {/* Total capacity */}
             <div className="text-xl font-semibold text-gray-900 mb-4">
-              Total: {Math.round(metrics.totalCapacity / 1000)} GW
+              Total: {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
             </div>
 
-            {/* Bar chart placeholder */}
+            {/* Real data bar chart */}
             <div className="h-48 bg-gray-50 rounded-lg mb-4 flex items-end justify-between p-4">
-              {[2017, 2018, 2019, 2020, 2021, 2022, 2023].map((year) => (
-                <div key={year} className="flex flex-col items-center space-y-2">
-                  <div 
-                    className="w-12 bg-blue-500 rounded-t" 
-                    style={{ height: `${Math.random() * 100 + 50}px` }}
-                  />
-                  <span className="text-xs text-gray-600">{year}</span>
+              {capacityTrendsLoading ? (
+                <div className="flex items-center justify-center w-full h-full">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                 </div>
-              ))}
+              ) : capacityTrends?.chartData ? (
+                capacityTrends.chartData.map((yearData: any) => {
+                  const maxCapacity = Math.max(...capacityTrends.chartData.map((d: any) => 
+                    d.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
+                  ))
+                  const totalForYear = yearData.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
+                  const heightPercent = maxCapacity > 0 ? (totalForYear / maxCapacity) * 100 : 0
+                  
+                  return (
+                    <div key={yearData.year} className="flex flex-col items-center space-y-2">
+                      <div className="flex flex-col-reverse items-center" style={{ height: '150px' }}>
+                        {yearData.data.map((tech: any, techIndex: number) => {
+                          const techColors: { [key: string]: string } = {
+                            'Natural Gas': 'bg-blue-500',
+                            'Coal': 'bg-gray-700',
+                            'Nuclear': 'bg-purple-500',
+                            'Solar': 'bg-yellow-500',
+                            'Wind': 'bg-green-500',
+                            'Hydro': 'bg-cyan-500',
+                            'Battery Storage': 'bg-indigo-500',
+                            'Biomass': 'bg-emerald-600',
+                            'Other': 'bg-gray-400'
+                          }
+                          const segmentHeight = maxCapacity > 0 ? (tech.capacity / maxCapacity) * 150 : 0
+                          
+                          return (
+                            <div
+                              key={`${yearData.year}-${tech.technology}`}
+                              className={`w-12 ${techColors[tech.technology] || techColors.Other}`}
+                              style={{ height: `${segmentHeight}px` }}
+                              title={`${tech.technology}: ${tech.capacity.toLocaleString()} MW`}
+                            />
+                          )
+                        })}
+                      </div>
+                      <span className="text-xs text-gray-600">{yearData.year}</span>
+                    </div>
+                  )
+                })
+              ) : (
+                // Fallback to placeholder when no data
+                [2021, 2022, 2023, 2024].map((year) => (
+                  <div key={year} className="flex flex-col items-center space-y-2">
+                    <div 
+                      className="w-12 bg-gray-300 rounded-t" 
+                      style={{ height: `${50}px` }}
+                    />
+                    <span className="text-xs text-gray-600">{year}</span>
+                  </div>
+                ))
+              )}
             </div>
 
             {/* Sources */}
