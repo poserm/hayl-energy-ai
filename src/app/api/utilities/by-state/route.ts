@@ -62,6 +62,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const stateName = searchParams.get('state')
+    const ownershipFilter = searchParams.get('ownership')
     
     if (!stateName) {
       return NextResponse.json({ error: 'State parameter is required' }, { status: 400 })
@@ -71,16 +72,39 @@ export async function GET(request: NextRequest) {
     const stateAcronym = STATE_NAME_TO_ACRONYM[stateName]
     
     if (!stateAcronym) {
-      return NextResponse.json({ error: 'Invalid state name' }, { status: 400 })
+      return NextResponse.json({ error: `Invalid state name: ${stateName}. Available states: ${Object.keys(STATE_NAME_TO_ACRONYM).join(', ')}` }, { status: 400 })
     }
     
     console.log(`Fetching utilities for state: ${stateName} (${stateAcronym})`)
+    if (ownershipFilter) {
+      console.log(`Filtering by ownership type: ${ownershipFilter}`)
+    }
+    
+    // Build where clause
+    const whereClause: any = {
+      state: stateAcronym
+    }
+    
+    // Add ownership filter if provided
+    if (ownershipFilter) {
+      // Map dashboard categories to database values
+      const ownershipMapping: { [key: string]: string[] } = {
+        'INVESTOR OWNED': ['Investor Owned', 'Investor-Owned', 'IOU', 'Investor'],
+        'COOPERATIVES': ['Cooperative', 'Co-op', 'Coop', 'Rural Electric Cooperative'],
+        'MUNICIPALITIES': ['Municipal', 'Municipality', 'Public', 'City', 'Town']
+      }
+      
+      const dbValues = ownershipMapping[ownershipFilter.toUpperCase()]
+      if (dbValues) {
+        whereClause.ownership_type = {
+          in: dbValues
+        }
+      }
+    }
     
     // Fetch utilities from Prisma database
     const utilities = await prisma.utilities.findMany({
-      where: {
-        state: stateAcronym
-      },
+      where: whereClause,
       select: {
         id: true,
         utility_name: true,
@@ -97,6 +121,7 @@ export async function GET(request: NextRequest) {
     })
     
     console.log(`Found ${utilities.length} utilities for ${stateName}`)
+    console.log('Raw utilities data:', utilities.map(u => ({ name: u.utility_name, ownership: u.ownership_type, capacity: u.total_capacity_mw })))
     
     // Transform the data to match the expected format
     const transformedUtilities = utilities.map(utility => ({

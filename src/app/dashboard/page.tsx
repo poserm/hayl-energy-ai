@@ -32,6 +32,7 @@ export default function DashboardPage() {
   const [mapDataLoading, setMapDataLoading] = useState(false)
   const [stateUtilities, setStateUtilities] = useState<any[]>([])
   const [stateUtilitiesLoading, setStateUtilitiesLoading] = useState(false)
+  const [selectedOwnershipType, setSelectedOwnershipType] = useState<string | null>(null)
   
   const {
     selectedStates,
@@ -106,13 +107,23 @@ export default function DashboardPage() {
       try {
         setStateUtilitiesLoading(true)
         const stateName = selectedStates[0] // Use first selected state
-        const response = await fetch(`/api/utilities/by-state?state=${encodeURIComponent(stateName)}`)
+        
+        // Build URL with optional ownership filter
+        let url = `/api/utilities/by-state?state=${encodeURIComponent(stateName)}`
+        if (selectedOwnershipType) {
+          url += `&ownership=${encodeURIComponent(selectedOwnershipType)}`
+        }
+        
+        console.log('Fetching utilities with URL:', url)
+        const response = await fetch(url)
         
         if (!response.ok) {
-          throw new Error('Failed to fetch utilities')
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to fetch utilities')
         }
         
         const data = await response.json()
+        console.log('API Response:', data)
         setStateUtilities(data.utilities || [])
       } catch (error) {
         console.error('Error fetching state utilities:', error)
@@ -126,7 +137,7 @@ export default function DashboardPage() {
     timeoutId = setTimeout(fetchStateUtilities, 300)
     
     return () => clearTimeout(timeoutId)
-  }, [selectedStates])
+  }, [selectedStates, selectedOwnershipType])
 
   // Fetch capacity trends data with debouncing
   useEffect(() => {
@@ -795,18 +806,57 @@ export default function DashboardPage() {
 
             {/* Filter Tags */}
             <div className="flex justify-center space-x-6 mb-10">
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full" />
-                <span className="text-gray-700">INVESTOR OWNED</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full" />
-                <span className="text-gray-700">COOPERATIVES</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full" />
-                <span className="text-gray-700">MUNICIPALITIES</span>
-              </div>
+              <button 
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors ${
+                  selectedOwnershipType === 'INVESTOR OWNED' 
+                    ? 'bg-blue-100 border border-blue-300' 
+                    : 'hover:bg-gray-100'
+                }`}
+                onClick={() => setSelectedOwnershipType(
+                  selectedOwnershipType === 'INVESTOR OWNED' ? null : 'INVESTOR OWNED'
+                )}
+              >
+                <div className={`w-2 h-2 rounded-full ${
+                  selectedOwnershipType === 'INVESTOR OWNED' ? 'bg-blue-500' : 'bg-gray-400'
+                }`} />
+                <span className={`text-sm font-medium ${
+                  selectedOwnershipType === 'INVESTOR OWNED' ? 'text-blue-700' : 'text-gray-700'
+                }`}>INVESTOR OWNED</span>
+              </button>
+              <button 
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors ${
+                  selectedOwnershipType === 'COOPERATIVES' 
+                    ? 'bg-green-100 border border-green-300' 
+                    : 'hover:bg-gray-100'
+                }`}
+                onClick={() => setSelectedOwnershipType(
+                  selectedOwnershipType === 'COOPERATIVES' ? null : 'COOPERATIVES'
+                )}
+              >
+                <div className={`w-2 h-2 rounded-full ${
+                  selectedOwnershipType === 'COOPERATIVES' ? 'bg-green-500' : 'bg-gray-400'
+                }`} />
+                <span className={`text-sm font-medium ${
+                  selectedOwnershipType === 'COOPERATIVES' ? 'text-green-700' : 'text-gray-700'
+                }`}>COOPERATIVES</span>
+              </button>
+              <button 
+                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors ${
+                  selectedOwnershipType === 'MUNICIPALITIES' 
+                    ? 'bg-purple-100 border border-purple-300' 
+                    : 'hover:bg-gray-100'
+                }`}
+                onClick={() => setSelectedOwnershipType(
+                  selectedOwnershipType === 'MUNICIPALITIES' ? null : 'MUNICIPALITIES'
+                )}
+              >
+                <div className={`w-2 h-2 rounded-full ${
+                  selectedOwnershipType === 'MUNICIPALITIES' ? 'bg-purple-500' : 'bg-gray-400'
+                }`} />
+                <span className={`text-sm font-medium ${
+                  selectedOwnershipType === 'MUNICIPALITIES' ? 'text-purple-700' : 'text-gray-700'
+                }`}>MUNICIPALITIES</span>
+              </button>
             </div>
 
             {/* Company Grid Visualization */}
