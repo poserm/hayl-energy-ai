@@ -96,74 +96,79 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
         
         let geoData = null
         
-        // Try the most reliable source first - us-states.json
+        // Try the most reliable source first - simplified US states
         try {
           console.log('Loading US states GeoJSON data...')
-          const response = await fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
+          const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states.geojson')
           if (!response.ok) throw new Error('Failed to fetch from primary source')
           geoData = await response.json()
           console.log('Successfully loaded US states GeoJSON data:', geoData)
         } catch (error) {
           console.warn('Primary source failed, trying alternative...', error)
           
-          // Fallback to alternative source
+          // Fallback to alternative reliable source
           try {
-            const response = await fetch('https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_040_00_5m.json')
+            const response = await fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
             if (!response.ok) throw new Error('Failed to fetch from secondary source')
             geoData = await response.json()
             console.log('Successfully loaded US states from alternative source:', geoData)
           } catch (error2) {
-            console.error('All external sources failed, using local fallback')
-            throw new Error('Unable to load US states data from external sources')
+            console.warn('Secondary source failed, using local fallback...')
+            // Use a minimal fallback for key PJM states
+            geoData = createFallbackGeoJSON()
           }
         }
         
         if (geoData && geoData.features) {
-          // Ensure proper state name mapping
-          geoData.features = geoData.features.map((feature: any) => {
+          // Clean and deduplicate state features
+          const uniqueStates = new Map()
+          const cleanedFeatures: GeoJSONFeature[] = []
+          
+          geoData.features.forEach((feature: any) => {
             const stateName = feature.properties.NAME || feature.properties.name || feature.properties.NAME_1
-            return {
-              ...feature,
-              properties: {
-                ...feature.properties,
-                name: stateName,
-                NAME: stateName
+            
+            // Skip invalid features
+            if (!stateName || !feature.geometry) {
+              console.warn('Skipping invalid feature:', feature)
+              return
+            }
+            
+            // Only keep one feature per state (prevents duplicates)
+            if (!uniqueStates.has(stateName)) {
+              const cleanedFeature = {
+                ...feature,
+                properties: {
+                  ...feature.properties,
+                  name: stateName,
+                  NAME: stateName
+                }
               }
+              
+              uniqueStates.set(stateName, cleanedFeature)
+              cleanedFeatures.push(cleanedFeature)
+            } else {
+              console.warn('Duplicate state found, skipping:', stateName)
             }
           })
           
-          setUsStatesGeoJSON(geoData)
-          console.log('GeoJSON data processed and ready:', geoData.features.length, 'states loaded')
+          const cleanedGeoData = {
+            ...geoData,
+            features: cleanedFeatures
+          }
+          
+          setUsStatesGeoJSON(cleanedGeoData)
+          console.log('GeoJSON data cleaned and ready:', cleanedFeatures.length, 'unique states loaded')
+          console.log('State names:', cleanedFeatures.map(f => f.properties.name).sort())
         } else {
           throw new Error('Invalid GeoJSON data structure')
         }
         
       } catch (error) {
         console.error('Failed to load GeoJSON data:', error)
-        setGeoDataError('Failed to load map data. Please check your internet connection.')
+        setGeoDataError('Failed to load map data. Using fallback data.')
         
-        // Create a minimal fallback with just a few key states for PJM region
-        const fallbackData = {
-          "type": "FeatureCollection",
-          "features": [
-            {
-              "type": "Feature",
-              "properties": { "name": "Virginia", "NAME": "Virginia" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-83.675, 36.540], [-75.242, 36.540], [-75.770, 37.930], [-77.040, 38.804], [-78.349, 39.464], [-80.934, 39.200], [-83.001, 38.783], [-83.675, 36.540]]]
-              }
-            },
-            {
-              "type": "Feature",
-              "properties": { "name": "Pennsylvania", "NAME": "Pennsylvania" },
-              "geometry": {
-                "type": "Polygon",
-                "coordinates": [[[-80.934, 39.200], [-75.350, 39.881], [-74.705, 40.635], [-75.527, 41.203], [-79.762, 42.269], [-80.600, 42.000], [-80.934, 39.200]]]
-              }
-            }
-          ]
-        }
+        // Use fallback GeoJSON data
+        const fallbackData = createFallbackGeoJSON()
         setUsStatesGeoJSON(fallbackData)
       } finally {
         setGeoDataLoading(false)
@@ -172,29 +177,56 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
     
     loadGeoJSONData()
   }, [])
-
-  // Handle state selection and zooming
-  const handleStateClick = (stateName: string) => {
-    if (onStateSelect) {
-      onStateSelect(stateName)
-    }
-    
-    if (!usStatesGeoJSON || !map) return
-    
-    // Find the state feature and zoom to it
-    const stateFeature = usStatesGeoJSON.features.find(
-      (feature: GeoJSONFeature) => feature.properties.name === stateName || feature.properties.NAME === stateName
-    )
-    
-    if (stateFeature && map) {
-      try {
-        const bounds = getBoundsFromGeometry(stateFeature.geometry)
-        map.fitBounds(bounds, { padding: [20, 20] })
-      } catch (error) {
-        console.warn('Failed to calculate bounds for state:', stateName, error)
-      }
+  
+  // Create fallback GeoJSON data for key PJM states
+  const createFallbackGeoJSON = () => {
+    return {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": { "name": "Virginia", "NAME": "Virginia" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-83.675, 36.540], [-75.242, 36.540], [-75.770, 37.930], [-77.040, 38.804], [-78.349, 39.464], [-80.934, 39.200], [-83.001, 38.783], [-83.675, 36.540]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "Pennsylvania", "NAME": "Pennsylvania" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-80.934, 39.200], [-75.350, 39.881], [-74.705, 40.635], [-75.527, 41.203], [-79.762, 42.269], [-80.600, 42.000], [-80.934, 39.200]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "Ohio", "NAME": "Ohio" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-84.820, 38.404], [-80.934, 39.200], [-80.934, 41.977], [-84.801, 41.694], [-84.807, 39.103], [-84.820, 38.404]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "Maryland", "NAME": "Maryland" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-79.487, 39.200], [-75.048, 38.451], [-75.994, 38.228], [-79.487, 39.200]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "North Carolina", "NAME": "North Carolina" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-84.321, 34.988], [-75.460, 34.729], [-76.910, 36.550], [-83.109, 36.497], [-84.321, 34.988]]]
+          }
+        }
+      ]
     }
   }
+
 
   // Calculate bounds from geometry (handles Polygon and MultiPolygon)
   const getBoundsFromGeometry = (geometry: GeoJSONFeature['geometry']) => {
@@ -244,25 +276,47 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
     }
   }
 
-  // Handle feature events
+  // Handle feature events with improved click handling
   const onEachFeature = (feature: GeoJSONFeature, layer: any) => {
     const stateName = feature.properties.name || feature.properties.NAME || ''
     
+    // Add debug logging
+    console.log('Setting up events for state:', stateName)
+    
     layer.on({
-      mouseover: () => {
-        layer.setStyle({
+      mouseover: (e: any) => {
+        console.log('Mouseover state:', stateName)
+        const target = e.target
+        target.setStyle({
           weight: 4,
           color: '#1e40af',
           dashArray: '',
           fillOpacity: 0.7
         })
-        if (layer.bringToFront) layer.bringToFront()
+        if (target.bringToFront) target.bringToFront()
       },
-      mouseout: () => {
-        layer.setStyle(getStateStyle(feature))
+      mouseout: (e: any) => {
+        console.log('Mouseout state:', stateName)
+        const target = e.target
+        target.setStyle(getStateStyle(feature))
       },
-      click: () => {
-        if (stateName) handleStateClick(stateName)
+      click: (e: any) => {
+        console.log('State clicked:', stateName)
+        e.originalEvent.stopPropagation()
+        if (stateName && onStateSelect) {
+          onStateSelect(stateName)
+        }
+        
+        // Manually trigger zoom to state
+        if (stateName && map) {
+          try {
+            const bounds = getBoundsFromGeometry(feature.geometry)
+            console.log('Zooming to bounds:', bounds)
+            map.fitBounds(bounds, { padding: [20, 20] })
+          } catch (error) {
+            console.warn('Failed to zoom to state:', stateName, error)
+          }
+        }
       }
     })
 
@@ -370,10 +424,9 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
         center={[39.8283, -98.5795]} // Center of US
         zoom={4}
         style={{ height: '100%', width: '100%' }}
-        ref={(mapInstance: any) => {
-          if (mapInstance) {
-            setMap(mapInstance)
-          }
+        whenCreated={(mapInstance: any) => {
+          console.log('Map instance created:', mapInstance)
+          setMap(mapInstance)
         }}
         attributionControl={false}
       >
@@ -383,12 +436,14 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
         />
         
         {/* State Boundaries */}
-        <GeoJSON
-          data={usStatesGeoJSON}
-          style={getStateStyle}
-          onEachFeature={onEachFeature}
-          key={selectedState} // Force re-render when selected state changes
-        />
+        {usStatesGeoJSON && (
+          <GeoJSON
+            data={usStatesGeoJSON}
+            style={getStateStyle}
+            onEachFeature={onEachFeature}
+            key={`states-${selectedState || 'none'}`} // Force re-render when selected state changes
+          />
+        )}
 
         {/* Generator Markers */}
         {plants.map((plant, index) => {
