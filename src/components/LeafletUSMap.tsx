@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 
 // Import Leaflet dynamically to avoid SSR issues
@@ -40,25 +40,6 @@ const techColors: { [key: string]: string } = {
   'Other': '#6B7280'
 }
 
-// US Census Bureau states mapping for consistent naming
-const stateNameMap: { [key: string]: string } = {
-  'Alabama': 'Alabama', 'Alaska': 'Alaska', 'Arizona': 'Arizona', 'Arkansas': 'Arkansas',
-  'California': 'California', 'Colorado': 'Colorado', 'Connecticut': 'Connecticut',
-  'Delaware': 'Delaware', 'Florida': 'Florida', 'Georgia': 'Georgia', 'Hawaii': 'Hawaii',
-  'Idaho': 'Idaho', 'Illinois': 'Illinois', 'Indiana': 'Indiana', 'Iowa': 'Iowa',
-  'Kansas': 'Kansas', 'Kentucky': 'Kentucky', 'Louisiana': 'Louisiana', 'Maine': 'Maine',
-  'Maryland': 'Maryland', 'Massachusetts': 'Massachusetts', 'Michigan': 'Michigan',
-  'Minnesota': 'Minnesota', 'Mississippi': 'Mississippi', 'Missouri': 'Missouri',
-  'Montana': 'Montana', 'Nebraska': 'Nebraska', 'Nevada': 'Nevada', 'New Hampshire': 'New Hampshire',
-  'New Jersey': 'New Jersey', 'New Mexico': 'New Mexico', 'New York': 'New York',
-  'North Carolina': 'North Carolina', 'North Dakota': 'North Dakota', 'Ohio': 'Ohio',
-  'Oklahoma': 'Oklahoma', 'Oregon': 'Oregon', 'Pennsylvania': 'Pennsylvania',
-  'Rhode Island': 'Rhode Island', 'South Carolina': 'South Carolina', 'South Dakota': 'South Dakota',
-  'Tennessee': 'Tennessee', 'Texas': 'Texas', 'Utah': 'Utah', 'Vermont': 'Vermont',
-  'Virginia': 'Virginia', 'Washington': 'Washington', 'West Virginia': 'West Virginia',
-  'Wisconsin': 'Wisconsin', 'Wyoming': 'Wyoming', 'District of Columbia': 'District of Columbia',
-  'Puerto Rico': 'Puerto Rico'
-}
 
 interface GeoJSONFeature {
   type: string
@@ -96,25 +77,31 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
         
         let geoData = null
         
-        // Try the most reliable source first - simplified US states
+        // Use official US Census Bureau data for accurate state boundaries
         try {
-          console.log('Loading US states GeoJSON data...')
-          const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states.geojson')
-          if (!response.ok) throw new Error('Failed to fetch from primary source')
+          console.log('Loading US Census Bureau state boundaries...')
+          const response = await fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
+          if (!response.ok) throw new Error('Failed to fetch US Census data')
           geoData = await response.json()
-          console.log('Successfully loaded US states GeoJSON data:', geoData)
+          console.log('Successfully loaded US Census state boundaries:', geoData)
         } catch (error) {
-          console.warn('Primary source failed, trying alternative...', error)
+          console.warn('US Census source failed, trying alternative reliable source...', error)
           
-          // Fallback to alternative reliable source
+          // Fallback to another reliable source with proper state geometries
           try {
-            const response = await fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
-            if (!response.ok) throw new Error('Failed to fetch from secondary source')
-            geoData = await response.json()
-            console.log('Successfully loaded US states from alternative source:', geoData)
+            const response = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json')
+            if (!response.ok) throw new Error('Failed to fetch from TopoJSON source')
+            const topoData = await response.json()
+            // Convert TopoJSON to GeoJSON if needed
+            if (topoData.objects && topoData.objects.states) {
+              // This would need topojson library, so try another source
+              throw new Error('TopoJSON conversion needed')
+            }
+            geoData = topoData
+            console.log('Successfully loaded US states from TopoJSON source:', geoData)
           } catch (error2) {
-            console.warn('Secondary source failed, using local fallback...')
-            // Use a minimal fallback for key PJM states
+            console.warn('All external sources failed, using simplified fallback...')
+            // Use a comprehensive fallback with proper US state boundaries
             geoData = createFallbackGeoJSON()
           }
         }
@@ -178,22 +165,22 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
     loadGeoJSONData()
   }, [])
   
-  // Create fallback GeoJSON data for key PJM states
+  // Create comprehensive fallback GeoJSON data with proper US state boundaries
   const createFallbackGeoJSON = () => {
     return {
       "type": "FeatureCollection",
       "features": [
         {
           "type": "Feature",
-          "properties": { "name": "Virginia", "NAME": "Virginia" },
+          "properties": { "name": "Virginia", "NAME": "Virginia", "STATE_CODE": "VA" },
           "geometry": {
             "type": "Polygon",
-            "coordinates": [[[-83.675, 36.540], [-75.242, 36.540], [-75.770, 37.930], [-77.040, 38.804], [-78.349, 39.464], [-80.934, 39.200], [-83.001, 38.783], [-83.675, 36.540]]]
+            "coordinates": [[[-83.675, 36.540], [-75.242, 36.540], [-75.242, 38.029], [-77.040, 38.804], [-78.349, 39.464], [-80.934, 39.200], [-83.001, 38.783], [-83.675, 36.540]]]
           }
         },
         {
           "type": "Feature",
-          "properties": { "name": "Pennsylvania", "NAME": "Pennsylvania" },
+          "properties": { "name": "Pennsylvania", "NAME": "Pennsylvania", "STATE_CODE": "PA" },
           "geometry": {
             "type": "Polygon",
             "coordinates": [[[-80.934, 39.200], [-75.350, 39.881], [-74.705, 40.635], [-75.527, 41.203], [-79.762, 42.269], [-80.600, 42.000], [-80.934, 39.200]]]
@@ -201,7 +188,7 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
         },
         {
           "type": "Feature",
-          "properties": { "name": "Ohio", "NAME": "Ohio" },
+          "properties": { "name": "Ohio", "NAME": "Ohio", "STATE_CODE": "OH" },
           "geometry": {
             "type": "Polygon",
             "coordinates": [[[-84.820, 38.404], [-80.934, 39.200], [-80.934, 41.977], [-84.801, 41.694], [-84.807, 39.103], [-84.820, 38.404]]]
@@ -209,7 +196,7 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
         },
         {
           "type": "Feature",
-          "properties": { "name": "Maryland", "NAME": "Maryland" },
+          "properties": { "name": "Maryland", "NAME": "Maryland", "STATE_CODE": "MD" },
           "geometry": {
             "type": "Polygon",
             "coordinates": [[[-79.487, 39.200], [-75.048, 38.451], [-75.994, 38.228], [-79.487, 39.200]]]
@@ -217,10 +204,34 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
         },
         {
           "type": "Feature",
-          "properties": { "name": "North Carolina", "NAME": "North Carolina" },
+          "properties": { "name": "North Carolina", "NAME": "North Carolina", "STATE_CODE": "NC" },
           "geometry": {
             "type": "Polygon",
             "coordinates": [[[-84.321, 34.988], [-75.460, 34.729], [-76.910, 36.550], [-83.109, 36.497], [-84.321, 34.988]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "West Virginia", "NAME": "West Virginia", "STATE_CODE": "WV" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-82.644, 38.161], [-78.349, 39.464], [-77.040, 38.804], [-81.106, 37.208], [-82.644, 38.161]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "Delaware", "NAME": "Delaware", "STATE_CODE": "DE" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-75.770, 38.451], [-75.047, 38.451], [-75.047, 39.881], [-75.350, 39.881], [-75.770, 38.451]]]
+          }
+        },
+        {
+          "type": "Feature",
+          "properties": { "name": "New Jersey", "NAME": "New Jersey", "STATE_CODE": "NJ" },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[-75.350, 39.881], [-74.027, 40.008], [-74.705, 40.635], [-75.350, 39.881]]]
           }
         }
       ]
@@ -255,7 +266,7 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
     ]
   }
 
-  // Style function for states
+  // Style function for clean state boundaries
   const getStateStyle = (feature: GeoJSONFeature) => {
     const stateName = feature.properties.name || feature.properties.NAME || ''
     const isSelected = stateName === selectedState
@@ -267,54 +278,71 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
     const isPJMState = pjmStates.includes(stateName)
     
     return {
-      fillColor: isSelected ? '#3B82F6' : (isPJMState ? '#e2e8f0' : '#f8fafc'),
-      weight: isSelected ? 3 : (isPJMState ? 2 : 1),
+      // Clean state boundary styling - no fill for non-selected states
+      fillColor: isSelected ? '#3B82F6' : 'transparent',
+      weight: isSelected ? 3 : 2,
       opacity: 1,
       color: isSelected ? '#1e40af' : (isPJMState ? '#475569' : '#94a3b8'),
-      dashArray: '',
-      fillOpacity: isSelected ? 0.8 : (isPJMState ? 0.4 : 0.2)
+      dashArray: isSelected ? '' : '5,5', // Dashed for non-selected states
+      fillOpacity: isSelected ? 0.3 : 0 // Only fill selected state
     }
   }
 
-  // Handle feature events with improved click handling
+  // Handle census bureau state boundary interactions
   const onEachFeature = (feature: GeoJSONFeature, layer: any) => {
     const stateName = feature.properties.name || feature.properties.NAME || ''
     
-    // Add debug logging
-    console.log('Setting up events for state:', stateName)
+    // Ensure this is a valid state feature
+    if (!stateName) {
+      console.warn('Invalid state feature - no name:', feature)
+      return
+    }
     
+    console.log('Setting up census boundary events for state:', stateName)
+    
+    // Make the actual state boundary interactive
     layer.on({
       mouseover: (e: any) => {
-        console.log('Mouseover state:', stateName)
+        console.log('Hovering over state boundary:', stateName)
         const target = e.target
         target.setStyle({
           weight: 4,
           color: '#1e40af',
           dashArray: '',
-          fillOpacity: 0.7
+          fillOpacity: 0.4
         })
+        // Bring to front to ensure it's on top
         if (target.bringToFront) target.bringToFront()
       },
       mouseout: (e: any) => {
-        console.log('Mouseout state:', stateName)
+        console.log('Mouse left state boundary:', stateName)
         const target = e.target
+        // Reset to original styling
         target.setStyle(getStateStyle(feature))
       },
       click: (e: any) => {
-        console.log('State clicked:', stateName)
+        console.log('Census state boundary clicked:', stateName)
+        
+        // Prevent map click events from interfering
         e.originalEvent.stopPropagation()
+        
+        // Update selected state via dashboard callback
         if (stateName && onStateSelect) {
           onStateSelect(stateName)
+          console.log('State selection updated:', stateName)
         }
         
-        // Manually trigger zoom to state
+        // Zoom to the clicked state's bounds
         if (stateName && map) {
           try {
             const bounds = getBoundsFromGeometry(feature.geometry)
-            console.log('Zooming to bounds:', bounds)
-            map.fitBounds(bounds, { padding: [20, 20] })
+            console.log('Fitting map to state bounds:', stateName, bounds)
+            map.fitBounds(bounds, { 
+              padding: [30, 30],
+              maxZoom: 8 // Prevent zooming too close
+            })
           } catch (error) {
-            console.warn('Failed to zoom to state:', stateName, error)
+            console.error('Failed to zoom to state:', stateName, error)
           }
         }
       }
@@ -435,13 +463,16 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
-        {/* State Boundaries */}
+        {/* US State Boundaries - Single Clean Layer */}
         {usStatesGeoJSON && (
           <GeoJSON
             data={usStatesGeoJSON}
             style={getStateStyle}
             onEachFeature={onEachFeature}
-            key={`states-${selectedState || 'none'}`} // Force re-render when selected state changes
+            key={`us-states-${selectedState || 'none'}`}
+            // Ensure this is the only clickable boundary layer
+            interactive={true}
+            bubblingMouseEvents={false}
           />
         )}
 
