@@ -266,7 +266,7 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
     ]
   }
 
-  // Style function for clean state boundaries
+  // Style function for clean state boundaries - NO FILLS, ONLY LINES
   const getStateStyle = (feature: GeoJSONFeature) => {
     const stateName = feature.properties.name || feature.properties.NAME || ''
     const isSelected = stateName === selectedState
@@ -278,13 +278,14 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
     const isPJMState = pjmStates.includes(stateName)
     
     return {
-      // Clean state boundary styling - no fill for non-selected states
-      fillColor: isSelected ? '#3B82F6' : 'transparent',
-      weight: isSelected ? 3 : 2,
+      // ONLY boundary lines - absolutely no fills to avoid boxes
+      fillColor: 'transparent',
+      weight: isSelected ? 3 : 1,
       opacity: 1,
       color: isSelected ? '#1e40af' : (isPJMState ? '#475569' : '#94a3b8'),
-      dashArray: isSelected ? '' : '5,5', // Dashed for non-selected states
-      fillOpacity: isSelected ? 0.3 : 0 // Only fill selected state
+      dashArray: isSelected ? '' : '3,3', // Subtle dashes for non-selected states
+      fillOpacity: 0, // Never fill anything to avoid boxes
+      fill: false // Explicitly disable fill
     }
   }
 
@@ -309,7 +310,8 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
           weight: 4,
           color: '#1e40af',
           dashArray: '',
-          fillOpacity: 0.4
+          fillOpacity: 0, // No fill on hover to avoid boxes
+          fillColor: 'transparent'
         })
         // Bring to front to ensure it's on top
         if (target.bringToFront) target.bringToFront()
@@ -463,16 +465,22 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         
-        {/* US State Boundaries - Single Clean Layer */}
+        {/* US State Boundaries - ONLY LINES, NO BOXES */}
         {usStatesGeoJSON && (
           <GeoJSON
             data={usStatesGeoJSON}
             style={getStateStyle}
             onEachFeature={onEachFeature}
-            key={`us-states-${selectedState || 'none'}`}
-            // Ensure this is the only clickable boundary layer
+            key={`census-boundaries-${selectedState || 'none'}`}
+            // Ensure this is the only interactive layer - NO FILLS
             interactive={true}
             bubblingMouseEvents={false}
+            // Force line-only rendering
+            pathOptions={{
+              fill: false,
+              fillOpacity: 0,
+              fillColor: 'transparent'
+            }}
           />
         )}
 
