@@ -66,25 +66,42 @@ export default function SimpleUSMap({ height = '500px', width = '100%', selected
     console.log('SimpleUSMap: mapRef.current exists:', !!mapRef.current)
     console.log('SimpleUSMap: STATE_COORDINATES keys:', Object.keys(STATE_COORDINATES))
     
-    if (selectedState && mapRef.current && STATE_COORDINATES[selectedState]) {
-      const stateCoords = STATE_COORDINATES[selectedState]
-      const bounds = [
-        [stateCoords.bounds.south, stateCoords.bounds.west],
-        [stateCoords.bounds.north, stateCoords.bounds.east]
-      ]
-      
-      console.log('SimpleUSMap: Zooming to state:', selectedState, bounds)
-      mapRef.current.fitBounds(bounds, { 
-        padding: [20, 20],
-        maxZoom: 8 
-      })
-    } else if (!selectedState && mapRef.current) {
-      // Reset to US view when no state selected
-      console.log('SimpleUSMap: Resetting to US view')
-      mapRef.current.setView([39.8283, -98.5795], 4)
-    } else if (selectedState && mapRef.current) {
-      console.log('SimpleUSMap: State not found in STATE_COORDINATES:', selectedState)
-    }
+    // Add a small delay to ensure map is fully initialized
+    const timer = setTimeout(() => {
+      if (selectedState && mapRef.current && STATE_COORDINATES[selectedState]) {
+        const stateCoords = STATE_COORDINATES[selectedState]
+        const bounds = [
+          [stateCoords.bounds.south, stateCoords.bounds.west],
+          [stateCoords.bounds.north, stateCoords.bounds.east]
+        ]
+        
+        console.log('SimpleUSMap: Zooming to state:', selectedState, bounds)
+        try {
+          mapRef.current.fitBounds(bounds, { 
+            padding: [30, 30],
+            maxZoom: 7,
+            duration: 1.5
+          })
+        } catch (error) {
+          console.error('Error zooming to state:', error)
+        }
+      } else if (!selectedState && mapRef.current) {
+        // Reset to US view when no state selected
+        console.log('SimpleUSMap: Resetting to US view')
+        try {
+          mapRef.current.setView([39.8283, -98.5795], 4, { duration: 1.5 })
+        } catch (error) {
+          console.error('Error resetting view:', error)
+        }
+      } else if (selectedState && mapRef.current) {
+        console.log('SimpleUSMap: State not found in STATE_COORDINATES:', selectedState)
+        console.log('Available states:', Object.keys(STATE_COORDINATES))
+      } else if (selectedState && !mapRef.current) {
+        console.log('SimpleUSMap: Map reference not available yet, state:', selectedState)
+      }
+    }, 100) // Small delay to ensure map is ready
+    
+    return () => clearTimeout(timer)
   }, [selectedState])
 
   // Simple style for state boundaries - just lines, no fills

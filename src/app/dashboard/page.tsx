@@ -398,7 +398,9 @@ export default function DashboardPage() {
           <div className="lg:col-span-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Energy Snapshot</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  {selectedStates.length > 0 ? `${selectedStates[0]} Energy Snapshot` : 'Energy Snapshot'}
+                </h3>
                 <p className="text-gray-600 max-w-lg">
                   Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
                 </p>
@@ -651,7 +653,7 @@ export default function DashboardPage() {
                 }
               </p>
             </div>
-            <div className="h-96 bg-gray-100 rounded-b-2xl overflow-hidden">
+            <div className="h-96 bg-gray-100 rounded-b-2xl overflow-hidden relative">
               <SimpleUSMap 
                 height="100%" 
                 width="100%" 
@@ -659,8 +661,8 @@ export default function DashboardPage() {
               />
               {/* Debug info */}
               {selectedStates.length > 0 && (
-                <div className="absolute top-2 right-2 bg-black bg-opacity-75 text-white text-xs p-2 rounded">
-                  Selected: {selectedStates[0]}
+                <div className="absolute top-2 right-2 bg-black bg-opacity-75 text-white text-xs p-2 rounded z-[1000]">
+                  Map should zoom to: {selectedStates[0]}
                 </div>
               )}
             </div>
