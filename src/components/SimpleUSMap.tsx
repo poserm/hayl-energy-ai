@@ -43,27 +43,8 @@ export default function SimpleUSMap({ height = '500px', width = '100%' }: Simple
         console.error('Error loading map data:', error)
         setError('Failed to load map data')
         
-        // Use minimal fallback data for demonstration
-        const fallbackData = {
-          type: 'FeatureCollection',
-          features: [
-            {
-              type: 'Feature',
-              properties: { name: 'Virginia' },
-              geometry: {
-                type: 'Polygon',
-                coordinates: [[
-                  [-83.675, 36.540],
-                  [-75.242, 36.540], 
-                  [-75.242, 39.466],
-                  [-83.675, 39.466],
-                  [-83.675, 36.540]
-                ]]
-              }
-            }
-          ]
-        }
-        setGeoData(fallbackData)
+        // Don't set any fallback data to avoid boxes
+        setGeoData(null)
       } finally {
         setLoading(false)
       }
@@ -117,12 +98,13 @@ export default function SimpleUSMap({ height = '500px', width = '100%' }: Simple
   }
 
   return (
-    <div style={{ height, width }} className="rounded-lg overflow-hidden">
+    <div style={{ height, width }}>
       <MapContainer
         center={[39.8283, -98.5795]} // Center of United States
         zoom={4}
         style={{ height: '100%', width: '100%' }}
         attributionControl={true}
+        zoomControl={true}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -133,6 +115,7 @@ export default function SimpleUSMap({ height = '500px', width = '100%' }: Simple
           <GeoJSON
             data={geoData}
             style={stateStyle}
+            interactive={false}
           />
         )}
       </MapContainer>
