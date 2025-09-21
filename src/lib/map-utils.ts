@@ -33,17 +33,9 @@ export const STATE_COORDINATES: { [key: string]: StateCoordinates } = {
     center: [27.7663, -81.6868],
     bounds: { north: 31.0009, south: 24.9493, east: -80.0313, west: -87.6349 }
   },
-  'Illinois': {
-    center: [40.3363, -89.0022],
-    bounds: { north: 42.5083, south: 36.9540, east: -87.0199, west: -91.5133 }
-  },
   'Michigan': {
     center: [44.3467, -85.4102],
     bounds: { north: 48.2388, south: 41.6962, east: -82.4138, west: -90.4169 }
-  },
-  'North Carolina': {
-    center: [35.6301, -79.8064],
-    bounds: { north: 36.5881, south: 33.7514, east: -75.4003, west: -84.3218 }
   },
   'Minnesota': {
     center: [45.6945, -93.9002],
