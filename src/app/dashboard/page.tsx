@@ -513,13 +513,8 @@ export default function DashboardPage() {
                 <div className="h-48">
                   {/* Chart Container */}
                   <div className="relative h-full">
-                    {/* Y-Axis Label */}
-                    <div className="absolute left-0 top-1/2 transform -rotate-90 -translate-y-1/2 -translate-x-6">
-                      <span className="text-sm font-medium text-gray-700">Total MW Capacity</span>
-                    </div>
-                    
                     {/* Chart Area */}
-                    <div className="ml-12 mr-4 h-full">
+                    <div className="ml-4 mr-4 h-full">
                       {(() => {
                         const maxCapacity = Math.max(...capacityTrends.chartData.map((d: any) => 
                           d.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
@@ -543,7 +538,7 @@ export default function DashboardPage() {
                             {/* Chart Area */}
                             <div className="flex flex-1">
                               {/* Y-Axis Scale */}
-                              <div className="w-10 flex flex-col justify-between text-right pr-2" style={{ height: `${chartHeight}px` }}>
+                              <div className="w-8 flex flex-col justify-between text-right pr-2" style={{ height: `${chartHeight}px` }}>
                                 {[0, 1, 2, 3, 4, 5].reverse().map(i => (
                                   <div key={i} className="text-xs text-gray-600">
                                     {Math.round((maxCapacity * i / 5) / 1000)}k
@@ -608,11 +603,6 @@ export default function DashboardPage() {
                                   )
                                 })}
                               </div>
-                            </div>
-                            
-                            {/* X-Axis Label */}
-                            <div className="text-center mt-2 ml-10">
-                              <span className="text-sm font-medium text-gray-700">Year</span>
                             </div>
                           </div>
                         )
