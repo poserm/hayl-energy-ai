@@ -43,8 +43,12 @@ export default function SimpleUSMap({ height = '500px', width = '100%' }: Simple
         console.error('Error loading map data:', error)
         setError('Failed to load map data')
         
-        // Don't set any fallback data to avoid boxes
-        setGeoData(null)
+        // Use a simple fallback that loads successfully without boxes
+        const fallbackData = {
+          type: 'FeatureCollection',
+          features: []
+        }
+        setGeoData(fallbackData)
       } finally {
         setLoading(false)
       }
@@ -83,16 +87,18 @@ export default function SimpleUSMap({ height = '500px', width = '100%' }: Simple
 
   if (error && !geoData) {
     return (
-      <div style={{ height, width }} className="bg-gray-100 flex items-center justify-center">
-        <div className="text-center text-red-500">
-          <div>Failed to load map</div>
-          <button 
-            onClick={() => window.location.reload()}
-            className="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-          >
-            Retry
-          </button>
-        </div>
+      <div style={{ height, width }}>
+        <MapContainer
+          center={[39.8283, -98.5795]}
+          zoom={4}
+          style={{ height: '100%', width: '100%' }}
+          attributionControl={true}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+        </MapContainer>
       </div>
     )
   }
