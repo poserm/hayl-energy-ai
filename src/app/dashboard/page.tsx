@@ -15,7 +15,7 @@ import TabNavigation from '@/components/ui/TabNavigation'
 import DetailPanel from '@/components/ui/DetailPanel'
 import ShowMoreControls, { useShowMore } from '@/components/ui/ShowMoreControls'
 import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
-import CustomUSMap from '@/components/CustomUSMap'
+import InteractiveUSMap from '@/components/InteractiveUSMap'
 import Image from 'next/image'
 
 export default function DashboardPage() {
@@ -657,32 +657,14 @@ export default function DashboardPage() {
                 }
               </p>
             </div>
-            <div className="h-96 bg-gray-800 rounded-b-2xl overflow-hidden">
-              <CustomUSMap 
+            <div className="h-96 bg-gray-100 rounded-b-2xl overflow-hidden">
+              <InteractiveUSMap 
                 selectedState={selectedStates[0] || ''} 
                 plants={mapData?.plants || []} 
                 loading={mapDataLoading}
                 onStateSelect={(state) => {
-                  // Convert state name to match the selector format
-                  const stateNames: { [key: string]: string } = {
-                    'Virginia': 'Virginia',
-                    'Pennsylvania': 'Pennsylvania', 
-                    'Ohio': 'Ohio',
-                    'Maryland': 'Maryland',
-                    'West Virginia': 'West Virginia',
-                    'North Carolina': 'North Carolina',
-                    'Delaware': 'Delaware',
-                    'New Jersey': 'New Jersey',
-                    'Illinois': 'Illinois',
-                    'Indiana': 'Indiana',
-                    'Kentucky': 'Kentucky',
-                    'Michigan': 'Michigan',
-                    'Tennessee': 'Tennessee',
-                    'District of Columbia': 'District of Columbia'
-                  }
-                  if (stateNames[state]) {
-                    updateSelectedStates([stateNames[state]])
-                  }
+                  // Update state selection when clicking on map
+                  updateSelectedStates([state])
                 }}
               />
             </div>
