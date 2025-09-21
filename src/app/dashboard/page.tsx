@@ -657,6 +657,12 @@ export default function DashboardPage() {
                 width="100%" 
                 selectedState={selectedStates[0] || undefined}
               />
+              {/* Debug info */}
+              {selectedStates.length > 0 && (
+                <div className="absolute top-2 right-2 bg-black bg-opacity-75 text-white text-xs p-2 rounded">
+                  Selected: {selectedStates[0]}
+                </div>
+              )}
             </div>
             <div className="p-4 space-y-2">
               <h4 className="text-white text-sm font-medium mb-2">Technology Breakdown</h4>

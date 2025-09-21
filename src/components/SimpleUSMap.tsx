@@ -62,6 +62,10 @@ export default function SimpleUSMap({ height = '500px', width = '100%', selected
 
   // Zoom to selected state when it changes
   useEffect(() => {
+    console.log('SimpleUSMap: selectedState changed to:', selectedState)
+    console.log('SimpleUSMap: mapRef.current exists:', !!mapRef.current)
+    console.log('SimpleUSMap: STATE_COORDINATES keys:', Object.keys(STATE_COORDINATES))
+    
     if (selectedState && mapRef.current && STATE_COORDINATES[selectedState]) {
       const stateCoords = STATE_COORDINATES[selectedState]
       const bounds = [
@@ -69,14 +73,17 @@ export default function SimpleUSMap({ height = '500px', width = '100%', selected
         [stateCoords.bounds.north, stateCoords.bounds.east]
       ]
       
-      console.log('Zooming to state:', selectedState, bounds)
+      console.log('SimpleUSMap: Zooming to state:', selectedState, bounds)
       mapRef.current.fitBounds(bounds, { 
         padding: [20, 20],
         maxZoom: 8 
       })
     } else if (!selectedState && mapRef.current) {
       // Reset to US view when no state selected
+      console.log('SimpleUSMap: Resetting to US view')
       mapRef.current.setView([39.8283, -98.5795], 4)
+    } else if (selectedState && mapRef.current) {
+      console.log('SimpleUSMap: State not found in STATE_COORDINATES:', selectedState)
     }
   }, [selectedState])
 

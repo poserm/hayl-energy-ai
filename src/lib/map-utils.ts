@@ -52,6 +52,54 @@ export const STATE_COORDINATES: { [key: string]: StateCoordinates } = {
   'Massachusetts': {
     center: [42.2081, -71.0275],
     bounds: { north: 42.8867, south: 41.2376, east: -69.8588, west: -73.5081 }
+  },
+  'Delaware': {
+    center: [39.3185, -75.5071],
+    bounds: { north: 39.8394, south: 38.4512, east: -75.0489, west: -75.7887 }
+  },
+  'Illinois': {
+    center: [40.3363, -89.0022],
+    bounds: { north: 42.5083, south: 36.9540, east: -87.0199, west: -91.5133 }
+  },
+  'Indiana': {
+    center: [39.8647, -86.2604],
+    bounds: { north: 41.7606, south: 37.7554, east: -84.7840, west: -88.0157 }
+  },
+  'Kentucky': {
+    center: [37.6681, -84.6701],
+    bounds: { north: 39.1472, south: 36.4970, east: -81.9646, west: -89.5715 }
+  },
+  'Maryland': {
+    center: [39.0639, -76.8021],
+    bounds: { north: 39.7236, south: 37.9113, east: -75.0489, west: -79.4877 }
+  },
+  'New Jersey': {
+    center: [40.3072, -74.5560],
+    bounds: { north: 41.3574, south: 38.9280, east: -73.8934, west: -75.5597 }
+  },
+  'North Carolina': {
+    center: [35.6301, -79.8064],
+    bounds: { north: 36.5881, south: 33.7514, east: -75.4003, west: -84.3218 }
+  },
+  'Ohio': {
+    center: [40.3888, -82.7649],
+    bounds: { north: 41.9773, south: 38.4040, east: -80.5190, west: -84.8203 }
+  },
+  'Pennsylvania': {
+    center: [40.5908, -77.2098],
+    bounds: { north: 42.5147, south: 39.7198, east: -74.6895, west: -80.5190 }
+  },
+  'Tennessee': {
+    center: [35.7478, -86.7923],
+    bounds: { north: 36.6782, south: 34.9829, east: -81.6469, west: -90.3103 }
+  },
+  'West Virginia': {
+    center: [38.4912, -80.9545],
+    bounds: { north: 40.6386, south: 37.2017, east: -77.7190, west: -82.6446 }
+  },
+  'District of Columbia': {
+    center: [38.8974, -77.0365],
+    bounds: { north: 38.9958, south: 38.7916, east: -76.9093, west: -77.1197 }
   }
 }
 
