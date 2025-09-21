@@ -123,6 +123,16 @@ export async function GET(request: NextRequest) {
     console.log(`Found ${utilities.length} utilities for ${stateName}`)
     console.log('Raw utilities data:', utilities.map(u => ({ name: u.utility_name, ownership: u.ownership_type, capacity: u.total_capacity_mw })))
     
+    // If no utilities found, let's see what states are actually in the database
+    if (utilities.length === 0) {
+      console.log('No utilities found, checking what states exist in database...')
+      const availableStates = await prisma.utilities.findMany({
+        select: { state: true },
+        distinct: ['state']
+      })
+      console.log('Available states in database:', availableStates.map(s => s.state))
+    }
+    
     // Transform the data to match the expected format
     const transformedUtilities = utilities.map(utility => ({
       id: utility.id,
