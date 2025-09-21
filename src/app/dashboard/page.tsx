@@ -8,10 +8,6 @@ import StateSelector from '@/components/ui/StateSelector'
 import EnergyChart from '@/components/ui/EnergyChart'
 import MetricCard from '@/components/ui/MetricCard'
 import UtilityCard from '@/components/ui/UtilityCard'
-import UtilityMap from '@/components/ui/UtilityMap'
-import GeneratorCard from '@/components/ui/GeneratorCard'
-import GeneratorMap from '@/components/ui/GeneratorMap'
-import TabNavigation from '@/components/ui/TabNavigation'
 import DetailPanel from '@/components/ui/DetailPanel'
 import ShowMoreControls, { useShowMore } from '@/components/ui/ShowMoreControls'
 import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
@@ -23,8 +19,6 @@ export default function DashboardPage() {
   const router = useRouter()
   const [selectedUtility, setSelectedUtility] = useState<any>(null)
   const [selectedGenerator, setSelectedGenerator] = useState<any>(null)
-  const [activeTab, setActiveTab] = useState<'utilities' | 'generators'>('utilities')
-  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
   const [detailPanelOpen, setDetailPanelOpen] = useState(false)
   const [generators, setGenerators] = useState<any[]>([])
   const [generatorsLoading, setGeneratorsLoading] = useState(false)
