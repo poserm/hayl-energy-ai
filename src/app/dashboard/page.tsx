@@ -652,7 +652,11 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="h-96 bg-gray-100 rounded-b-2xl overflow-hidden">
-              <SimpleUSMap height="100%" width="100%" />
+              <SimpleUSMap 
+                height="100%" 
+                width="100%" 
+                selectedState={selectedStates[0] || undefined}
+              />
             </div>
             <div className="p-4 space-y-2">
               <h4 className="text-white text-sm font-medium mb-2">Technology Breakdown</h4>

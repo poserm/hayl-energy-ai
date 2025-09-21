@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import dynamic from 'next/dynamic'
+import { STATE_COORDINATES } from '@/lib/map-utils'
 
 // Dynamic imports to avoid SSR issues
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false })
@@ -11,13 +12,15 @@ const GeoJSON = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), 
 interface SimpleUSMapProps {
   height?: string
   width?: string
+  selectedState?: string
 }
 
-export default function SimpleUSMap({ height = '500px', width = '100%' }: SimpleUSMapProps) {
+export default function SimpleUSMap({ height = '500px', width = '100%', selectedState }: SimpleUSMapProps) {
   const [isClient, setIsClient] = useState(false)
   const [geoData, setGeoData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const mapRef = useRef<any>(null)
 
   useEffect(() => {
     setIsClient(true)
@@ -57,6 +60,26 @@ export default function SimpleUSMap({ height = '500px', width = '100%' }: Simple
     loadUSStates()
   }, [])
 
+  // Zoom to selected state when it changes
+  useEffect(() => {
+    if (selectedState && mapRef.current && STATE_COORDINATES[selectedState]) {
+      const stateCoords = STATE_COORDINATES[selectedState]
+      const bounds = [
+        [stateCoords.bounds.south, stateCoords.bounds.west],
+        [stateCoords.bounds.north, stateCoords.bounds.east]
+      ]
+      
+      console.log('Zooming to state:', selectedState, bounds)
+      mapRef.current.fitBounds(bounds, { 
+        padding: [20, 20],
+        maxZoom: 8 
+      })
+    } else if (!selectedState && mapRef.current) {
+      // Reset to US view when no state selected
+      mapRef.current.setView([39.8283, -98.5795], 4)
+    }
+  }, [selectedState])
+
   // Simple style for state boundaries - just lines, no fills
   const stateStyle = {
     color: '#666666',
@@ -93,6 +116,10 @@ export default function SimpleUSMap({ height = '500px', width = '100%' }: Simple
           zoom={4}
           style={{ height: '100%', width: '100%' }}
           attributionControl={true}
+          whenCreated={(mapInstance: any) => {
+            console.log('Map instance created for error state')
+            mapRef.current = mapInstance
+          }}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -111,6 +138,10 @@ export default function SimpleUSMap({ height = '500px', width = '100%' }: Simple
         style={{ height: '100%', width: '100%' }}
         attributionControl={true}
         zoomControl={true}
+        whenCreated={(mapInstance: any) => {
+          console.log('Main map instance created')
+          mapRef.current = mapInstance
+        }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
