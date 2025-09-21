@@ -11,7 +11,7 @@ import UtilityCard from '@/components/ui/UtilityCard'
 import DetailPanel from '@/components/ui/DetailPanel'
 import ShowMoreControls, { useShowMore } from '@/components/ui/ShowMoreControls'
 import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
-import LeafletUSMap from '@/components/LeafletUSMap'
+import SimpleUSMap from '@/components/SimpleUSMap'
 import Image from 'next/image'
 
 export default function DashboardPage() {
@@ -652,15 +652,7 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="h-96 bg-gray-100 rounded-b-2xl overflow-hidden">
-              <LeafletUSMap 
-                selectedState={selectedStates[0] || ''} 
-                plants={mapData?.plants || []} 
-                loading={mapDataLoading}
-                onStateSelect={(state) => {
-                  // Update state selection when clicking on map
-                  updateSelectedStates([state])
-                }}
-              />
+              <SimpleUSMap height="100%" width="100%" />
             </div>
             <div className="p-4 space-y-2">
               <h4 className="text-white text-sm font-medium mb-2">Technology Breakdown</h4>
