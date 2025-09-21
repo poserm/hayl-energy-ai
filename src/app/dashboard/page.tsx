@@ -30,6 +30,8 @@ export default function DashboardPage() {
   const [capacityTrendsLoading, setCapacityTrendsLoading] = useState(false)
   const [mapData, setMapData] = useState<any>(null)
   const [mapDataLoading, setMapDataLoading] = useState(false)
+  const [stateUtilities, setStateUtilities] = useState<any[]>([])
+  const [stateUtilitiesLoading, setStateUtilitiesLoading] = useState(false)
   
   const {
     selectedStates,
@@ -87,6 +89,41 @@ export default function DashboardPage() {
 
     // Debounce API calls
     timeoutId = setTimeout(fetchGenerators, 300)
+    
+    return () => clearTimeout(timeoutId)
+  }, [selectedStates])
+
+  // Fetch state utilities data with debouncing
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>
+    
+    const fetchStateUtilities = async () => {
+      if (selectedStates.length === 0) {
+        setStateUtilities([])
+        return
+      }
+
+      try {
+        setStateUtilitiesLoading(true)
+        const stateName = selectedStates[0] // Use first selected state
+        const response = await fetch(`/api/utilities/by-state?state=${encodeURIComponent(stateName)}`)
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch utilities')
+        }
+        
+        const data = await response.json()
+        setStateUtilities(data.utilities || [])
+      } catch (error) {
+        console.error('Error fetching state utilities:', error)
+        setStateUtilities([])
+      } finally {
+        setStateUtilitiesLoading(false)
+      }
+    }
+
+    // Debounce API calls
+    timeoutId = setTimeout(fetchStateUtilities, 300)
     
     return () => clearTimeout(timeoutId)
   }, [selectedStates])
@@ -772,62 +809,58 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Company Bubble Visualization */}
-            <div className="relative h-96 mb-10 bg-gray-50 rounded-lg p-4">
-              {dashboardData.loading ? (
-                <div className="flex items-center justify-center h-full">
+            {/* Company Grid Visualization */}
+            <div className="mb-10">
+              {stateUtilitiesLoading ? (
+                <div className="flex items-center justify-center h-64">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
                     <p className="text-gray-600">Loading utility companies...</p>
                   </div>
                 </div>
-              ) : dashboardData.utilities && dashboardData.utilities.length > 0 ? (
-                <div className="relative w-full h-full">
-                  {dashboardData.utilities
-                    .sort((a, b) => (b.peakLoad || b.totalCapacity || 0) - (a.peakLoad || a.totalCapacity || 0))
-                    .slice(0, 5)
-                    .map((utility, index) => {
-                      const sizes = ['w-48 h-48', 'w-40 h-40', 'w-32 h-32', 'w-28 h-28', 'w-24 h-24']
-                      const positions = [
-                        'left-[20%] top-[20%]', 
-                        'right-[20%] top-[20%]', 
-                        'left-[30%] bottom-[20%]',
-                        'right-[30%] bottom-[20%]',
-                        'left-[50%] top-[50%]'
-                      ]
-                      
-                      return (
-                        <div
-                          key={utility.id || index}
-                          className={`absolute ${positions[index]} transform -translate-x-1/2 -translate-y-1/2`}
-                        >
-                          <div
-                            className={`${sizes[index]} bg-white rounded-2xl shadow-lg border border-gray-200 flex flex-col items-center justify-center p-4 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer`}
-                            onClick={() => {
-                              console.log('Selected utility for analysis:', utility)
-                              setSelectedUtilityAnalysis(utility)
-                              setActiveView('utility-analysis')
-                            }}
-                          >
-                            {index === 0 && (
-                              <span className="text-xs text-gray-500 uppercase mb-2">Largest company</span>
-                            )}
-                            <h4 className={`${index < 2 ? 'text-base' : 'text-sm'} font-bold text-gray-900 text-center mb-2 leading-tight`}>
-                              {utility.name || `Utility ${index + 1}`}
-                            </h4>
-                            <p className="text-xs text-gray-600 text-center">
-                              {utility.totalCapacity ? 
-                                `${Math.round(utility.totalCapacity).toLocaleString()} MW` :
-                                `Capacity: ${Math.floor(Math.random() * 5000 + 1000)} MW`
-                              }
+              ) : stateUtilities && stateUtilities.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {stateUtilities
+                    .slice(0, 12)
+                    .map((utility, index) => (
+                      <div
+                        key={utility.id || index}
+                        className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+                        onClick={() => {
+                          console.log('Selected utility for analysis:', utility)
+                          setSelectedUtilityAnalysis(utility)
+                          setActiveView('utility-analysis')
+                        }}
+                      >
+                        {index === 0 && (
+                          <span className="text-xs text-blue-600 uppercase mb-2 block">Largest company</span>
+                        )}
+                        <h4 className="text-lg font-bold text-gray-900 text-center mb-3 leading-tight">
+                          {utility.name || utility.utility_name || `Utility ${index + 1}`}
+                        </h4>
+                        <div className="space-y-2">
+                          <p className="text-sm text-gray-600 text-center">
+                            <span className="font-semibold">Capacity:</span> {utility.totalCapacity || utility.total_capacity_mw ? 
+                              `${Math.round(utility.totalCapacity || utility.total_capacity_mw).toLocaleString()} MW` :
+                              'N/A'
+                            }
+                          </p>
+                          {utility.ownershipType || utility.ownership_type ? (
+                            <p className="text-xs text-gray-500 text-center uppercase">
+                              {utility.ownershipType || utility.ownership_type}
                             </p>
-                          </div>
+                          ) : null}
+                          {utility.marketPosition && (
+                            <p className="text-xs text-gray-500 text-center">
+                              Market Position: {utility.marketPosition}
+                            </p>
+                          )}
                         </div>
-                      )
-                    })}
+                      </div>
+                    ))}
                 </div>
               ) : selectedStates.length === 0 ? (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex items-center justify-center h-64">
                   <div className="text-center">
                     <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -837,13 +870,13 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex items-center justify-center h-64">
                   <div className="text-center">
                     <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">No Utilities Found</h3>
-                    <p className="text-gray-600">No utility companies found for the selected states</p>
+                    <p className="text-gray-600">No utility companies found for the selected state</p>
                     <p className="text-sm text-gray-500 mt-2">Try selecting different states or check back later</p>
                   </div>
                 </div>
@@ -854,9 +887,9 @@ export default function DashboardPage() {
             <div className="text-center">
               <button 
                 className="px-8 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                disabled={!dashboardData.utilities || dashboardData.utilities.length === 0}
+                disabled={!stateUtilities || stateUtilities.length === 0}
                 onClick={() => {
-                  const topUtility = dashboardData.utilities?.[0]
+                  const topUtility = stateUtilities?.[0]
                   if (topUtility) {
                     console.log('Analyzing top utility:', topUtility)
                     setSelectedUtilityAnalysis(topUtility)
@@ -866,7 +899,7 @@ export default function DashboardPage() {
                   }
                 }}
               >
-                {dashboardData.utilities && dashboardData.utilities.length > 0 ? 'ANALYSE BUYER' : 'SELECT STATES FIRST'}
+                {stateUtilities && stateUtilities.length > 0 ? 'ANALYSE BUYER' : 'SELECT STATES FIRST'}
               </button>
             </div>
           </div>
