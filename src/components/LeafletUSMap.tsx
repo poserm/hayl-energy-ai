@@ -7,6 +7,8 @@ import dynamic from 'next/dynamic'
 const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false })
 const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false })
 const GeoJSON = dynamic(() => import('react-leaflet').then(mod => mod.GeoJSON), { ssr: false })
+const CircleMarker = dynamic(() => import('react-leaflet').then(mod => mod.CircleMarker), { ssr: false })
+const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false })
 
 interface Plant {
   plantName: string
@@ -38,172 +40,137 @@ const techColors: { [key: string]: string } = {
   'Other': '#6B7280'
 }
 
-// State name mapping for consistency
+// US Census Bureau states mapping for consistent naming
 const stateNameMap: { [key: string]: string } = {
-  'Delaware': 'Delaware',
-  'Illinois': 'Illinois', 
-  'Indiana': 'Indiana',
-  'Kentucky': 'Kentucky',
-  'Maryland': 'Maryland',
-  'Michigan': 'Michigan',
-  'New Jersey': 'New Jersey',
-  'North Carolina': 'North Carolina',
-  'Ohio': 'Ohio', 
-  'Pennsylvania': 'Pennsylvania',
-  'Tennessee': 'Tennessee',
-  'Virginia': 'Virginia',
-  'West Virginia': 'West Virginia',
-  'District of Columbia': 'District of Columbia'
+  'Alabama': 'Alabama', 'Alaska': 'Alaska', 'Arizona': 'Arizona', 'Arkansas': 'Arkansas',
+  'California': 'California', 'Colorado': 'Colorado', 'Connecticut': 'Connecticut',
+  'Delaware': 'Delaware', 'Florida': 'Florida', 'Georgia': 'Georgia', 'Hawaii': 'Hawaii',
+  'Idaho': 'Idaho', 'Illinois': 'Illinois', 'Indiana': 'Indiana', 'Iowa': 'Iowa',
+  'Kansas': 'Kansas', 'Kentucky': 'Kentucky', 'Louisiana': 'Louisiana', 'Maine': 'Maine',
+  'Maryland': 'Maryland', 'Massachusetts': 'Massachusetts', 'Michigan': 'Michigan',
+  'Minnesota': 'Minnesota', 'Mississippi': 'Mississippi', 'Missouri': 'Missouri',
+  'Montana': 'Montana', 'Nebraska': 'Nebraska', 'Nevada': 'Nevada', 'New Hampshire': 'New Hampshire',
+  'New Jersey': 'New Jersey', 'New Mexico': 'New Mexico', 'New York': 'New York',
+  'North Carolina': 'North Carolina', 'North Dakota': 'North Dakota', 'Ohio': 'Ohio',
+  'Oklahoma': 'Oklahoma', 'Oregon': 'Oregon', 'Pennsylvania': 'Pennsylvania',
+  'Rhode Island': 'Rhode Island', 'South Carolina': 'South Carolina', 'South Dakota': 'South Dakota',
+  'Tennessee': 'Tennessee', 'Texas': 'Texas', 'Utah': 'Utah', 'Vermont': 'Vermont',
+  'Virginia': 'Virginia', 'Washington': 'Washington', 'West Virginia': 'West Virginia',
+  'Wisconsin': 'Wisconsin', 'Wyoming': 'Wyoming', 'District of Columbia': 'District of Columbia',
+  'Puerto Rico': 'Puerto Rico'
 }
 
-// US States GeoJSON data (simplified for key PJM states)
-const usStatesGeoJSON = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": { "name": "Virginia", "abbr": "VA" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-83.675, 36.540], [-75.242, 36.540], [-75.770, 37.930], [-77.040, 38.804], 
-          [-78.349, 39.464], [-80.934, 39.200], [-83.001, 38.783], [-83.675, 36.540]
-        ]]
-      }
-    },
-    {
-      "type": "Feature", 
-      "properties": { "name": "Pennsylvania", "abbr": "PA" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-80.934, 39.200], [-75.350, 39.881], [-74.705, 40.635], [-75.527, 41.203],
-          [-79.762, 42.269], [-80.600, 42.000], [-80.934, 39.200]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Ohio", "abbr": "OH" },
-      "geometry": {
-        "type": "Polygon", 
-        "coordinates": [[
-          [-84.820, 38.404], [-80.934, 39.200], [-80.934, 41.977], [-84.801, 41.694],
-          [-84.807, 39.103], [-84.820, 38.404]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Maryland", "abbr": "MD" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-79.487, 39.200], [-75.048, 38.451], [-75.994, 38.228], [-79.487, 39.200]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "West Virginia", "abbr": "WV" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-82.644, 38.161], [-78.349, 39.464], [-77.040, 38.804], [-81.106, 37.208], [-82.644, 38.161]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "North Carolina", "abbr": "NC" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-84.321, 34.988], [-75.460, 34.729], [-76.910, 36.550], [-83.109, 36.497], [-84.321, 34.988]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Delaware", "abbr": "DE" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-75.770, 38.451], [-75.047, 38.451], [-75.047, 39.881], [-75.350, 39.881], [-75.770, 38.451]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "New Jersey", "abbr": "NJ" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-75.350, 39.881], [-74.027, 40.008], [-74.705, 40.635], [-75.350, 39.881]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Illinois", "abbr": "IL" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-91.513, 36.970], [-87.019, 36.970], [-87.041, 42.508], [-90.639, 42.510], [-91.513, 36.970]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Indiana", "abbr": "IN" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-88.097, 37.771], [-84.784, 37.771], [-84.807, 39.103], [-87.041, 42.508], [-88.097, 37.771]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Kentucky", "abbr": "KY" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-89.571, 36.497], [-81.964, 36.497], [-83.001, 38.783], [-89.404, 38.122], [-89.571, 36.497]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Michigan", "abbr": "MI" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-90.418, 41.696], [-82.413, 41.677], [-82.898, 45.023], [-88.378, 45.023], [-90.418, 41.696]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Tennessee", "abbr": "TN" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-90.310, 34.982], [-81.647, 35.016], [-83.109, 36.497], [-89.571, 36.497], [-90.310, 34.982]
-        ]]
-      }
-    }
-  ]
+interface GeoJSONFeature {
+  type: string
+  properties: {
+    name?: string
+    NAME?: string
+    [key: string]: any
+  }
+  geometry: {
+    type: 'Polygon' | 'MultiPolygon'
+    coordinates: number[][][] | number[][][][]
+  }
+}
+
+interface GeoJSONData {
+  type: string
+  features: GeoJSONFeature[]
 }
 
 export default function LeafletUSMap({ selectedState, plants, loading, onStateSelect }: LeafletUSMapProps) {
-  const mapRef = useRef<any>(null)
   const [map, setMap] = useState<any>(null)
   const [isClient, setIsClient] = useState(false)
+  const [usStatesGeoJSON, setUsStatesGeoJSON] = useState<GeoJSONData | null>(null)
+  const [geoDataLoading, setGeoDataLoading] = useState(true)
+  const [geoDataError, setGeoDataError] = useState<string | null>(null)
 
-  // Ensure we're on the client side
+  // Load real US states GeoJSON data from reliable source
   useEffect(() => {
     setIsClient(true)
+    
+    const loadGeoJSONData = async () => {
+      try {
+        setGeoDataLoading(true)
+        setGeoDataError(null)
+        
+        let geoData = null
+        
+        // Try the most reliable source first - us-states.json
+        try {
+          console.log('Loading US states GeoJSON data...')
+          const response = await fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
+          if (!response.ok) throw new Error('Failed to fetch from primary source')
+          geoData = await response.json()
+          console.log('Successfully loaded US states GeoJSON data:', geoData)
+        } catch (error) {
+          console.warn('Primary source failed, trying alternative...', error)
+          
+          // Fallback to alternative source
+          try {
+            const response = await fetch('https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_040_00_5m.json')
+            if (!response.ok) throw new Error('Failed to fetch from secondary source')
+            geoData = await response.json()
+            console.log('Successfully loaded US states from alternative source:', geoData)
+          } catch (error2) {
+            console.error('All external sources failed, using local fallback')
+            throw new Error('Unable to load US states data from external sources')
+          }
+        }
+        
+        if (geoData && geoData.features) {
+          // Ensure proper state name mapping
+          geoData.features = geoData.features.map((feature: any) => {
+            const stateName = feature.properties.NAME || feature.properties.name || feature.properties.NAME_1
+            return {
+              ...feature,
+              properties: {
+                ...feature.properties,
+                name: stateName,
+                NAME: stateName
+              }
+            }
+          })
+          
+          setUsStatesGeoJSON(geoData)
+          console.log('GeoJSON data processed and ready:', geoData.features.length, 'states loaded')
+        } else {
+          throw new Error('Invalid GeoJSON data structure')
+        }
+        
+      } catch (error) {
+        console.error('Failed to load GeoJSON data:', error)
+        setGeoDataError('Failed to load map data. Please check your internet connection.')
+        
+        // Create a minimal fallback with just a few key states for PJM region
+        const fallbackData = {
+          "type": "FeatureCollection",
+          "features": [
+            {
+              "type": "Feature",
+              "properties": { "name": "Virginia", "NAME": "Virginia" },
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [[[-83.675, 36.540], [-75.242, 36.540], [-75.770, 37.930], [-77.040, 38.804], [-78.349, 39.464], [-80.934, 39.200], [-83.001, 38.783], [-83.675, 36.540]]]
+              }
+            },
+            {
+              "type": "Feature",
+              "properties": { "name": "Pennsylvania", "NAME": "Pennsylvania" },
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [[[-80.934, 39.200], [-75.350, 39.881], [-74.705, 40.635], [-75.527, 41.203], [-79.762, 42.269], [-80.600, 42.000], [-80.934, 39.200]]]
+              }
+            }
+          ]
+        }
+        setUsStatesGeoJSON(fallbackData)
+      } finally {
+        setGeoDataLoading(false)
+      }
+    }
+    
+    loadGeoJSONData()
   }, [])
 
   // Handle state selection and zooming
@@ -212,21 +179,44 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
       onStateSelect(stateName)
     }
     
+    if (!usStatesGeoJSON || !map) return
+    
     // Find the state feature and zoom to it
     const stateFeature = usStatesGeoJSON.features.find(
-      feature => feature.properties.name === stateName
+      (feature: GeoJSONFeature) => feature.properties.name === stateName || feature.properties.NAME === stateName
     )
     
     if (stateFeature && map) {
-      const bounds = getBounds(stateFeature.geometry.coordinates[0])
-      map.fitBounds(bounds, { padding: [20, 20] })
+      try {
+        const bounds = getBoundsFromGeometry(stateFeature.geometry)
+        map.fitBounds(bounds, { padding: [20, 20] })
+      } catch (error) {
+        console.warn('Failed to calculate bounds for state:', stateName, error)
+      }
     }
   }
 
-  // Calculate bounds from coordinates
-  const getBounds = (coordinates: number[][]) => {
-    const lats = coordinates.map(coord => coord[1])
-    const lngs = coordinates.map(coord => coord[0])
+  // Calculate bounds from geometry (handles Polygon and MultiPolygon)
+  const getBoundsFromGeometry = (geometry: GeoJSONFeature['geometry']) => {
+    let allCoords: number[][] = []
+    
+    if (geometry.type === 'Polygon') {
+      allCoords = geometry.coordinates[0] as number[][]
+    } else if (geometry.type === 'MultiPolygon') {
+      // Flatten all polygon coordinates
+      (geometry.coordinates as number[][][][]).forEach((polygon: number[][][]) => {
+        allCoords = allCoords.concat(polygon[0])
+      })
+    }
+    
+    if (allCoords.length === 0) {
+      // Fallback to center of US
+      return [[39.8283, -98.5795], [39.8283, -98.5795]]
+    }
+    
+    const lats = allCoords.map(coord => coord[1])
+    const lngs = allCoords.map(coord => coord[0])
+    
     return [
       [Math.min(...lats), Math.min(...lngs)],
       [Math.max(...lats), Math.max(...lngs)]
@@ -234,68 +224,106 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
   }
 
   // Style function for states
-  const getStateStyle = (feature: any) => {
-    const isSelected = feature.properties.name === selectedState
+  const getStateStyle = (feature: GeoJSONFeature) => {
+    const stateName = feature.properties.name || feature.properties.NAME || ''
+    const isSelected = stateName === selectedState
+    
+    // PJM states get different styling
+    const pjmStates = ['Virginia', 'Pennsylvania', 'Ohio', 'Maryland', 'West Virginia', 
+                       'North Carolina', 'Delaware', 'New Jersey', 'Illinois', 'Indiana', 
+                       'Kentucky', 'Michigan', 'Tennessee', 'District of Columbia']
+    const isPJMState = pjmStates.includes(stateName)
+    
     return {
-      fillColor: isSelected ? '#3B82F6' : '#f3f4f6',
-      weight: 2,
+      fillColor: isSelected ? '#3B82F6' : (isPJMState ? '#e2e8f0' : '#f8fafc'),
+      weight: isSelected ? 3 : (isPJMState ? 2 : 1),
       opacity: 1,
-      color: isSelected ? '#1e40af' : '#6b7280',
+      color: isSelected ? '#1e40af' : (isPJMState ? '#475569' : '#94a3b8'),
       dashArray: '',
-      fillOpacity: isSelected ? 0.7 : 0.3
+      fillOpacity: isSelected ? 0.8 : (isPJMState ? 0.4 : 0.2)
     }
   }
 
   // Handle feature events
-  const onEachFeature = (feature: any, layer: any) => {
+  const onEachFeature = (feature: GeoJSONFeature, layer: any) => {
+    const stateName = feature.properties.name || feature.properties.NAME || ''
+    
     layer.on({
-      mouseover: (e: any) => {
-        const layer = e.target
+      mouseover: () => {
         layer.setStyle({
-          weight: 3,
+          weight: 4,
           color: '#1e40af',
           dashArray: '',
           fillOpacity: 0.7
         })
-        layer.bringToFront()
+        if (layer.bringToFront) layer.bringToFront()
       },
-      mouseout: (e: any) => {
+      mouseout: () => {
         layer.setStyle(getStateStyle(feature))
       },
-      click: (e: any) => {
-        handleStateClick(feature.properties.name)
+      click: () => {
+        if (stateName) handleStateClick(stateName)
       }
     })
 
-    // Bind popup
+    // Bind popup with state information
+    const pjmStates = ['Virginia', 'Pennsylvania', 'Ohio', 'Maryland', 'West Virginia', 
+                       'North Carolina', 'Delaware', 'New Jersey', 'Illinois', 'Indiana', 
+                       'Kentucky', 'Michigan', 'Tennessee', 'District of Columbia']
+    const isPJMState = pjmStates.includes(stateName)
+    
     layer.bindPopup(`
-      <div class="p-2">
-        <h3 class="font-semibold">${feature.properties.name}</h3>
-        <p class="text-sm text-gray-600">Click to select this state</p>
+      <div class="p-3">
+        <h3 class="font-semibold text-lg mb-1">${stateName}</h3>
+        <p class="text-sm text-gray-600 mb-2">${isPJMState ? 'PJM Region State' : 'Outside PJM Region'}</p>
+        <p class="text-xs text-gray-500">Click to ${isPJMState ? 'explore energy data' : 'select this state'}</p>
       </div>
     `)
   }
 
   // Zoom to selected state when it changes
   useEffect(() => {
-    if (selectedState && map) {
+    if (selectedState && map && usStatesGeoJSON) {
       const stateFeature = usStatesGeoJSON.features.find(
-        feature => feature.properties.name === selectedState
+        (feature: GeoJSONFeature) => feature.properties.name === selectedState || feature.properties.NAME === selectedState
       )
       
       if (stateFeature) {
-        const bounds = getBounds(stateFeature.geometry.coordinates[0])
-        map.fitBounds(bounds, { padding: [20, 20] })
+        try {
+          const bounds = getBoundsFromGeometry(stateFeature.geometry)
+          map.fitBounds(bounds, { padding: [20, 20] })
+        } catch (error) {
+          console.warn('Failed to zoom to selected state:', selectedState, error)
+        }
       }
     }
-  }, [selectedState, map])
+  }, [selectedState, map, usStatesGeoJSON])
 
-  if (!isClient) {
+  if (!isClient || geoDataLoading) {
     return (
       <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg">
         <div className="text-center text-gray-500">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-2"></div>
-          <div className="text-sm">Loading map...</div>
+          <div className="text-sm">{geoDataLoading ? 'Loading map data...' : 'Loading map...'}</div>
+          {geoDataError && (
+            <div className="text-xs text-red-500 mt-2 max-w-xs">{geoDataError}</div>
+          )}
+        </div>
+      </div>
+    )
+  }
+  
+  if (!usStatesGeoJSON) {
+    return (
+      <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg">
+        <div className="text-center text-red-500">
+          <div className="text-sm mb-2">Failed to load map data</div>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+          >
+            Retry
+          </button>
         </div>
       </div>
     )
@@ -342,7 +370,7 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
         center={[39.8283, -98.5795]} // Center of US
         zoom={4}
         style={{ height: '100%', width: '100%' }}
-        ref={(mapInstance) => {
+        ref={(mapInstance: any) => {
           if (mapInstance) {
             setMap(mapInstance)
           }
@@ -367,13 +395,39 @@ export default function LeafletUSMap({ selectedState, plants, loading, onStateSe
           if (!plant.latitude || !plant.longitude) return null
           
           const color = techColors[plant.technology] || techColors.Other
-          const size = Math.max(8, Math.min(24, Math.sqrt(plant.totalCapacity / 1000) * 4))
+          const radius = Math.max(4, Math.min(12, Math.sqrt(plant.totalCapacity / 100) * 2))
           
-          // Create custom marker using CSS
           return (
-            <div key={plant.plantName}>
-              {/* We'll add markers using a different approach since we need custom styling */}
-            </div>
+            <CircleMarker
+              key={`${plant.plantName}-${index}`}
+              center={[plant.latitude, plant.longitude]}
+              radius={radius}
+              pathOptions={{
+                color: '#ffffff',
+                weight: 2,
+                fillColor: color,
+                fillOpacity: 0.8
+              }}
+              eventHandlers={{
+                click: (e: any) => {
+                  e.originalEvent.stopPropagation()
+                }
+              }}
+            >
+              <Popup>
+                <div className="p-2">
+                  <h4 className="font-semibold text-sm mb-1">{plant.plantName}</h4>
+                  {plant.county && (
+                    <p className="text-xs text-gray-600 mb-1">{plant.county} County</p>
+                  )}
+                  <div className="text-xs space-y-1">
+                    <div><strong>Technology:</strong> {plant.technology}</div>
+                    <div><strong>Capacity:</strong> {plant.totalCapacity.toLocaleString()} MW</div>
+                    <div><strong>Generators:</strong> {plant.generatorCount}</div>
+                  </div>
+                </div>
+              </Popup>
+            </CircleMarker>
           )
         })}
       </MapContainer>

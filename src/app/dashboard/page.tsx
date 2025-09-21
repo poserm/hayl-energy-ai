@@ -15,7 +15,7 @@ import TabNavigation from '@/components/ui/TabNavigation'
 import DetailPanel from '@/components/ui/DetailPanel'
 import ShowMoreControls, { useShowMore } from '@/components/ui/ShowMoreControls'
 import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
-import InteractiveUSMap from '@/components/InteractiveUSMap'
+import LeafletUSMap from '@/components/LeafletUSMap'
 import Image from 'next/image'
 
 export default function DashboardPage() {
@@ -658,7 +658,7 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="h-96 bg-gray-100 rounded-b-2xl overflow-hidden">
-              <InteractiveUSMap 
+              <LeafletUSMap 
                 selectedState={selectedStates[0] || ''} 
                 plants={mapData?.plants || []} 
                 loading={mapDataLoading}
