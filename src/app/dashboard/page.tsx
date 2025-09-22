@@ -1236,6 +1236,18 @@ function GeneratorsList({ states }: { states: string[] }) {
   )
 }
 
+// Simple throttle function
+const throttle = (func: () => void, limit: number) => {
+  let inThrottle: boolean
+  return () => {
+    if (!inThrottle) {
+      func()
+      inThrottle = true
+      setTimeout(() => inThrottle = false, limit)
+    }
+  }
+}
+
 // Inline Utility Analysis Component (Wireframe-based)
 function UtilityAnalysisInline({ utility }: { utility: any }) {
   const [activeSection, setActiveSection] = useState(1)
@@ -1273,7 +1285,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [activeSection])
+  }, [activeSection, sections.length, scrollToSection])
 
   // Auto-scroll detection when user scrolls manually
   useEffect(() => {
@@ -1293,21 +1305,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
     const throttledScroll = throttle(handleScroll, 200)
     window.addEventListener('scroll', throttledScroll)
     return () => window.removeEventListener('scroll', throttledScroll)
-  }, [activeSection])
+  }, [activeSection, sections])
 
-  // Simple throttle function
-  function throttle(func: Function, limit: number) {
-    let inThrottle: boolean
-    return function(this: any) {
-      const args = arguments
-      const context = this
-      if (!inThrottle) {
-        func.apply(context, args)
-        inThrottle = true
-        setTimeout(() => inThrottle = false, limit)
-      }
-    }
-  }
 
   return (
     <div className="grid grid-cols-12 gap-8">
