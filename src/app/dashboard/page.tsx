@@ -989,100 +989,56 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Utility Analysis Section */}
+        {/* Utility Analysis Section - Wireframe Format */}
         {selectedUtilityForAnalysis && (
           <section id="utility-analysis-section" className="bg-white py-16">
             <div className="max-w-7xl mx-auto px-6">
-              <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                  Utility Analysis
-                </h2>
-                <h3 className="text-2xl text-blue-600 font-semibold mb-2">
-                  {selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name}
-                </h3>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                  Comprehensive analysis of market position, operational data, and strategic insights for this utility company.
-                </p>
-              </div>
-
-              {/* Analysis Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                {/* Company Overview */}
-                <div className="bg-gray-50 rounded-2xl p-8">
-                  <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                    <svg className="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                    </svg>
-                    Company Overview
-                  </h4>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Utility Name:</span>
-                      <span className="font-semibold text-gray-900">{selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">State:</span>
-                      <span className="font-semibold text-gray-900">{selectedUtilityForAnalysis.state}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Ownership Type:</span>
-                      <span className="font-semibold text-gray-900">{selectedUtilityForAnalysis.ownershipType || selectedUtilityForAnalysis.ownership_type}</span>
-                    </div>
-                    {selectedUtilityForAnalysis.utilityNumber && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Utility Number:</span>
-                        <span className="font-semibold text-gray-900">#{selectedUtilityForAnalysis.utilityNumber}</span>
+              {/* Header */}
+              <div className="bg-gray-900 text-white rounded-2xl mb-8">
+                <div className="px-8 py-6">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-6">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
+                          <span className="text-gray-900 font-bold text-lg">
+                            {(selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name || 'UN').substring(0, 2).toUpperCase()}
+                          </span>
+                        </div>
+                        <div>
+                          <h1 className="text-2xl font-bold">{selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name}</h1>
+                          <p className="text-gray-300">{selectedUtilityForAnalysis.state}'s electric utility</p>
+                        </div>
                       </div>
-                    )}
-                    {selectedUtilityForAnalysis.nercRegion && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">NERC Region:</span>
-                        <span className="font-semibold text-gray-900">{selectedUtilityForAnalysis.nercRegion}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Market Analysis */}
-                <div className="bg-blue-50 rounded-2xl p-8">
-                  <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
-                    <svg className="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 00-2-2z" />
-                    </svg>
-                    Market Analysis
-                  </h4>
-                  <div className="space-y-4">
-                    <div className="bg-white rounded-lg p-4">
-                      <div className="text-sm text-gray-600 mb-1">Market Position</div>
-                      <div className="text-lg font-bold text-blue-600">Strong Regional Player</div>
                     </div>
-                    <div className="bg-white rounded-lg p-4">
-                      <div className="text-sm text-gray-600 mb-1">Growth Potential</div>
-                      <div className="text-lg font-bold text-green-600">High</div>
-                    </div>
-                    <div className="bg-white rounded-lg p-4">
-                      <div className="text-sm text-gray-600 mb-1">Investment Rating</div>
-                      <div className="text-lg font-bold text-blue-600">A- Stable</div>
+                    <div className="flex space-x-3">
+                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                        <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Compare
+                      </button>
+                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                        <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download
+                      </button>
+                      <button 
+                        onClick={() => setSelectedUtilityForAnalysis(null)}
+                        className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800"
+                      >
+                        <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Close
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-center space-x-4">
-                <button className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                  Generate Report
-                </button>
-                <button className="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors">
-                  Export Data
-                </button>
-                <button 
-                  onClick={() => setSelectedUtilityForAnalysis(null)}
-                  className="px-6 py-3 bg-gray-100 text-gray-600 font-medium rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  Clear Selection
-                </button>
-              </div>
+              {/* Main Analysis Content */}
+              <UtilityAnalysisInline utility={selectedUtilityForAnalysis} />
             </div>
           </section>
         )}
@@ -1205,6 +1161,249 @@ function GeneratorsList({ states }: { states: string[] }) {
         onShowLess={tableShowMore.hasLess ? tableShowMore.showLess : undefined}
         className="pt-4 border-t border-gray-100"
       />
+    </div>
+  )
+}
+
+// Inline Utility Analysis Component (Wireframe-based)
+function UtilityAnalysisInline({ utility }: { utility: any }) {
+  const [activeSection, setActiveSection] = useState(1)
+
+  const sections = [
+    { id: 1, title: 'Existing Portfolio' },
+    { id: 2, title: 'Energy demand' },
+    { id: 3, title: 'Energy Supply' }
+  ]
+
+  return (
+    <div className="grid grid-cols-12 gap-8">
+      {/* Left Side - Timeline and Content */}
+      <div className="col-span-8">
+        <div className="flex">
+          {/* Timeline Navigation */}
+          <div className="mr-8">
+            <div className="relative">
+              {sections.map((section, index) => (
+                <div key={section.id} className="flex items-center mb-8">
+                  <button
+                    onClick={() => setActiveSection(section.id)}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-colors ${
+                      activeSection === section.id
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                    }`}
+                  >
+                    {String(section.id).padStart(2, '0')}
+                  </button>
+                  {index < sections.length - 1 && (
+                    <div className="absolute left-6 top-12 w-0.5 h-8 bg-gray-300" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section Content */}
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              {sections[activeSection - 1].title}
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Summary of their preferred scenario. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
+            </p>
+
+            {activeSection === 1 && (
+              <>
+                {/* Company Details */}
+                <div className="grid grid-cols-3 gap-4 mb-8">
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div className="w-3 h-3 rounded-full bg-blue-500" />
+                      <span className="text-sm font-medium text-gray-900">Ownership</span>
+                    </div>
+                    <p className="text-lg font-bold text-gray-900">
+                      {utility.ownershipType || utility.ownership_type || 'Unknown'}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div className="w-3 h-3 rounded-full bg-green-500" />
+                      <span className="text-sm font-medium text-gray-900">State</span>
+                    </div>
+                    <p className="text-lg font-bold text-gray-900">
+                      {utility.state || 'Unknown'}
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <div className="w-3 h-3 rounded-full bg-purple-500" />
+                      <span className="text-sm font-medium text-gray-900">Utility #</span>
+                    </div>
+                    <p className="text-lg font-bold text-gray-900">
+                      {utility.utilityNumber || 'N/A'}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Sample Data Table */}
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Company Information</h3>
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ATTRIBUTE</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">VALUE</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">STATUS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="border-t border-gray-200">
+                        <td className="px-4 py-2 text-sm text-gray-900">Utility Name</td>
+                        <td className="px-4 py-2 text-sm text-gray-900">{utility.name || utility.utility_name}</td>
+                        <td className="px-4 py-2 text-sm text-green-600">Active</td>
+                      </tr>
+                      <tr className="border-t border-gray-200">
+                        <td className="px-4 py-2 text-sm text-gray-900">State Coverage</td>
+                        <td className="px-4 py-2 text-sm text-gray-900">{utility.state}</td>
+                        <td className="px-4 py-2 text-sm text-green-600">Primary</td>
+                      </tr>
+                      <tr className="border-t border-gray-200">
+                        <td className="px-4 py-2 text-sm text-gray-900">Ownership Model</td>
+                        <td className="px-4 py-2 text-sm text-gray-900">{utility.ownershipType || utility.ownership_type}</td>
+                        <td className="px-4 py-2 text-sm text-blue-600">Verified</td>
+                      </tr>
+                      <tr className="border-t border-gray-200">
+                        <td className="px-4 py-2 text-sm text-gray-900">NERC Region</td>
+                        <td className="px-4 py-2 text-sm text-gray-900">{utility.nercRegion || 'Available'}</td>
+                        <td className="px-4 py-2 text-sm text-green-600">Current</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p className="text-sm text-gray-600 mt-4">
+                  Source(s): EIA.gov, State regulatory filings
+                </p>
+              </>
+            )}
+
+            {activeSection === 2 && (
+              <>
+                {/* Demand Analysis */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600">Peak Demand</p>
+                      <p className="text-xl font-bold text-gray-900">1.2 GW</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600">Annual Growth</p>
+                      <p className="text-xl font-bold text-gray-900">2.1%</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600">Forecast Year</p>
+                      <p className="text-xl font-bold text-gray-900">2025</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mock Chart */}
+                <div className="h-64 bg-gray-50 rounded-lg p-4 flex items-end justify-between">
+                  {[2020, 2021, 2022, 2023, 2024].map((year) => (
+                    <div key={year} className="flex flex-col items-center space-y-2">
+                      <div 
+                        className="w-16 bg-blue-500 rounded-t" 
+                        style={{ height: `${Math.random() * 150 + 50}px` }}
+                      />
+                      <span className="text-xs text-gray-600">{year}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {activeSection === 3 && (
+              <>
+                {/* Supply Analysis */}
+                <div className="space-y-4 mb-6">
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">Generation Sources</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-sm text-gray-600">Primary Source:</span>
+                        <span className="ml-2 font-medium">Natural Gas</span>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Renewable %:</span>
+                        <span className="ml-2 font-medium">15%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Projects Table */}
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Project</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Type</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Status</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Timeline</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[...Array(4)].map((_, i) => (
+                        <tr key={i} className="border-t border-gray-200">
+                          <td className="px-4 py-2 text-sm text-gray-900">Project {i + 1}</td>
+                          <td className="px-4 py-2 text-sm text-gray-900">Solar</td>
+                          <td className="px-4 py-2 text-sm text-green-600">Planned</td>
+                          <td className="px-4 py-2 text-sm text-gray-900">2025</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Map */}
+      <div className="col-span-4">
+        <div className="bg-gray-900 rounded-2xl overflow-hidden sticky top-8">
+          <div className="p-4">
+            <h3 className="text-white font-semibold">Interactive map</h3>
+            <p className="text-gray-400 text-sm">
+              Now showing: {sections[activeSection - 1].title}
+            </p>
+          </div>
+          <div className="h-64 bg-gray-800 flex items-center justify-center">
+            <svg viewBox="0 0 200 150" className="w-32 h-24">
+              <path 
+                d="M 50 30 L 150 30 L 150 50 L 140 60 L 140 100 L 130 110 L 120 120 L 80 120 L 70 110 L 60 100 L 60 60 L 50 50 Z" 
+                fill="#6B7280" 
+                stroke="#4B5563" 
+                strokeWidth="2"
+              />
+              <text x="100" y="75" textAnchor="middle" className="fill-white text-sm">
+                {utility.state || 'State'}
+              </text>
+            </svg>
+          </div>
+          <div className="p-4 space-y-2">
+            <h4 className="text-white text-sm font-medium mb-2">Utility Details</h4>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-300 text-sm">Ownership</span>
+              <span className="text-white text-sm font-medium">{utility.ownershipType || utility.ownership_type || 'N/A'}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-300 text-sm">Region</span>
+              <span className="text-white text-sm font-medium">{utility.nercRegion || 'N/A'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
