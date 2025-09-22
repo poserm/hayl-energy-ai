@@ -783,7 +783,7 @@ export default function DashboardPage() {
                 title: "DOE Announces $3.5B Investment in Grid Modernization Initiative",
                 source: "Energy Wire",
                 date: "Dec 18, 2024",
-                image: "https://picsum.photos/400/300?random=1",
+                image: "https://via.placeholder.com/400x300/1e40af/ffffff?text=GRID+MODERNIZATION",
                 category: "Policy",
                 bgColor: "bg-blue-500"
               },
@@ -791,7 +791,7 @@ export default function DashboardPage() {
                 title: "Solar Power Reaches Record 15% of U.S. Electricity Generation",
                 source: "Reuters Energy",
                 date: "Dec 17, 2024", 
-                image: "https://picsum.photos/400/300?random=2",
+                image: "https://via.placeholder.com/400x300/eab308/000000?text=SOLAR+ENERGY",
                 category: "Renewable",
                 bgColor: "bg-yellow-500"
               },
@@ -799,7 +799,7 @@ export default function DashboardPage() {
                 title: "Wind Farm Projects Drive $12B Investment in Rural Communities",
                 source: "Bloomberg Green",
                 date: "Dec 16, 2024",
-                image: "https://picsum.photos/400/300?random=3",
+                image: "https://via.placeholder.com/400x300/10b981/ffffff?text=WIND+POWER",
                 category: "Investment",
                 bgColor: "bg-green-500"
               },
@@ -807,7 +807,7 @@ export default function DashboardPage() {
                 title: "Energy Storage Deployments Surge 85% Year-Over-Year",
                 source: "Utility Dive",
                 date: "Dec 15, 2024",
-                image: "https://picsum.photos/400/300?random=4",
+                image: "https://via.placeholder.com/400x300/8b5cf6/ffffff?text=ENERGY+STORAGE",
                 category: "Technology",
                 bgColor: "bg-purple-500"
               }
