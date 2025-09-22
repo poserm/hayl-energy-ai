@@ -814,20 +814,11 @@ export default function DashboardPage() {
             ].map((article, index) => (
               <div key={index} className="group cursor-pointer">
                 <div className={`relative h-48 rounded-lg mb-3 overflow-hidden ${article.bgColor} flex items-center justify-center`}>
-                  <img 
-                    src={article.image} 
-                    alt={article.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none'
-                      e.currentTarget.nextElementSibling.style.display = 'flex'
-                    }}
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-lg hidden">
-                    {article.category}
+                  <div className="flex items-center justify-center text-white font-bold text-xl w-full h-full">
+                    {article.category.toUpperCase()}
                   </div>
                   <div className="absolute top-2 left-2">
-                    <span className="px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded">
+                    <span className="px-2 py-1 bg-black bg-opacity-50 text-white text-xs font-medium rounded">
                       {article.category}
                     </span>
                   </div>
