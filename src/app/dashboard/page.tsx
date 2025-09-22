@@ -33,6 +33,7 @@ export default function DashboardPage() {
   const [stateUtilities, setStateUtilities] = useState<any[]>([])
   const [stateUtilitiesLoading, setStateUtilitiesLoading] = useState(false)
   const [selectedOwnershipType, setSelectedOwnershipType] = useState<string | null>(null)
+  const [selectedUtilityForAnalysis, setSelectedUtilityForAnalysis] = useState<any>(null)
   
   const {
     selectedStates,
@@ -888,22 +889,54 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ) : stateUtilities && stateUtilities.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {stateUtilities.map((utility, index) => (
-                    <div
-                      key={utility.id || index}
-                      className="bg-white rounded-lg shadow-md border border-gray-200 p-4 hover:shadow-lg transition-shadow duration-200"
-                    >
-                      <h4 className="text-md font-semibold text-gray-900 text-center leading-tight">
-                        {utility.name || utility.utility_name || `Utility ${index + 1}`}
-                      </h4>
-                      {utility.ownershipType || utility.ownership_type ? (
-                        <p className="text-xs text-gray-500 text-center mt-2 uppercase">
-                          {utility.ownershipType || utility.ownership_type}
-                        </p>
-                      ) : null}
-                    </div>
-                  ))}
+                <div className="relative">
+                  {/* Horizontal Scrollable Tiles */}
+                  <div className="flex overflow-x-auto space-x-4 pb-4 scroll-smooth">
+                    {stateUtilities.map((utility, index) => (
+                      <div
+                        key={utility.id || index}
+                        onClick={() => setSelectedUtilityForAnalysis(utility)}
+                        className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+                          selectedUtilityForAnalysis?.id === utility.id
+                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="text-center">
+                          <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
+                            {utility.name || utility.utility_name || `Utility ${index + 1}`}
+                          </h4>
+                          {utility.ownershipType || utility.ownership_type ? (
+                            <p className="text-sm text-gray-500 uppercase font-medium mb-3">
+                              {utility.ownershipType || utility.ownership_type}
+                            </p>
+                          ) : null}
+                          {utility.utilityNumber && (
+                            <p className="text-xs text-gray-400 mb-2">
+                              Utility #{utility.utilityNumber}
+                            </p>
+                          )}
+                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                            selectedUtilityForAnalysis?.id === utility.id
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {selectedUtilityForAnalysis?.id === utility.id ? '✓ Selected' : 'Click to Select'}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Scroll Indicators */}
+                  <div className="flex justify-center mt-4 space-x-2">
+                    {stateUtilities.map((_, index) => (
+                      <div
+                        key={index}
+                        className="w-2 h-2 rounded-full bg-gray-300"
+                      />
+                    ))}
+                  </div>
                 </div>
               ) : selectedStates.length === 0 ? (
                 <div className="flex items-center justify-center h-64">
@@ -932,24 +965,127 @@ export default function DashboardPage() {
             {/* CTA Button */}
             <div className="text-center">
               <button 
-                className="px-8 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                disabled={!stateUtilities || stateUtilities.length === 0}
+                className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg"
+                disabled={!selectedUtilityForAnalysis}
                 onClick={() => {
-                  const topUtility = stateUtilities?.[0]
-                  if (topUtility) {
-                    console.log('Analyzing top utility:', topUtility)
-                    setSelectedUtilityAnalysis(topUtility)
-                    setActiveView('utility-analysis')
+                  if (selectedUtilityForAnalysis) {
+                    console.log('Analyzing selected utility:', selectedUtilityForAnalysis)
+                    // Scroll to analysis section
+                    const analysisSection = document.getElementById('utility-analysis-section')
+                    if (analysisSection) {
+                      analysisSection.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                      })
+                    }
                   } else {
-                    alert('No utilities available to analyze. Please select states first.')
+                    alert('Please select a utility first by clicking on one of the tiles above.')
                   }
                 }}
               >
-                {stateUtilities && stateUtilities.length > 0 ? 'ANALYSE BUYER' : 'SELECT STATES FIRST'}
+                {selectedUtilityForAnalysis ? `ANALYZE ${(selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name || 'UTILITY').toUpperCase()}` : 'SELECT A UTILITY FIRST'}
               </button>
             </div>
           </div>
         </div>
+
+        {/* Utility Analysis Section */}
+        {selectedUtilityForAnalysis && (
+          <section id="utility-analysis-section" className="bg-white py-16">
+            <div className="max-w-7xl mx-auto px-6">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                  Utility Analysis
+                </h2>
+                <h3 className="text-2xl text-blue-600 font-semibold mb-2">
+                  {selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name}
+                </h3>
+                <p className="text-gray-600 max-w-2xl mx-auto">
+                  Comprehensive analysis of market position, operational data, and strategic insights for this utility company.
+                </p>
+              </div>
+
+              {/* Analysis Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                {/* Company Overview */}
+                <div className="bg-gray-50 rounded-2xl p-8">
+                  <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <svg className="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    Company Overview
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Utility Name:</span>
+                      <span className="font-semibold text-gray-900">{selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">State:</span>
+                      <span className="font-semibold text-gray-900">{selectedUtilityForAnalysis.state}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Ownership Type:</span>
+                      <span className="font-semibold text-gray-900">{selectedUtilityForAnalysis.ownershipType || selectedUtilityForAnalysis.ownership_type}</span>
+                    </div>
+                    {selectedUtilityForAnalysis.utilityNumber && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Utility Number:</span>
+                        <span className="font-semibold text-gray-900">#{selectedUtilityForAnalysis.utilityNumber}</span>
+                      </div>
+                    )}
+                    {selectedUtilityForAnalysis.nercRegion && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">NERC Region:</span>
+                        <span className="font-semibold text-gray-900">{selectedUtilityForAnalysis.nercRegion}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Market Analysis */}
+                <div className="bg-blue-50 rounded-2xl p-8">
+                  <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <svg className="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 00-2-2z" />
+                    </svg>
+                    Market Analysis
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-lg p-4">
+                      <div className="text-sm text-gray-600 mb-1">Market Position</div>
+                      <div className="text-lg font-bold text-blue-600">Strong Regional Player</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4">
+                      <div className="text-sm text-gray-600 mb-1">Growth Potential</div>
+                      <div className="text-lg font-bold text-green-600">High</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4">
+                      <div className="text-sm text-gray-600 mb-1">Investment Rating</div>
+                      <div className="text-lg font-bold text-blue-600">A- Stable</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-center space-x-4">
+                <button className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                  Generate Report
+                </button>
+                <button className="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors">
+                  Export Data
+                </button>
+                <button 
+                  onClick={() => setSelectedUtilityForAnalysis(null)}
+                  className="px-6 py-3 bg-gray-100 text-gray-600 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Clear Selection
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
       </main>
 
       {/* Detail Panel Modal */}
