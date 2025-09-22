@@ -778,11 +778,56 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {['Policy', 'Indiana income', 'Energy target', 'Policy'].map((title, index) => (
+            {[
+              {
+                title: "DOE Announces $3.5B Investment in Grid Modernization",
+                source: "Energy Wire",
+                date: "Dec 18, 2024",
+                image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=300&fit=crop&crop=center",
+                category: "Policy"
+              },
+              {
+                title: "Solar Power Reaches Record 15% of U.S. Electricity Generation",
+                source: "Reuters Energy",
+                date: "Dec 17, 2024", 
+                image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=300&fit=crop&crop=center",
+                category: "Renewable"
+              },
+              {
+                title: "Wind Farm Projects Drive $12B Investment in Rural Communities",
+                source: "Bloomberg Green",
+                date: "Dec 16, 2024",
+                image: "https://images.unsplash.com/photo-1548337138-e87d889cc369?w=400&h=300&fit=crop&crop=center",
+                category: "Investment"
+              },
+              {
+                title: "Energy Storage Deployments Surge 85% Year-Over-Year",
+                source: "Utility Dive",
+                date: "Dec 15, 2024",
+                image: "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=400&h=300&fit=crop&crop=center",
+                category: "Technology"
+              }
+            ].map((article, index) => (
               <div key={index} className="group cursor-pointer">
-                <div className="h-48 bg-gray-200 rounded-lg mb-3 group-hover:bg-gray-300 transition-colors" />
-                <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">{title}</h4>
-                <p className="text-sm text-gray-600">9 Dec, 2024 | CNN</p>
+                <div className="relative h-48 rounded-lg mb-3 overflow-hidden">
+                  <img 
+                    src={article.image} 
+                    alt={article.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute top-2 left-2">
+                    <span className="px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded">
+                      {article.category}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-300" />
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 leading-tight line-clamp-2">
+                  {article.title}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  {article.date} | {article.source}
+                </p>
               </div>
             ))}
           </div>
