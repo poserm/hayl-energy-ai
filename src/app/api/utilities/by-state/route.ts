@@ -68,30 +68,47 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'State parameter is required' }, { status: 400 })
     }
     
-    // Convert state name to acronym
+    // Try multiple state formats to be more flexible
     const stateAcronym = STATE_NAME_TO_ACRONYM[stateName]
+    const possibleStateValues = [
+      stateName, // Original full name like "Maryland"
+      stateAcronym, // Acronym like "MD" 
+      stateName.toUpperCase(), // "MARYLAND"
+      stateName.toLowerCase(), // "maryland"
+      stateAcronym?.toUpperCase(), // "MD"
+      stateAcronym?.toLowerCase() // "md"
+    ].filter(Boolean)
     
-    if (!stateAcronym) {
-      return NextResponse.json({ error: `Invalid state name: ${stateName}. Available states: ${Object.keys(STATE_NAME_TO_ACRONYM).join(', ')}` }, { status: 400 })
-    }
-    
-    console.log(`Fetching utilities for state: ${stateName} (${stateAcronym})`)
+    console.log(`Fetching utilities for state: ${stateName}`)
+    console.log(`Trying state values: ${possibleStateValues.join(', ')}`)
     if (ownershipFilter) {
       console.log(`Filtering by ownership type: ${ownershipFilter}`)
     }
     
-    // Build where clause
+    // Build where clause - try multiple state formats
     const whereClause: any = {
-      state: stateAcronym
+      state: {
+        in: possibleStateValues
+      }
     }
     
     // Add ownership filter if provided
     if (ownershipFilter) {
-      // Map dashboard categories to database values
+      // Map dashboard categories to database values (case-insensitive)
       const ownershipMapping: { [key: string]: string[] } = {
-        'INVESTOR OWNED': ['Investor Owned', 'Investor-Owned', 'IOU', 'Investor'],
-        'COOPERATIVES': ['Cooperative', 'Co-op', 'Coop', 'Rural Electric Cooperative'],
-        'MUNICIPALITIES': ['Municipal', 'Municipality', 'Public', 'City', 'Town']
+        'INVESTOR OWNED': [
+          'Investor Owned', 'Investor-Owned', 'IOU', 'Investor', 'INVESTOR OWNED', 
+          'investor owned', 'Investor owned', 'Private', 'PRIVATE', 'private'
+        ],
+        'COOPERATIVES': [
+          'Cooperative', 'Co-op', 'Coop', 'Rural Electric Cooperative', 'COOPERATIVE',
+          'cooperative', 'CO-OP', 'co-op', 'COOP', 'coop', 'Rural Cooperative'
+        ],
+        'MUNICIPALITIES': [
+          'Municipal', 'Municipality', 'Public', 'City', 'Town', 'MUNICIPAL',
+          'municipal', 'MUNICIPALITY', 'municipality', 'PUBLIC', 'public',
+          'Government', 'GOVERNMENT', 'government', 'State', 'STATE', 'state'
+        ]
       }
       
       const dbValues = ownershipMapping[ownershipFilter.toUpperCase()]
@@ -150,7 +167,11 @@ export async function GET(request: NextRequest) {
       utilities: transformedUtilities,
       count: transformedUtilities.length,
       state: stateName,
-      stateAcronym: stateAcronym
+      stateAcronym: stateAcronym,
+      searchedStateValues: possibleStateValues,
+      appliedFilters: {
+        ownership: ownershipFilter || 'none'
+      }
     })
     
   } catch (error) {
