@@ -62,25 +62,27 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const stateName = searchParams.get('state')
+    const ownershipType = searchParams.get('ownership')
     
     if (!stateName) {
       return NextResponse.json({ error: 'State parameter is required' }, { status: 400 })
     }
     
-    // Try multiple state formats to be more flexible
+    // Try multiple state formats, prioritizing abbreviations since DB stores 2-char codes
     const stateAcronym = STATE_NAME_TO_ACRONYM[stateName]
     const possibleStateValues = [
-      stateName, // Original full name like "Maryland"
-      stateAcronym, // Acronym like "MD" 
-      stateName.toUpperCase(), // "MARYLAND"
-      stateName.toLowerCase(), // "maryland"
+      stateAcronym, // PRIMARY: Acronym like "MD" (most likely to match since DB field is VARCHAR(2))
       stateAcronym?.toUpperCase(), // "MD"
-      stateAcronym?.toLowerCase() // "md"
+      stateAcronym?.toLowerCase(), // "md"
+      stateName, // Full name like "Maryland" (less likely but try anyway)
+      stateName.toUpperCase(), // "MARYLAND"
+      stateName.toLowerCase() // "maryland"
     ].filter(Boolean)
     
     console.log(`=== DEBUGGING UTILITIES API ===`)
     console.log(`Requested state: ${stateName}`)
     console.log(`State acronym from mapping: ${stateAcronym}`)
+    console.log(`Ownership filter: ${ownershipType || 'None'}`)
     console.log(`Trying these state values: ${possibleStateValues.join(', ')}`)
     
     // Build where clause - try multiple state formats
@@ -88,6 +90,11 @@ export async function GET(request: NextRequest) {
       state: {
         in: possibleStateValues
       }
+    }
+    
+    // Add ownership filtering if specified
+    if (ownershipType) {
+      whereClause.ownership_type = ownershipType
     }
     
     // Fetch utilities from Prisma database
@@ -98,18 +105,16 @@ export async function GET(request: NextRequest) {
         utility_name: true,
         state: true,
         ownership_type: true,
-        total_capacity_mw: true,
-        counties_served: true,
-        market_position: true,
-        logo_scale: true
+        utility_number: true,
+        nerc_region: true
       },
       orderBy: {
-        total_capacity_mw: 'desc'
+        utility_name: 'asc'
       }
     })
     
     console.log(`Found ${utilities.length} utilities for ${stateName}`)
-    console.log('Raw utilities data:', utilities.map(u => ({ name: u.utility_name, ownership: u.ownership_type, capacity: u.total_capacity_mw })))
+    console.log('Raw utilities data:', utilities.map(u => ({ name: u.utility_name, ownership: u.ownership_type, utility_number: u.utility_number })))
     
     // If no utilities found, let's see what states are actually in the database
     if (utilities.length === 0) {
@@ -127,10 +132,8 @@ export async function GET(request: NextRequest) {
       name: utility.utility_name,
       state: utility.state,
       ownershipType: utility.ownership_type,
-      totalCapacity: utility.total_capacity_mw || 0,
-      countiesServed: utility.counties_served,
-      marketPosition: utility.market_position,
-      logoScale: utility.logo_scale
+      utilityNumber: utility.utility_number,
+      nercRegion: utility.nerc_region
     }))
     
     return NextResponse.json({
