@@ -832,28 +832,24 @@ export default function DashboardPage() {
                 <div className={`relative h-48 rounded-lg mb-3 overflow-hidden bg-gray-200`}>
                   {/* Real utility images with progressive fallback */}
                   <img 
-                    src={article.images[0]} 
+                    src={`https://picsum.photos/400/300?random=${index + 1}`}
                     alt={article.title}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      const currentSrc = target.src;
-                      
-                      // Try the next image in the array
-                      if (currentSrc === article.images[0] && article.images[1]) {
-                        target.src = article.images[1];
-                      } else if (currentSrc === article.images[1] && article.images[2]) {
-                        target.src = article.images[2];
-                      } else {
-                        // Final fallback to a reliable placeholder service
+                      // Simple fallback to a solid color background
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
                         const categoryColors = {
-                          'Policy': '3b82f6',
-                          'Renewable': 'eab308', 
-                          'Investment': '10b981',
-                          'Technology': '8b5cf6'
+                          'Policy': 'bg-blue-500',
+                          'Renewable': 'bg-yellow-500', 
+                          'Investment': 'bg-green-500',
+                          'Technology': 'bg-purple-500'
                         };
-                        const color = categoryColors[article.category as keyof typeof categoryColors] || '6b7280';
-                        target.src = `https://via.placeholder.com/400x300/${color}/ffffff?text=${encodeURIComponent(article.category)}`;
+                        const color = categoryColors[article.category as keyof typeof categoryColors] || 'bg-gray-500';
+                        parent.className = parent.className.replace('bg-gray-200', color);
+                        parent.innerHTML = `<div class="flex items-center justify-center h-full text-white font-bold text-lg">${article.category}</div>`;
                       }
                     }}
                   />
