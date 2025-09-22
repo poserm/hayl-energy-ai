@@ -783,7 +783,7 @@ export default function DashboardPage() {
                 title: "DOE Announces $3.5B Investment in Grid Modernization Initiative",
                 source: "Energy Wire",
                 date: "Dec 18, 2024",
-                image: "https://via.placeholder.com/400x300/1e40af/ffffff?text=GRID+MODERNIZATION",
+                image: "https://www.energy.gov/sites/default/files/styles/full_article_width/public/power-lines-2938741_1920.jpg",
                 category: "Policy",
                 bgColor: "bg-blue-500"
               },
@@ -791,7 +791,7 @@ export default function DashboardPage() {
                 title: "Solar Power Reaches Record 15% of U.S. Electricity Generation",
                 source: "Reuters Energy",
                 date: "Dec 17, 2024", 
-                image: "https://via.placeholder.com/400x300/eab308/000000?text=SOLAR+ENERGY",
+                image: "https://cdn.pixabay.com/photo/2017/09/12/13/56/solar-panel-2742304_1280.jpg",
                 category: "Renewable",
                 bgColor: "bg-yellow-500"
               },
@@ -799,7 +799,7 @@ export default function DashboardPage() {
                 title: "Wind Farm Projects Drive $12B Investment in Rural Communities",
                 source: "Bloomberg Green",
                 date: "Dec 16, 2024",
-                image: "https://via.placeholder.com/400x300/10b981/ffffff?text=WIND+POWER",
+                image: "https://cdn.pixabay.com/photo/2013/11/02/08/31/wind-farm-204048_1280.jpg",
                 category: "Investment",
                 bgColor: "bg-green-500"
               },
@@ -807,14 +807,24 @@ export default function DashboardPage() {
                 title: "Energy Storage Deployments Surge 85% Year-Over-Year",
                 source: "Utility Dive",
                 date: "Dec 15, 2024",
-                image: "https://via.placeholder.com/400x300/8b5cf6/ffffff?text=ENERGY+STORAGE",
+                image: "https://cdn.pixabay.com/photo/2019/02/28/11/10/battery-4026487_1280.jpg",
                 category: "Technology",
                 bgColor: "bg-purple-500"
               }
             ].map((article, index) => (
               <div key={index} className="group cursor-pointer">
                 <div className={`relative h-48 rounded-lg mb-3 overflow-hidden ${article.bgColor} flex items-center justify-center`}>
-                  <div className="flex items-center justify-center text-white font-bold text-xl w-full h-full">
+                  <img 
+                    src={article.image} 
+                    alt={article.title}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                      const fallback = e.currentTarget.parentElement?.querySelector('.fallback-content')
+                      if (fallback) fallback.style.display = 'flex'
+                    }}
+                  />
+                  <div className="fallback-content absolute inset-0 flex items-center justify-center text-white font-bold text-xl hidden">
                     {article.category.toUpperCase()}
                   </div>
                   <div className="absolute top-2 left-2">
