@@ -1036,13 +1036,18 @@ export default function DashboardPage() {
                 onClick={() => {
                   if (selectedUtilityForAnalysis) {
                     console.log('Analyzing selected utility:', selectedUtilityForAnalysis)
-                    // Scroll to analysis section
+                    // Scroll to analysis section with better positioning
                     const analysisSection = document.getElementById('utility-analysis-section')
                     if (analysisSection) {
                       analysisSection.scrollIntoView({ 
                         behavior: 'smooth',
-                        block: 'start'
+                        block: 'start',
+                        inline: 'nearest'
                       })
+                      // Add a small delay to ensure better positioning
+                      setTimeout(() => {
+                        window.scrollBy(0, -80) // Offset to show more of the section
+                      }, 800)
                     }
                   } else {
                     alert('Please select a utility first by clicking on one of the tiles above.')
@@ -1241,45 +1246,121 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
     { id: 3, title: 'Energy Supply' }
   ]
 
+  // Function to scroll to specific section
+  const scrollToSection = (sectionId: number) => {
+    setActiveSection(sectionId)
+    const sectionElement = document.getElementById(`analysis-section-${sectionId}`)
+    if (sectionElement) {
+      sectionElement.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      })
+    }
+  }
+
+  // Handle scroll navigation with arrow keys or wheel
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' && activeSection < sections.length) {
+        e.preventDefault()
+        scrollToSection(activeSection + 1)
+      } else if (e.key === 'ArrowUp' && activeSection > 1) {
+        e.preventDefault()
+        scrollToSection(activeSection - 1)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [activeSection])
+
+  // Auto-scroll detection when user scrolls manually
+  useEffect(() => {
+    const handleScroll = () => {
+      sections.forEach(section => {
+        const element = document.getElementById(`analysis-section-${section.id}`)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          const isVisible = rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2
+          if (isVisible && activeSection !== section.id) {
+            setActiveSection(section.id)
+          }
+        }
+      })
+    }
+
+    const throttledScroll = throttle(handleScroll, 200)
+    window.addEventListener('scroll', throttledScroll)
+    return () => window.removeEventListener('scroll', throttledScroll)
+  }, [activeSection])
+
+  // Simple throttle function
+  function throttle(func: Function, limit: number) {
+    let inThrottle: boolean
+    return function(this: any) {
+      const args = arguments
+      const context = this
+      if (!inThrottle) {
+        func.apply(context, args)
+        inThrottle = true
+        setTimeout(() => inThrottle = false, limit)
+      }
+    }
+  }
+
   return (
     <div className="grid grid-cols-12 gap-8">
       {/* Left Side - Timeline and Content */}
       <div className="col-span-8">
         <div className="flex">
           {/* Timeline Navigation */}
-          <div className="mr-8">
+          <div className="mr-8 sticky top-24">
             <div className="relative">
               {sections.map((section, index) => (
                 <div key={section.id} className="flex items-center mb-8">
                   <button
-                    onClick={() => setActiveSection(section.id)}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-colors ${
+                    onClick={() => scrollToSection(section.id)}
+                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-colors shadow-md ${
                       activeSection === section.id
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                        ? 'bg-gray-900 text-white ring-2 ring-blue-400'
+                        : 'bg-gray-200 text-gray-500 hover:bg-gray-300 hover:shadow-lg'
                     }`}
                   >
                     {String(section.id).padStart(2, '0')}
                   </button>
                   {index < sections.length - 1 && (
-                    <div className="absolute left-6 top-12 w-0.5 h-8 bg-gray-300" />
+                    <div className={`absolute left-6 top-12 w-0.5 h-8 transition-colors ${
+                      activeSection > section.id ? 'bg-gray-900' : 'bg-gray-300'
+                    }`} />
                   )}
                 </div>
               ))}
             </div>
+            
+            {/* Scroll Hint */}
+            <div className="mt-8 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-xs text-blue-700 mb-1">Navigation Tip:</p>
+              <p className="text-xs text-blue-600">
+                • Click numbers to jump<br/>
+                • Use ↑↓ arrow keys<br/>
+                • Scroll normally to browse
+              </p>
+            </div>
           </div>
 
           {/* Section Content */}
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {sections[activeSection - 1].title}
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Summary of their preferred scenario. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
-            </p>
+          <div className="flex-1 space-y-16">
+            {/* Section 01 - Existing Portfolio */}
+            <div id="analysis-section-1" className="min-h-screen scroll-mt-20">
+              <div className="flex items-center mb-4">
+                <span className="text-4xl font-bold text-gray-300 mr-4">01</span>
+                <h2 className="text-2xl font-bold text-gray-900">Existing Portfolio</h2>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Overview of current utility infrastructure and portfolio composition. Detailed analysis of existing assets and operational capacity.
+              </p>
 
-            {activeSection === 1 && (
-              <>
                 {/* Company Details */}
                 <div className="grid grid-cols-3 gap-4 mb-8">
                   <div className="bg-gray-50 rounded-lg p-4">
@@ -1349,11 +1430,21 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 <p className="text-sm text-gray-600 mt-4">
                   Source(s): EIA.gov, State regulatory filings
                 </p>
-              </>
-            )}
+              </div>
+            </div>
 
-            {activeSection === 2 && (
-              <>
+            {/* Section 02 - Energy Demand */}
+            <div id="analysis-section-2" className="min-h-screen scroll-mt-20">
+              <div className="flex items-center mb-4">
+                <span className="text-4xl font-bold text-gray-300 mr-4">02</span>
+                <h2 className="text-2xl font-bold text-gray-900">Energy Demand</h2>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Analysis of energy demand patterns, peak consumption periods, and forecasted growth trends for the utility service area.
+              </p>
+
+              {/* Content for section 2 */}
+              <div>
                 {/* Demand Analysis */}
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
                   <div className="grid grid-cols-3 gap-4">
@@ -1384,11 +1475,21 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                     </div>
                   ))}
                 </div>
-              </>
-            )}
+              </div>
+            </div>
 
-            {activeSection === 3 && (
-              <>
+            {/* Section 03 - Energy Supply */}
+            <div id="analysis-section-3" className="min-h-screen scroll-mt-20">
+              <div className="flex items-center mb-4">
+                <span className="text-4xl font-bold text-gray-300 mr-4">03</span>
+                <h2 className="text-2xl font-bold text-gray-900">Energy Supply</h2>
+              </div>
+              <p className="text-gray-600 mb-6">
+                Comprehensive overview of energy supply sources, generation portfolio mix, and planned infrastructure projects.
+              </p>
+
+              {/* Content for section 3 */}
+              <div>
                 {/* Supply Analysis */}
                 <div className="space-y-4 mb-6">
                   <div className="bg-white border border-gray-200 rounded-lg p-4">
@@ -1429,8 +1530,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                     </tbody>
                   </table>
                 </div>
-              </>
-            )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
