@@ -780,41 +780,52 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
-                title: "DOE Announces $3.5B Investment in Grid Modernization",
+                title: "DOE Announces $3.5B Investment in Grid Modernization Initiative",
                 source: "Energy Wire",
                 date: "Dec 18, 2024",
-                image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=300&fit=crop&crop=center",
-                category: "Policy"
+                image: "https://picsum.photos/400/300?random=1",
+                category: "Policy",
+                bgColor: "bg-blue-500"
               },
               {
                 title: "Solar Power Reaches Record 15% of U.S. Electricity Generation",
                 source: "Reuters Energy",
                 date: "Dec 17, 2024", 
-                image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=300&fit=crop&crop=center",
-                category: "Renewable"
+                image: "https://picsum.photos/400/300?random=2",
+                category: "Renewable",
+                bgColor: "bg-yellow-500"
               },
               {
                 title: "Wind Farm Projects Drive $12B Investment in Rural Communities",
                 source: "Bloomberg Green",
                 date: "Dec 16, 2024",
-                image: "https://images.unsplash.com/photo-1548337138-e87d889cc369?w=400&h=300&fit=crop&crop=center",
-                category: "Investment"
+                image: "https://picsum.photos/400/300?random=3",
+                category: "Investment",
+                bgColor: "bg-green-500"
               },
               {
                 title: "Energy Storage Deployments Surge 85% Year-Over-Year",
                 source: "Utility Dive",
                 date: "Dec 15, 2024",
-                image: "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=400&h=300&fit=crop&crop=center",
-                category: "Technology"
+                image: "https://picsum.photos/400/300?random=4",
+                category: "Technology",
+                bgColor: "bg-purple-500"
               }
             ].map((article, index) => (
               <div key={index} className="group cursor-pointer">
-                <div className="relative h-48 rounded-lg mb-3 overflow-hidden">
+                <div className={`relative h-48 rounded-lg mb-3 overflow-hidden ${article.bgColor} flex items-center justify-center`}>
                   <img 
                     src={article.image} 
                     alt={article.title}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none'
+                      e.currentTarget.nextElementSibling.style.display = 'flex'
+                    }}
                   />
+                  <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-lg hidden">
+                    {article.category}
+                  </div>
                   <div className="absolute top-2 left-2">
                     <span className="px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded">
                       {article.category}
