@@ -826,9 +826,9 @@ export default function DashboardPage() {
                     ALL
                   </button>
                   <button
-                    onClick={() => setSelectedOwnershipType('INVESTOR OWNED')}
+                    onClick={() => setSelectedOwnershipType('Investor Owned')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      selectedOwnershipType === 'INVESTOR OWNED'
+                      selectedOwnershipType === 'Investor Owned'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
@@ -836,24 +836,34 @@ export default function DashboardPage() {
                     INVESTOR OWNED
                   </button>
                   <button
-                    onClick={() => setSelectedOwnershipType('COOPERATIVES')}
+                    onClick={() => setSelectedOwnershipType('Cooperative')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      selectedOwnershipType === 'COOPERATIVES'
+                      selectedOwnershipType === 'Cooperative'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
-                    COOPERATIVES
+                    COOPERATIVE
                   </button>
                   <button
-                    onClick={() => setSelectedOwnershipType('MUNICIPALITIES')}
+                    onClick={() => setSelectedOwnershipType('Municipal')}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      selectedOwnershipType === 'MUNICIPALITIES'
+                      selectedOwnershipType === 'Municipal'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
-                    MUNICIPALITIES
+                    MUNICIPAL
+                  </button>
+                  <button
+                    onClick={() => setSelectedOwnershipType('Retail Power Marketer')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      selectedOwnershipType === 'Retail Power Marketer'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    RETAIL POWER MARKETER
                   </button>
                 </div>
               </div>

@@ -28,7 +28,7 @@ export async function GET() {
         utility_name: true,
         state: true,
         ownership_type: true,
-        total_capacity_mw: true
+        utility_number: true
       }
     })
 
