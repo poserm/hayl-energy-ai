@@ -32,7 +32,6 @@ export default function DashboardPage() {
   const [mapDataLoading, setMapDataLoading] = useState(false)
   const [stateUtilities, setStateUtilities] = useState<any[]>([])
   const [stateUtilitiesLoading, setStateUtilitiesLoading] = useState(false)
-  const [selectedOwnershipType, setSelectedOwnershipType] = useState<string | null>(null)
   
   const {
     selectedStates,
@@ -108,22 +107,24 @@ export default function DashboardPage() {
         setStateUtilitiesLoading(true)
         const stateName = selectedStates[0] // Use first selected state
         
-        // Build URL with optional ownership filter
-        let url = `/api/utilities/by-state?state=${encodeURIComponent(stateName)}`
-        if (selectedOwnershipType) {
-          url += `&ownership=${encodeURIComponent(selectedOwnershipType)}`
-        }
+        const url = `/api/utilities/by-state?state=${encodeURIComponent(stateName)}`
         
-        console.log('Fetching utilities with URL:', url)
+        console.log('=== DASHBOARD: Fetching utilities ===')
+        console.log('Selected state:', stateName)
+        console.log('API URL:', url)
+        
         const response = await fetch(url)
         
         if (!response.ok) {
           const errorData = await response.json()
+          console.error('API Error Response:', errorData)
           throw new Error(errorData.error || 'Failed to fetch utilities')
         }
         
         const data = await response.json()
-        console.log('API Response:', data)
+        console.log('=== DASHBOARD: API Response ===', data)
+        console.log('Number of utilities found:', data.utilities?.length || 0)
+        
         setStateUtilities(data.utilities || [])
       } catch (error) {
         console.error('Error fetching state utilities:', error)
@@ -137,7 +138,7 @@ export default function DashboardPage() {
     timeoutId = setTimeout(fetchStateUtilities, 300)
     
     return () => clearTimeout(timeoutId)
-  }, [selectedStates, selectedOwnershipType])
+  }, [selectedStates])
 
   // Fetch capacity trends data with debouncing
   useEffect(() => {
@@ -786,7 +787,9 @@ export default function DashboardPage() {
         <div className="bg-gray-50 -mx-6 px-6 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-3">Energy Buyers</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-3">
+                {selectedStates.length > 0 ? `${selectedStates[0]} Energy Buyers` : 'Energy Buyers'}
+              </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
                 Discover the largest energy consumers in your selected region, ranked by peak load demand from highest to lowest capacity requirements.
               </p>
@@ -804,60 +807,14 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Filter Tags */}
-            <div className="flex justify-center space-x-6 mb-10">
-              <button 
-                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors ${
-                  selectedOwnershipType === 'INVESTOR OWNED' 
-                    ? 'bg-blue-100 border border-blue-300' 
-                    : 'hover:bg-gray-100'
-                }`}
-                onClick={() => setSelectedOwnershipType(
-                  selectedOwnershipType === 'INVESTOR OWNED' ? null : 'INVESTOR OWNED'
-                )}
-              >
-                <div className={`w-2 h-2 rounded-full ${
-                  selectedOwnershipType === 'INVESTOR OWNED' ? 'bg-blue-500' : 'bg-gray-400'
-                }`} />
-                <span className={`text-sm font-medium ${
-                  selectedOwnershipType === 'INVESTOR OWNED' ? 'text-blue-700' : 'text-gray-700'
-                }`}>INVESTOR OWNED</span>
-              </button>
-              <button 
-                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors ${
-                  selectedOwnershipType === 'COOPERATIVES' 
-                    ? 'bg-green-100 border border-green-300' 
-                    : 'hover:bg-gray-100'
-                }`}
-                onClick={() => setSelectedOwnershipType(
-                  selectedOwnershipType === 'COOPERATIVES' ? null : 'COOPERATIVES'
-                )}
-              >
-                <div className={`w-2 h-2 rounded-full ${
-                  selectedOwnershipType === 'COOPERATIVES' ? 'bg-green-500' : 'bg-gray-400'
-                }`} />
-                <span className={`text-sm font-medium ${
-                  selectedOwnershipType === 'COOPERATIVES' ? 'text-green-700' : 'text-gray-700'
-                }`}>COOPERATIVES</span>
-              </button>
-              <button 
-                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors ${
-                  selectedOwnershipType === 'MUNICIPALITIES' 
-                    ? 'bg-purple-100 border border-purple-300' 
-                    : 'hover:bg-gray-100'
-                }`}
-                onClick={() => setSelectedOwnershipType(
-                  selectedOwnershipType === 'MUNICIPALITIES' ? null : 'MUNICIPALITIES'
-                )}
-              >
-                <div className={`w-2 h-2 rounded-full ${
-                  selectedOwnershipType === 'MUNICIPALITIES' ? 'bg-purple-500' : 'bg-gray-400'
-                }`} />
-                <span className={`text-sm font-medium ${
-                  selectedOwnershipType === 'MUNICIPALITIES' ? 'text-purple-700' : 'text-gray-700'
-                }`}>MUNICIPALITIES</span>
-              </button>
-            </div>
+            {/* Utilities Count */}
+            {selectedStates.length > 0 && (
+              <div className="text-center mb-6">
+                <p className="text-gray-600">
+                  {stateUtilitiesLoading ? 'Loading utilities...' : `Found ${stateUtilities.length} utilities in ${selectedStates[0]}`}
+                </p>
+              </div>
+            )}
 
             {/* Company Grid Visualization */}
             <div className="mb-10">
@@ -869,45 +826,22 @@ export default function DashboardPage() {
                   </div>
                 </div>
               ) : stateUtilities && stateUtilities.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {stateUtilities
-                    .slice(0, 12)
-                    .map((utility, index) => (
-                      <div
-                        key={utility.id || index}
-                        className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer"
-                        onClick={() => {
-                          console.log('Selected utility for analysis:', utility)
-                          setSelectedUtilityAnalysis(utility)
-                          setActiveView('utility-analysis')
-                        }}
-                      >
-                        {index === 0 && (
-                          <span className="text-xs text-blue-600 uppercase mb-2 block">Largest company</span>
-                        )}
-                        <h4 className="text-lg font-bold text-gray-900 text-center mb-3 leading-tight">
-                          {utility.name || utility.utility_name || `Utility ${index + 1}`}
-                        </h4>
-                        <div className="space-y-2">
-                          <p className="text-sm text-gray-600 text-center">
-                            <span className="font-semibold">Capacity:</span> {utility.totalCapacity || utility.total_capacity_mw ? 
-                              `${Math.round(utility.totalCapacity || utility.total_capacity_mw).toLocaleString()} MW` :
-                              'N/A'
-                            }
-                          </p>
-                          {utility.ownershipType || utility.ownership_type ? (
-                            <p className="text-xs text-gray-500 text-center uppercase">
-                              {utility.ownershipType || utility.ownership_type}
-                            </p>
-                          ) : null}
-                          {utility.marketPosition && (
-                            <p className="text-xs text-gray-500 text-center">
-                              Market Position: {utility.marketPosition}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {stateUtilities.map((utility, index) => (
+                    <div
+                      key={utility.id || index}
+                      className="bg-white rounded-lg shadow-md border border-gray-200 p-4 hover:shadow-lg transition-shadow duration-200"
+                    >
+                      <h4 className="text-md font-semibold text-gray-900 text-center leading-tight">
+                        {utility.name || utility.utility_name || `Utility ${index + 1}`}
+                      </h4>
+                      {utility.ownershipType || utility.ownership_type ? (
+                        <p className="text-xs text-gray-500 text-center mt-2 uppercase">
+                          {utility.ownershipType || utility.ownership_type}
+                        </p>
+                      ) : null}
+                    </div>
+                  ))}
                 </div>
               ) : selectedStates.length === 0 ? (
                 <div className="flex items-center justify-center h-64">

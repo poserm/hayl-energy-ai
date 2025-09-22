@@ -62,7 +62,6 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const stateName = searchParams.get('state')
-    const ownershipFilter = searchParams.get('ownership')
     
     if (!stateName) {
       return NextResponse.json({ error: 'State parameter is required' }, { status: 400 })
@@ -79,43 +78,15 @@ export async function GET(request: NextRequest) {
       stateAcronym?.toLowerCase() // "md"
     ].filter(Boolean)
     
-    console.log(`Fetching utilities for state: ${stateName}`)
-    console.log(`Trying state values: ${possibleStateValues.join(', ')}`)
-    if (ownershipFilter) {
-      console.log(`Filtering by ownership type: ${ownershipFilter}`)
-    }
+    console.log(`=== DEBUGGING UTILITIES API ===`)
+    console.log(`Requested state: ${stateName}`)
+    console.log(`State acronym from mapping: ${stateAcronym}`)
+    console.log(`Trying these state values: ${possibleStateValues.join(', ')}`)
     
     // Build where clause - try multiple state formats
     const whereClause: any = {
       state: {
         in: possibleStateValues
-      }
-    }
-    
-    // Add ownership filter if provided
-    if (ownershipFilter) {
-      // Map dashboard categories to database values (case-insensitive)
-      const ownershipMapping: { [key: string]: string[] } = {
-        'INVESTOR OWNED': [
-          'Investor Owned', 'Investor-Owned', 'IOU', 'Investor', 'INVESTOR OWNED', 
-          'investor owned', 'Investor owned', 'Private', 'PRIVATE', 'private'
-        ],
-        'COOPERATIVES': [
-          'Cooperative', 'Co-op', 'Coop', 'Rural Electric Cooperative', 'COOPERATIVE',
-          'cooperative', 'CO-OP', 'co-op', 'COOP', 'coop', 'Rural Cooperative'
-        ],
-        'MUNICIPALITIES': [
-          'Municipal', 'Municipality', 'Public', 'City', 'Town', 'MUNICIPAL',
-          'municipal', 'MUNICIPALITY', 'municipality', 'PUBLIC', 'public',
-          'Government', 'GOVERNMENT', 'government', 'State', 'STATE', 'state'
-        ]
-      }
-      
-      const dbValues = ownershipMapping[ownershipFilter.toUpperCase()]
-      if (dbValues) {
-        whereClause.ownership_type = {
-          in: dbValues
-        }
       }
     }
     
@@ -168,10 +139,7 @@ export async function GET(request: NextRequest) {
       count: transformedUtilities.length,
       state: stateName,
       stateAcronym: stateAcronym,
-      searchedStateValues: possibleStateValues,
-      appliedFilters: {
-        ownership: ownershipFilter || 'none'
-      }
+      searchedStateValues: possibleStateValues
     })
     
   } catch (error) {
