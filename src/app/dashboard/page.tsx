@@ -813,25 +813,153 @@ export default function DashboardPage() {
               }
             ].map((article, index) => (
               <div key={index} className="group cursor-pointer">
-                <div className={`relative h-48 rounded-lg mb-3 overflow-hidden`}>
-                  <img 
-                    src={article.image} 
-                    alt={article.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = `data:image/svg+xml;base64,${btoa(`
-                        <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
-                          <rect width="100%" height="100%" fill="#${article.category === 'Policy' ? '3b82f6' : 
-                            article.category === 'Renewable' ? 'eab308' : 
-                            article.category === 'Investment' ? '10b981' : '8b5cf6'}"/>
-                          <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="24" font-weight="bold">
-                            ${article.category.toUpperCase()}
-                          </text>
-                        </svg>
-                      `)}`;
-                    }}
-                  />
+                <div className={`relative h-48 rounded-lg mb-3 overflow-hidden ${article.bgColor}`}>
+                  {/* Inline SVG graphics - guaranteed to work */}
+                  {article.category === 'Policy' && (
+                    <svg className="w-full h-full" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#87CEEB" />
+                          <stop offset="100%" stopColor="#4682B4" />
+                        </linearGradient>
+                      </defs>
+                      <rect width="100%" height="100%" fill="url(#skyGrad)" />
+                      {/* Power transmission towers */}
+                      <g fill="#2D3748" stroke="#1A202C" strokeWidth="2">
+                        <polygon points="80,250 120,250 110,80 90,80" />
+                        <polygon points="180,250 220,250 210,60 190,60" />
+                        <polygon points="280,250 320,250 310,90 290,90" />
+                        {/* Cross beams */}
+                        <rect x="85" y="120" width="30" height="4" />
+                        <rect x="195" y="100" width="30" height="4" />
+                        <rect x="295" y="130" width="30" height="4" />
+                      </g>
+                      {/* Power lines */}
+                      <g stroke="#1A202C" strokeWidth="3" fill="none">
+                        <path d="M100,120 Q150,140 200,100 Q250,80 300,130" />
+                        <path d="M100,125 Q150,145 200,105 Q250,85 300,135" />
+                      </g>
+                      <text x="200" y="280" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">POWER GRID</text>
+                    </svg>
+                  )}
+                  
+                  {article.category === 'Renewable' && (
+                    <svg className="w-full h-full" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <radialGradient id="sunGrad" cx="50%" cy="30%" r="40%">
+                          <stop offset="0%" stopColor="#FFD700" />
+                          <stop offset="100%" stopColor="#FFA500" />
+                        </radialGradient>
+                      </defs>
+                      <rect width="100%" height="100%" fill="#87CEEB" />
+                      {/* Sun */}
+                      <circle cx="320" cy="80" r="40" fill="url(#sunGrad)" />
+                      <g stroke="#FFD700" strokeWidth="3">
+                        <line x1="320" y1="20" x2="320" y2="35" />
+                        <line x1="365" y1="80" x2="380" y2="80" />
+                        <line x1="260" y1="80" x2="275" y2="80" />
+                        <line x1="350" y1="50" x2="360" y2="40" />
+                        <line x1="290" y1="110" x2="280" y2="120" />
+                      </g>
+                      {/* Solar panels */}
+                      <g fill="#1A365D" stroke="#2D3748" strokeWidth="1">
+                        <rect x="50" y="150" width="80" height="40" rx="2" />
+                        <rect x="150" y="160" width="80" height="40" rx="2" />
+                        <rect x="250" y="170" width="80" height="40" rx="2" />
+                        {/* Panel grid lines */}
+                        <g stroke="#4A5568" strokeWidth="1">
+                          <line x1="70" y1="150" x2="70" y2="190" />
+                          <line x1="90" y1="150" x2="90" y2="190" />
+                          <line x1="110" y1="150" x2="110" y2="190" />
+                          <line x1="170" y1="160" x2="170" y2="200" />
+                          <line x1="190" y1="160" x2="190" y2="200" />
+                          <line x1="210" y1="160" x2="210" y2="200" />
+                          <line x1="270" y1="170" x2="270" y2="210" />
+                          <line x1="290" y1="170" x2="290" y2="210" />
+                          <line x1="310" y1="170" x2="310" y2="210" />
+                        </g>
+                      </g>
+                      <text x="200" y="280" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">SOLAR POWER</text>
+                    </svg>
+                  )}
+                  
+                  {article.category === 'Investment' && (
+                    <svg className="w-full h-full" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="grassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#68D391" />
+                          <stop offset="100%" stopColor="#38A169" />
+                        </linearGradient>
+                      </defs>
+                      <rect width="100%" height="100%" fill="url(#grassGrad)" />
+                      {/* Wind turbines */}
+                      <g fill="#F7FAFC" stroke="#2D3748" strokeWidth="2">
+                        {/* Turbine 1 */}
+                        <rect x="98" y="100" width="4" height="120" />
+                        <circle cx="100" cy="100" r="8" fill="#4A5568" />
+                        <g transform="rotate(45 100 100)">
+                          <ellipse cx="100" cy="70" rx="3" ry="25" />
+                          <ellipse cx="100" cy="130" rx="3" ry="25" />
+                          <ellipse cx="130" cy="100" rx="25" ry="3" />
+                        </g>
+                        
+                        {/* Turbine 2 */}
+                        <rect x="198" y="80" width="4" height="140" />
+                        <circle cx="200" cy="80" r="8" fill="#4A5568" />
+                        <g transform="rotate(120 200 80)">
+                          <ellipse cx="200" cy="50" rx="3" ry="25" />
+                          <ellipse cx="200" cy="110" rx="3" ry="25" />
+                          <ellipse cx="230" cy="80" rx="25" ry="3" />
+                        </g>
+                        
+                        {/* Turbine 3 */}
+                        <rect x="298" y="110" width="4" height="110" />
+                        <circle cx="300" cy="110" r="8" fill="#4A5568" />
+                        <g transform="rotate(270 300 110)">
+                          <ellipse cx="300" cy="80" rx="3" ry="25" />
+                          <ellipse cx="300" cy="140" rx="3" ry="25" />
+                          <ellipse cx="330" cy="110" rx="25" ry="3" />
+                        </g>
+                      </g>
+                      <text x="200" y="280" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">WIND ENERGY</text>
+                    </svg>
+                  )}
+                  
+                  {article.category === 'Technology' && (
+                    <svg className="w-full h-full" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="batteryGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#10B981" />
+                          <stop offset="70%" stopColor="#10B981" />
+                          <stop offset="70%" stopColor="#E5E7EB" />
+                          <stop offset="100%" stopColor="#E5E7EB" />
+                        </linearGradient>
+                      </defs>
+                      <rect width="100%" height="100%" fill="#6B46C1" />
+                      {/* Large battery */}
+                      <g stroke="#1F2937" strokeWidth="3">
+                        <rect x="150" y="100" width="100" height="60" rx="5" fill="url(#batteryGrad)" />
+                        <rect x="255" y="120" width="10" height="20" rx="2" fill="#1F2937" />
+                        {/* Battery level indicator */}
+                        <text x="200" y="135" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold">75%</text>
+                      </g>
+                      {/* Smaller batteries */}
+                      <g fill="#E5E7EB" stroke="#1F2937" strokeWidth="2">
+                        <rect x="100" y="180" width="30" height="18" rx="2" />
+                        <rect x="140" y="180" width="30" height="18" rx="2" />
+                        <rect x="180" y="180" width="30" height="18" rx="2" />
+                        <rect x="220" y="180" width="30" height="18" rx="2" />
+                        <rect x="260" y="180" width="30" height="18" rx="2" />
+                      </g>
+                      {/* Charging indicator */}
+                      <g fill="#10B981">
+                        <polygon points="120,50 140,50 130,80 150,80 120,120 110,90 130,90" />
+                        <polygon points="250,50 270,50 260,80 280,80 250,120 240,90 260,90" />
+                      </g>
+                      <text x="200" y="250" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">ENERGY STORAGE</text>
+                    </svg>
+                  )}
+                  
                   <div className="absolute top-2 left-2">
                     <span className="px-2 py-1 bg-black bg-opacity-50 text-white text-xs font-medium rounded">
                       {article.category}
