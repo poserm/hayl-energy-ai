@@ -783,7 +783,7 @@ export default function DashboardPage() {
                 title: "DOE Announces $3.5B Investment in Grid Modernization Initiative",
                 source: "Energy Wire",
                 date: "Dec 18, 2024",
-                image: "https://www.energy.gov/sites/default/files/styles/full_article_width/public/power-lines-2938741_1920.jpg",
+                image: "https://images.pexels.com/photos/2800832/pexels-photo-2800832.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
                 category: "Policy",
                 bgColor: "bg-blue-500"
               },
@@ -791,7 +791,7 @@ export default function DashboardPage() {
                 title: "Solar Power Reaches Record 15% of U.S. Electricity Generation",
                 source: "Reuters Energy",
                 date: "Dec 17, 2024", 
-                image: "https://cdn.pixabay.com/photo/2017/09/12/13/56/solar-panel-2742304_1280.jpg",
+                image: "https://images.pexels.com/photos/159160/solar-panel-array-power-sun-electricity-159160.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
                 category: "Renewable",
                 bgColor: "bg-yellow-500"
               },
@@ -799,7 +799,7 @@ export default function DashboardPage() {
                 title: "Wind Farm Projects Drive $12B Investment in Rural Communities",
                 source: "Bloomberg Green",
                 date: "Dec 16, 2024",
-                image: "https://cdn.pixabay.com/photo/2013/11/02/08/31/wind-farm-204048_1280.jpg",
+                image: "https://images.pexels.com/photos/414894/pexels-photo-414894.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
                 category: "Investment",
                 bgColor: "bg-green-500"
               },
@@ -807,77 +807,31 @@ export default function DashboardPage() {
                 title: "Energy Storage Deployments Surge 85% Year-Over-Year",
                 source: "Utility Dive",
                 date: "Dec 15, 2024",
-                image: "https://cdn.pixabay.com/photo/2019/02/28/11/10/battery-4026487_1280.jpg",
+                image: "https://images.pexels.com/photos/8853502/pexels-photo-8853502.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop",
                 category: "Technology",
                 bgColor: "bg-purple-500"
               }
             ].map((article, index) => (
               <div key={index} className="group cursor-pointer">
-                <div className={`relative h-48 rounded-lg mb-3 overflow-hidden ${article.bgColor} flex items-center justify-center`}>
-                  {/* CSS-based visual elements */}
-                  {article.category === 'Policy' && (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="flex flex-col items-center space-y-4">
-                        <div className="flex space-x-2">
-                          {[1,2,3,4].map(i => (
-                            <div key={i} className="w-1 h-16 bg-white rounded" style={{height: `${40 + i*8}px`}} />
-                          ))}
-                        </div>
-                        <div className="text-white font-bold text-sm">POWER GRID</div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {article.category === 'Renewable' && (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="flex flex-col items-center space-y-4">
-                        <div className="w-16 h-16 bg-yellow-300 rounded-full flex items-center justify-center">
-                          <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                        </div>
-                        <div className="grid grid-cols-4 gap-1">
-                          {[...Array(8)].map((_, i) => (
-                            <div key={i} className="w-3 h-6 bg-gray-800 rounded-sm" />
-                          ))}
-                        </div>
-                        <div className="text-white font-bold text-sm">SOLAR PANELS</div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {article.category === 'Investment' && (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="flex flex-col items-center space-y-4">
-                        <div className="flex space-x-3">
-                          {[1,2,3].map(i => (
-                            <div key={i} className="flex flex-col items-center">
-                              <div className="w-1 h-20 bg-white rounded" />
-                              <div className="w-8 h-8 bg-white rounded-full mt-1 flex items-center justify-center">
-                                <div className="w-6 h-6 border-2 border-gray-400 rounded-full" />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="text-white font-bold text-sm">WIND TURBINES</div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {article.category === 'Technology' && (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <div className="flex flex-col items-center space-y-4">
-                        <div className="w-20 h-12 bg-gray-800 rounded-lg border-2 border-white flex items-center justify-center">
-                          <div className="flex space-x-1">
-                            <div className="w-2 h-6 bg-green-400 rounded" />
-                            <div className="w-2 h-5 bg-green-400 rounded" />
-                            <div className="w-2 h-4 bg-green-400 rounded" />
-                            <div className="w-2 h-3 bg-gray-600 rounded" />
-                          </div>
-                        </div>
-                        <div className="text-white font-bold text-sm">BATTERY STORAGE</div>
-                      </div>
-                    </div>
-                  )}
-                  
+                <div className={`relative h-48 rounded-lg mb-3 overflow-hidden`}>
+                  <img 
+                    src={article.image} 
+                    alt={article.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = `data:image/svg+xml;base64,${btoa(`
+                        <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="100%" height="100%" fill="#${article.category === 'Policy' ? '3b82f6' : 
+                            article.category === 'Renewable' ? 'eab308' : 
+                            article.category === 'Investment' ? '10b981' : '8b5cf6'}"/>
+                          <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="white" font-family="Arial" font-size="24" font-weight="bold">
+                            ${article.category.toUpperCase()}
+                          </text>
+                        </svg>
+                      `)}`;
+                    }}
+                  />
                   <div className="absolute top-2 left-2">
                     <span className="px-2 py-1 bg-black bg-opacity-50 text-white text-xs font-medium rounded">
                       {article.category}
