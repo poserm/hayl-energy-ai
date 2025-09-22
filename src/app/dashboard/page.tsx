@@ -829,33 +829,12 @@ export default function DashboardPage() {
               }
             ].map((article, index) => (
               <div key={index} className="group cursor-pointer">
-                <div className={`relative h-48 rounded-lg mb-3 overflow-hidden bg-gray-200`}>
-                  {/* Real utility images with progressive fallback */}
-                  <img 
-                    src={`https://picsum.photos/400/300?random=${index + 1}`}
-                    alt={article.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      // Simple fallback to a solid color background
-                      target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent) {
-                        const categoryColors = {
-                          'Policy': 'bg-blue-500',
-                          'Renewable': 'bg-yellow-500', 
-                          'Investment': 'bg-green-500',
-                          'Technology': 'bg-purple-500'
-                        };
-                        const color = categoryColors[article.category as keyof typeof categoryColors] || 'bg-gray-500';
-                        parent.className = parent.className.replace('bg-gray-200', color);
-                        parent.innerHTML = `<div class="flex items-center justify-center h-full text-white font-bold text-lg">${article.category}</div>`;
-                      }
-                    }}
-                  />
-                  
-                  {/* Gradient overlay for better text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div className={`relative h-48 rounded-lg mb-3 overflow-hidden bg-gray-300 flex items-center justify-center`}>
+                  {/* Simple gray boxes with category names */}
+                  <div className="text-center">
+                    <div className="text-gray-600 font-semibold text-lg mb-1">{article.category}</div>
+                    <div className="text-gray-500 text-sm">News Image</div>
+                  </div>
                   
                   <div className="absolute top-2 left-2">
                     <span className="px-2 py-1 bg-black bg-opacity-50 text-white text-xs font-medium rounded backdrop-blur-sm">
