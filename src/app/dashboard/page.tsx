@@ -814,19 +814,70 @@ export default function DashboardPage() {
             ].map((article, index) => (
               <div key={index} className="group cursor-pointer">
                 <div className={`relative h-48 rounded-lg mb-3 overflow-hidden ${article.bgColor} flex items-center justify-center`}>
-                  <img 
-                    src={article.image} 
-                    alt={article.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none'
-                      const fallback = e.currentTarget.parentElement?.querySelector('.fallback-content')
-                      if (fallback) fallback.style.display = 'flex'
-                    }}
-                  />
-                  <div className="fallback-content absolute inset-0 flex items-center justify-center text-white font-bold text-xl hidden">
-                    {article.category.toUpperCase()}
-                  </div>
+                  {/* CSS-based visual elements */}
+                  {article.category === 'Policy' && (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="flex flex-col items-center space-y-4">
+                        <div className="flex space-x-2">
+                          {[1,2,3,4].map(i => (
+                            <div key={i} className="w-1 h-16 bg-white rounded" style={{height: `${40 + i*8}px`}} />
+                          ))}
+                        </div>
+                        <div className="text-white font-bold text-sm">POWER GRID</div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {article.category === 'Renewable' && (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="flex flex-col items-center space-y-4">
+                        <div className="w-16 h-16 bg-yellow-300 rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                        </div>
+                        <div className="grid grid-cols-4 gap-1">
+                          {[...Array(8)].map((_, i) => (
+                            <div key={i} className="w-3 h-6 bg-gray-800 rounded-sm" />
+                          ))}
+                        </div>
+                        <div className="text-white font-bold text-sm">SOLAR PANELS</div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {article.category === 'Investment' && (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="flex flex-col items-center space-y-4">
+                        <div className="flex space-x-3">
+                          {[1,2,3].map(i => (
+                            <div key={i} className="flex flex-col items-center">
+                              <div className="w-1 h-20 bg-white rounded" />
+                              <div className="w-8 h-8 bg-white rounded-full mt-1 flex items-center justify-center">
+                                <div className="w-6 h-6 border-2 border-gray-400 rounded-full" />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="text-white font-bold text-sm">WIND TURBINES</div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {article.category === 'Technology' && (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="flex flex-col items-center space-y-4">
+                        <div className="w-20 h-12 bg-gray-800 rounded-lg border-2 border-white flex items-center justify-center">
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-6 bg-green-400 rounded" />
+                            <div className="w-2 h-5 bg-green-400 rounded" />
+                            <div className="w-2 h-4 bg-green-400 rounded" />
+                            <div className="w-2 h-3 bg-gray-600 rounded" />
+                          </div>
+                        </div>
+                        <div className="text-white font-bold text-sm">BATTERY STORAGE</div>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="absolute top-2 left-2">
                     <span className="px-2 py-1 bg-black bg-opacity-50 text-white text-xs font-medium rounded">
                       {article.category}
