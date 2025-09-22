@@ -32,6 +32,7 @@ export default function DashboardPage() {
   const [mapDataLoading, setMapDataLoading] = useState(false)
   const [stateUtilities, setStateUtilities] = useState<any[]>([])
   const [stateUtilitiesLoading, setStateUtilitiesLoading] = useState(false)
+  const [selectedOwnershipType, setSelectedOwnershipType] = useState<string | null>(null)
   
   const {
     selectedStates,
@@ -107,7 +108,10 @@ export default function DashboardPage() {
         setStateUtilitiesLoading(true)
         const stateName = selectedStates[0] // Use first selected state
         
-        const url = `/api/utilities/by-state?state=${encodeURIComponent(stateName)}`
+        let url = `/api/utilities/by-state?state=${encodeURIComponent(stateName)}`
+        if (selectedOwnershipType) {
+          url += `&ownership=${encodeURIComponent(selectedOwnershipType)}`
+        }
         
         console.log('=== DASHBOARD: Fetching utilities ===')
         console.log('Selected state:', stateName)
@@ -138,7 +142,7 @@ export default function DashboardPage() {
     timeoutId = setTimeout(fetchStateUtilities, 300)
     
     return () => clearTimeout(timeoutId)
-  }, [selectedStates])
+  }, [selectedStates, selectedOwnershipType])
 
   // Fetch capacity trends data with debouncing
   useEffect(() => {
@@ -806,6 +810,54 @@ export default function DashboardPage() {
                 </button>
               </div>
             </div>
+
+            {/* Ownership Type Filter */}
+            {selectedStates.length > 0 && (
+              <div className="flex justify-center mb-6">
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setSelectedOwnershipType(null)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      selectedOwnershipType === null
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    ALL
+                  </button>
+                  <button
+                    onClick={() => setSelectedOwnershipType('INVESTOR OWNED')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      selectedOwnershipType === 'INVESTOR OWNED'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    INVESTOR OWNED
+                  </button>
+                  <button
+                    onClick={() => setSelectedOwnershipType('COOPERATIVES')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      selectedOwnershipType === 'COOPERATIVES'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    COOPERATIVES
+                  </button>
+                  <button
+                    onClick={() => setSelectedOwnershipType('MUNICIPALITIES')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      selectedOwnershipType === 'MUNICIPALITIES'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    }`}
+                  >
+                    MUNICIPALITIES
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Utilities Count */}
             {selectedStates.length > 0 && (
