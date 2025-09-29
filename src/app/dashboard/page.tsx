@@ -34,6 +34,41 @@ export default function DashboardPage() {
   const [stateUtilitiesLoading, setStateUtilitiesLoading] = useState(false)
   const [selectedOwnershipType, setSelectedOwnershipType] = useState<string | null>(null)
   const [selectedUtilityForAnalysis, setSelectedUtilityForAnalysis] = useState<any>(null)
+  const [portfolioData, setPortfolioData] = useState<any>(null)
+  const [portfolioLoading, setPortfolioLoading] = useState(false)
+
+  // Fetch portfolio data when utility is selected
+  useEffect(() => {
+    const fetchPortfolioData = async () => {
+      if (!selectedUtilityForAnalysis?.name && !selectedUtilityForAnalysis?.utility_name) {
+        setPortfolioData(null)
+        return
+      }
+
+      setPortfolioLoading(true)
+      try {
+        const utilityName = selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name
+        console.log('🔍 Fetching portfolio for utility:', utilityName)
+        
+        const response = await fetch(`/api/generators/by-utility?utilityName=${encodeURIComponent(utilityName)}`)
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch portfolio data: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        console.log('📊 Portfolio data received:', data)
+        setPortfolioData(data)
+      } catch (error) {
+        console.error('❌ Error fetching portfolio data:', error)
+        setPortfolioData(null)
+      } finally {
+        setPortfolioLoading(false)
+      }
+    }
+
+    fetchPortfolioData()
+  }, [selectedUtilityForAnalysis])
   
   const {
     selectedStates,
@@ -1168,6 +1203,41 @@ function GeneratorsList({ states }: { states: string[] }) {
 // Inline Utility Analysis Component (Wireframe-based)
 function UtilityAnalysisInline({ utility }: { utility: any }) {
   const [activeSection, setActiveSection] = useState(1)
+  const [portfolioData, setPortfolioData] = useState<any>(null)
+  const [portfolioLoading, setPortfolioLoading] = useState(false)
+
+  // Fetch portfolio data when utility changes
+  useEffect(() => {
+    const fetchPortfolioData = async () => {
+      if (!utility?.name && !utility?.utility_name) {
+        setPortfolioData(null)
+        return
+      }
+
+      setPortfolioLoading(true)
+      try {
+        const utilityName = utility.name || utility.utility_name
+        console.log('🔍 Fetching portfolio for utility:', utilityName)
+        
+        const response = await fetch(`/api/generators/by-utility?utilityName=${encodeURIComponent(utilityName)}`)
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch portfolio data: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        console.log('📊 Portfolio data received:', data)
+        setPortfolioData(data)
+      } catch (error) {
+        console.error('❌ Error fetching portfolio data:', error)
+        setPortfolioData(null)
+      } finally {
+        setPortfolioLoading(false)
+      }
+    }
+
+    fetchPortfolioData()
+  }, [utility])
 
   const sections = [
     { id: 1, title: 'Existing Portfolio' },
@@ -1214,72 +1284,201 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
             {activeSection === 1 && (
               <>
-                {/* Company Details */}
-                <div className="grid grid-cols-3 gap-4 mb-8">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <div className="w-3 h-3 rounded-full bg-blue-500" />
-                      <span className="text-sm font-medium text-gray-900">Ownership</span>
-                    </div>
-                    <p className="text-lg font-bold text-gray-900">
-                      {utility.ownershipType || utility.ownership_type || 'Unknown'}
-                    </p>
+                {/* Portfolio Summary Stats */}
+                {portfolioLoading ? (
+                  <div className="grid grid-cols-4 gap-4 mb-8">
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="bg-gray-50 rounded-lg p-4 animate-pulse">
+                        <div className="h-4 bg-gray-200 rounded mb-2" />
+                        <div className="h-6 bg-gray-300 rounded" />
+                      </div>
+                    ))}
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <div className="w-3 h-3 rounded-full bg-green-500" />
-                      <span className="text-sm font-medium text-gray-900">State</span>
+                ) : portfolioData ? (
+                  <div className="grid grid-cols-4 gap-4 mb-8">
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 rounded-full bg-blue-500" />
+                        <span className="text-sm font-medium text-gray-900">Total Generators</span>
+                      </div>
+                      <p className="text-lg font-bold text-gray-900">
+                        {portfolioData.totalGenerators.toLocaleString()}
+                      </p>
                     </div>
-                    <p className="text-lg font-bold text-gray-900">
-                      {utility.state || 'Unknown'}
-                    </p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <div className="w-3 h-3 rounded-full bg-purple-500" />
-                      <span className="text-sm font-medium text-gray-900">Utility #</span>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500" />
+                        <span className="text-sm font-medium text-gray-900">Total Plants</span>
+                      </div>
+                      <p className="text-lg font-bold text-gray-900">
+                        {portfolioData.totalPlants.toLocaleString()}
+                      </p>
                     </div>
-                    <p className="text-lg font-bold text-gray-900">
-                      {utility.utilityNumber || 'N/A'}
-                    </p>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 rounded-full bg-purple-500" />
+                        <span className="text-sm font-medium text-gray-900">Total Capacity</span>
+                      </div>
+                      <p className="text-lg font-bold text-gray-900">
+                        {portfolioData.totalCapacity.toLocaleString()} MW
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 rounded-full bg-orange-500" />
+                        <span className="text-sm font-medium text-gray-900">Technologies</span>
+                      </div>
+                      <p className="text-lg font-bold text-gray-900">
+                        {Object.keys(portfolioData.technologyBreakdown || {}).length}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="grid grid-cols-3 gap-4 mb-8">
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 rounded-full bg-blue-500" />
+                        <span className="text-sm font-medium text-gray-900">Ownership</span>
+                      </div>
+                      <p className="text-lg font-bold text-gray-900">
+                        {utility.ownershipType || utility.ownership_type || 'Unknown'}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500" />
+                        <span className="text-sm font-medium text-gray-900">State</span>
+                      </div>
+                      <p className="text-lg font-bold text-gray-900">
+                        {utility.state || 'Unknown'}
+                      </p>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-3 h-3 rounded-full bg-purple-500" />
+                        <span className="text-sm font-medium text-gray-900">Utility #</span>
+                      </div>
+                      <p className="text-lg font-bold text-gray-900">
+                        {utility.utilityNumber || 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+                )}
 
-                {/* Sample Data Table */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Company Information</h3>
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ATTRIBUTE</th>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">VALUE</th>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">STATUS</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="border-t border-gray-200">
-                        <td className="px-4 py-2 text-sm text-gray-900">Utility Name</td>
-                        <td className="px-4 py-2 text-sm text-gray-900">{utility.name || utility.utility_name}</td>
-                        <td className="px-4 py-2 text-sm text-green-600">Active</td>
-                      </tr>
-                      <tr className="border-t border-gray-200">
-                        <td className="px-4 py-2 text-sm text-gray-900">State Coverage</td>
-                        <td className="px-4 py-2 text-sm text-gray-900">{utility.state}</td>
-                        <td className="px-4 py-2 text-sm text-green-600">Primary</td>
-                      </tr>
-                      <tr className="border-t border-gray-200">
-                        <td className="px-4 py-2 text-sm text-gray-900">Ownership Model</td>
-                        <td className="px-4 py-2 text-sm text-gray-900">{utility.ownershipType || utility.ownership_type}</td>
-                        <td className="px-4 py-2 text-sm text-blue-600">Verified</td>
-                      </tr>
-                      <tr className="border-t border-gray-200">
-                        <td className="px-4 py-2 text-sm text-gray-900">NERC Region</td>
-                        <td className="px-4 py-2 text-sm text-gray-900">{utility.nercRegion || 'Available'}</td>
-                        <td className="px-4 py-2 text-sm text-green-600">Current</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                {/* Power Plant Portfolio Table */}
+                {portfolioLoading ? (
+                  <div className="bg-white border border-gray-200 rounded-lg p-8">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                      <p className="text-gray-600">Loading power plant portfolio...</p>
+                    </div>
+                  </div>
+                ) : portfolioData && portfolioData.generators?.length > 0 ? (
+                  <>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plant Portfolio ({portfolioData.totalGenerators} Plants)</h3>
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">PLANT NAME</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">TECHNOLOGY</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">PRIME MOVER</th>
+                              <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">CAPACITY (MW)</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">OPERATING DATE</th>
+                              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">LOCATION</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {portfolioData.generators.slice(0, 10).map((generator: any, index: number) => (
+                              <tr key={generator.id || index} className="border-t border-gray-200 hover:bg-gray-50">
+                                <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                                  {generator.plant_name || 'Unknown Plant'}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-600">
+                                  <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                                    generator.technology === 'Natural Gas' ? 'bg-blue-100 text-blue-800' :
+                                    generator.technology === 'Coal' ? 'bg-gray-100 text-gray-800' :
+                                    generator.technology === 'Nuclear' ? 'bg-purple-100 text-purple-800' :
+                                    generator.technology === 'Solar' ? 'bg-yellow-100 text-yellow-800' :
+                                    generator.technology === 'Wind' ? 'bg-green-100 text-green-800' :
+                                    generator.technology === 'Hydro' ? 'bg-cyan-100 text-cyan-800' :
+                                    'bg-gray-100 text-gray-800'
+                                  }`}>
+                                    {generator.technology || 'Unknown'}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-600">
+                                  {generator.prime_mover || 'N/A'}
+                                </td>
+                                <td className="px-4 py-3 text-sm font-semibold text-right text-blue-600">
+                                  {generator.nameplate_capacity_mw ? generator.nameplate_capacity_mw.toLocaleString() : '0'}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-600">
+                                  {generator.operating_date ? new Date(generator.operating_date).getFullYear() : 'Unknown'}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-600">
+                                  {generator.county && generator.state ? `${generator.county}, ${generator.state}` : generator.state || 'Unknown'}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      {portfolioData.generators.length > 10 && (
+                        <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
+                          <p className="text-sm text-gray-600 text-center">
+                            Showing 10 of {portfolioData.totalGenerators} power plants
+                            <button className="ml-2 text-blue-600 hover:text-blue-800 font-medium">View All →</button>
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Technology Breakdown */}
+                    {portfolioData.technologyBreakdown && Object.keys(portfolioData.technologyBreakdown).length > 0 && (
+                      <>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Technology Breakdown</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                          {Object.entries(portfolioData.technologyBreakdown)
+                            .sort(([,a], [,b]) => (b as any).capacity - (a as any).capacity)
+                            .map(([tech, data]: [string, any]) => (
+                            <div key={tech} className="bg-gray-50 rounded-lg p-4">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-medium text-gray-900">{tech}</span>
+                                <div className={`w-3 h-3 rounded-full ${
+                                  tech === 'Natural Gas' ? 'bg-blue-500' :
+                                  tech === 'Coal' ? 'bg-gray-700' :
+                                  tech === 'Nuclear' ? 'bg-purple-500' :
+                                  tech === 'Solar' ? 'bg-yellow-500' :
+                                  tech === 'Wind' ? 'bg-green-500' :
+                                  tech === 'Hydro' ? 'bg-cyan-500' :
+                                  'bg-gray-400'
+                                }`} />
+                              </div>
+                              <p className="text-lg font-bold text-gray-900">{data.capacity?.toLocaleString()} MW</p>
+                              <p className="text-xs text-gray-600">{data.count} plants</p>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plant Portfolio</h3>
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+                      <div className="text-gray-500 mb-2">
+                        <svg className="w-12 h-12 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <p className="text-gray-600 mb-2">No power plants found for this utility</p>
+                      <p className="text-sm text-gray-500">The utility name may not match our generator database records</p>
+                    </div>
+                  </>
+                )}
+                
                 <p className="text-sm text-gray-600 mt-4">
                   Source(s): EIA.gov, State regulatory filings
                 </p>
