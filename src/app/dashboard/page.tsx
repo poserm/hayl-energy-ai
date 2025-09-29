@@ -1282,6 +1282,17 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               Summary of their preferred scenario. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
             </p>
 
+            {/* Debug Info */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <h4 className="font-medium text-yellow-800 mb-2">Debug Info</h4>
+              <div className="text-sm text-yellow-700 space-y-1">
+                <div>Selected Utility: {utility?.name || utility?.utility_name || 'None'}</div>
+                <div>Portfolio Loading: {portfolioLoading ? 'Yes' : 'No'}</div>
+                <div>Portfolio Data: {portfolioData ? `${portfolioData.totalGenerators} generators found` : 'No data'}</div>
+                <div>Active Section: {activeSection}</div>
+              </div>
+            </div>
+            
             {activeSection === 1 && (
               <>
                 {/* Portfolio Summary Stats */}
