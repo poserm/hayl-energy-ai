@@ -17,13 +17,23 @@ export async function GET(request: NextRequest) {
 
     console.log('🔍 Fetching generators for utility:', utilityName)
 
-    // Search for generators that match the utility name in entity_name
+    // Search for generators that match the utility name in entity_name OR utility_name
     const generators = await prisma.generators.findMany({
       where: {
-        entity_name: {
-          contains: utilityName,
-          mode: 'insensitive'
-        }
+        OR: [
+          {
+            entity_name: {
+              contains: utilityName,
+              mode: 'insensitive'
+            }
+          },
+          {
+            utility_name: {
+              contains: utilityName,
+              mode: 'insensitive'
+            }
+          }
+        ]
       },
       select: {
         id: true,
@@ -49,6 +59,45 @@ export async function GET(request: NextRequest) {
     })
 
     console.log(`📊 Found ${generators.length} generators for utility: ${utilityName}`)
+    
+    // Debug: Show a few example entity_name and utility_name values
+    if (generators.length > 0) {
+      console.log('🔍 Sample generator data:')
+      generators.slice(0, 3).forEach((gen, i) => {
+        console.log(`  ${i + 1}. entity_name: "${gen.entity_name}", utility_name: "${gen.utility_name}"`)
+      })
+    } else {
+      console.log('⚠️ No generators found. Let me check what similar utilities exist...')
+      // Search for any utilities with similar names
+      const similarUtilities = await prisma.generators.findMany({
+        where: {
+          OR: [
+            {
+              entity_name: {
+                contains: 'Virginia',
+                mode: 'insensitive'
+              }
+            },
+            {
+              utility_name: {
+                contains: 'Virginia',
+                mode: 'insensitive'
+              }
+            }
+          ]
+        },
+        select: {
+          entity_name: true,
+          utility_name: true
+        },
+        distinct: ['entity_name'],
+        take: 5
+      })
+      console.log('🔍 Similar Virginia utilities found:', similarUtilities.map(u => ({
+        entity_name: u.entity_name,
+        utility_name: u.utility_name
+      })))
+    }
 
     // Calculate portfolio statistics
     const totalCapacity = generators.reduce((sum, gen) => {
