@@ -1293,6 +1293,44 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               </div>
             </div>
             
+            {/* Test Table with Real Data */}
+            {portfolioData && portfolioData.generators && portfolioData.generators.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plants ({portfolioData.generators.length} plants)</h3>
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plant Name</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity (MW)</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Year</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {portfolioData.generators.slice(0, 10).map((plant: any, index: number) => (
+                        <tr key={index} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">{plant.plant_name || 'N/A'}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{plant.technology || 'N/A'}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{plant.nameplate_capacity_mw?.toLocaleString() || 'N/A'}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{plant.operating_year || 'N/A'}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{plant.plant_state || 'N/A'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {portfolioData.generators.length > 10 && (
+                    <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
+                      <p className="text-sm text-gray-600 text-center">
+                        Showing 10 of {portfolioData.generators.length} power plants
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            
             {activeSection === 1 && (
               <>
                 {/* Portfolio Summary Stats */}
