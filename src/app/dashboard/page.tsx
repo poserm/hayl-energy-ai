@@ -1289,14 +1289,16 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 <div>Selected Utility: {utility?.name || utility?.utility_name || 'None'}</div>
                 <div>Portfolio Loading: {portfolioLoading ? 'Yes' : 'No'}</div>
                 <div>Portfolio Data: {portfolioData ? `${portfolioData.totalGenerators} generators found` : 'No data'}</div>
+                <div>Has Generators Array: {portfolioData?.generators ? `Yes (${portfolioData.generators.length} items)` : 'No'}</div>
+                <div>Portfolio Data Keys: {portfolioData ? Object.keys(portfolioData).join(', ') : 'None'}</div>
                 <div>Active Section: {activeSection}</div>
               </div>
             </div>
             
             {/* Test Table with Real Data */}
-            {portfolioData && portfolioData.generators && portfolioData.generators.length > 0 && (
+            {portfolioData && (
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plants ({portfolioData.generators.length} plants)</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plants ({portfolioData.generators?.length || 0} plants)</h3>
                 <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
@@ -1309,7 +1311,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {portfolioData.generators.slice(0, 10).map((plant: any, index: number) => (
+                      {(portfolioData.generators || []).slice(0, 10).map((plant: any, index: number) => (
                         <tr key={index} className="hover:bg-gray-50">
                           <td className="px-4 py-3 text-sm font-medium text-gray-900">{plant.plant_name || 'N/A'}</td>
                           <td className="px-4 py-3 text-sm text-gray-900">{plant.technology || 'N/A'}</td>
@@ -1320,10 +1322,10 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                       ))}
                     </tbody>
                   </table>
-                  {portfolioData.generators.length > 10 && (
+                  {(portfolioData.generators?.length || 0) > 10 && (
                     <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
                       <p className="text-sm text-gray-600 text-center">
-                        Showing 10 of {portfolioData.generators.length} power plants
+                        Showing 10 of {portfolioData.generators?.length || 0} power plants
                       </p>
                     </div>
                   )}
