@@ -17,39 +17,26 @@ export async function GET(request: NextRequest) {
 
     console.log('🔍 Fetching generators for utility:', utilityName)
 
-    // Search for generators that match the utility name in entity_name OR utility_name
+    // Search for generators that match the utility name in entity_name field
     const generators = await prisma.generators.findMany({
       where: {
-        OR: [
-          {
-            entity_name: {
-              contains: utilityName,
-              mode: 'insensitive'
-            }
-          },
-          {
-            utility_name: {
-              contains: utilityName,
-              mode: 'insensitive'
-            }
-          }
-        ]
+        entity_name: {
+          contains: utilityName,
+          mode: 'insensitive'
+        }
       },
       select: {
         id: true,
         plant_name: true,
         entity_name: true,
         technology: true,
-        prime_mover: true,
+        prime_mover_code: true,
         nameplate_capacity_mw: true,
-        operating_date: true,
-        state: true,
+        operating_year: true,
+        plant_state: true,
         county: true,
-        utility_id: true,
-        utility_name: true,
+        entity_id: true,
         balancing_authority_code: true,
-        balancing_authority_name: true,
-        sector_name: true,
         sector: true
       },
       orderBy: [
@@ -60,42 +47,32 @@ export async function GET(request: NextRequest) {
 
     console.log(`📊 Found ${generators.length} generators for utility: ${utilityName}`)
     
-    // Debug: Show a few example entity_name and utility_name values
+    // Debug: Show a few example entity_name values
     if (generators.length > 0) {
       console.log('🔍 Sample generator data:')
       generators.slice(0, 3).forEach((gen, i) => {
-        console.log(`  ${i + 1}. entity_name: "${gen.entity_name}", utility_name: "${gen.utility_name}"`)
+        console.log(`  ${i + 1}. entity_name: "${gen.entity_name}", plant_name: "${gen.plant_name}"`)
       })
     } else {
       console.log('⚠️ No generators found. Let me check what similar utilities exist...')
       // Search for any utilities with similar names
       const similarUtilities = await prisma.generators.findMany({
         where: {
-          OR: [
-            {
-              entity_name: {
-                contains: 'Virginia',
-                mode: 'insensitive'
-              }
-            },
-            {
-              utility_name: {
-                contains: 'Virginia',
-                mode: 'insensitive'
-              }
-            }
-          ]
+          entity_name: {
+            contains: 'Virginia',
+            mode: 'insensitive'
+          }
         },
         select: {
           entity_name: true,
-          utility_name: true
+          plant_name: true
         },
         distinct: ['entity_name'],
         take: 5
       })
       console.log('🔍 Similar Virginia utilities found:', similarUtilities.map(u => ({
         entity_name: u.entity_name,
-        utility_name: u.utility_name
+        plant_name: u.plant_name
       })))
     }
 
