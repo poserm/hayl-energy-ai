@@ -14,6 +14,87 @@ import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
 import SimpleUSMap from '@/components/SimpleUSMap'
 import Image from 'next/image'
 
+// Plants Table Rows Component
+function PlantsTableRows({ utility }: { utility: any }) {
+  const [plants, setPlants] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchPlants = async () => {
+      if (!utility?.name && !utility?.utility_name) return
+
+      setLoading(true)
+      setError(null)
+      try {
+        const utilityName = utility.name || utility.utility_name
+        const response = await fetch(`/api/plants?utility=${encodeURIComponent(utilityName)}`)
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch plants: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        setPlants(data)
+      } catch (error) {
+        console.error('Error fetching plants:', error)
+        setError('Failed to load plant data')
+        setPlants([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPlants()
+  }, [utility])
+
+  if (loading) {
+    return (
+      <tr>
+        <td colSpan={2} className="px-4 py-8 text-center text-gray-500">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
+          Loading plants...
+        </td>
+      </tr>
+    )
+  }
+
+  if (error) {
+    return (
+      <tr>
+        <td colSpan={2} className="px-4 py-8 text-center text-red-500">
+          {error}
+        </td>
+      </tr>
+    )
+  }
+
+  if (plants.length === 0) {
+    return (
+      <tr>
+        <td colSpan={2} className="px-4 py-8 text-center text-gray-500">
+          No plants found for this utility
+        </td>
+      </tr>
+    )
+  }
+
+  return (
+    <>
+      {plants.map((plant, index) => (
+        <tr key={index} className="hover:bg-gray-50">
+          <td className="px-4 py-3 text-sm text-gray-900">
+            {plant.plant_name || 'Unknown Plant'}
+          </td>
+          <td className="px-4 py-3 text-sm font-semibold text-blue-600">
+            {plant.nameplate_capacity_mw ? parseFloat(plant.nameplate_capacity_mw).toLocaleString() : '0'} MW
+          </td>
+        </tr>
+      ))}
+    </>
+  )
+}
+
 export default function DashboardPage() {
   const { user, logout, loading } = useAuth()
   const router = useRouter()
@@ -1295,40 +1376,22 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               </div>
             </div>
             
-            {/* Test Table with Real Data */}
-            {portfolioData && (
+            {/* Simple Plants Table */}
+            {utility && (
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plants ({portfolioData.generators?.length || 0} plants)</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plants</h3>
                 <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plant Name</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
                         <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity (MW)</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Year</th>
-                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {(portfolioData.generators || []).slice(0, 10).map((plant: any, index: number) => (
-                        <tr key={index} className="hover:bg-gray-50">
-                          <td className="px-4 py-3 text-sm font-medium text-gray-900">{plant.plant_name || 'N/A'}</td>
-                          <td className="px-4 py-3 text-sm text-gray-900">{plant.technology || 'N/A'}</td>
-                          <td className="px-4 py-3 text-sm text-gray-900">{plant.nameplate_capacity_mw?.toLocaleString() || 'N/A'}</td>
-                          <td className="px-4 py-3 text-sm text-gray-900">{plant.operating_year || 'N/A'}</td>
-                          <td className="px-4 py-3 text-sm text-gray-900">{plant.plant_state || 'N/A'}</td>
-                        </tr>
-                      ))}
+                      <PlantsTableRows utility={utility} />
                     </tbody>
                   </table>
-                  {(portfolioData.generators?.length || 0) > 10 && (
-                    <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
-                      <p className="text-sm text-gray-600 text-center">
-                        Showing 10 of {portfolioData.generators?.length || 0} power plants
-                      </p>
-                    </div>
-                  )}
                 </div>
               </div>
             )}
