@@ -24,8 +24,17 @@ export async function GET(request: NextRequest) {
       },
       select: {
         plant_name: true,
-        nameplate_capacity_mw: true
-      }
+        nameplate_capacity_mw: true,
+        technology: true,
+        operating_year: true,
+        plant_state: true,
+        county: true,
+        prime_mover_code: true
+      },
+      orderBy: [
+        { nameplate_capacity_mw: 'desc' },
+        { plant_name: 'asc' }
+      ]
     })
 
     console.log(`📊 Found ${plants.length} plants`)
