@@ -826,48 +826,6 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-            <div className="p-4 space-y-2">
-              <h4 className="text-white text-sm font-medium mb-2">Technology Breakdown</h4>
-              {generators.length > 0 ? Object.entries(
-                generators.reduce((acc, gen) => {
-                  const tech = gen.technology || 'Other'
-                  acc[tech] = (acc[tech] || 0) + (gen.capacity?.nameplate || 0)
-                  return acc
-                }, {} as Record<string, number>)
-              )
-                .sort(([, a], [, b]) => b - a)
-                .slice(0, 3)
-                .map(([tech, capacity]) => {
-                  const colors: Record<string, string> = {
-                    'Coal': 'bg-gray-700',
-                    'Natural Gas': 'bg-blue-500',
-                    'Nuclear': 'bg-purple-500',
-                    'Solar': 'bg-yellow-500',
-                    'Wind': 'bg-green-500',
-                    'Hydro': 'bg-cyan-500',
-                    'Other': 'bg-gray-400'
-                  }
-                  return (
-                    <div key={tech} className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <div className={`w-2 h-2 rounded-full ${colors[tech] || colors.Other}`} />
-                        <span className="text-gray-300 text-sm">{tech}</span>
-                      </div>
-                      <span className="text-white text-sm font-medium">
-                        {Math.round(capacity).toLocaleString()} MW
-                      </span>
-                    </div>
-                  )
-                }) : (
-                  <div className="text-center py-4">
-                    <div className="animate-pulse">
-                      <div className="h-3 bg-gray-600 rounded w-20 mb-2 mx-auto"></div>
-                      <div className="h-3 bg-gray-600 rounded w-16 mb-2 mx-auto"></div>
-                      <div className="h-3 bg-gray-600 rounded w-24 mx-auto"></div>
-                    </div>
-                  </div>
-                )}
-            </div>
           </div>
         </div>
 
