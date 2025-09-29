@@ -68,12 +68,30 @@ export async function GET(request: NextRequest) {
           plant_name: true
         },
         distinct: ['entity_name'],
-        take: 5
+        take: 10
       })
       console.log('🔍 Similar Virginia utilities found:', similarUtilities.map(u => ({
         entity_name: u.entity_name,
         plant_name: u.plant_name
       })))
+      
+      // Also check the exact search we're doing
+      console.log('🔍 Exact search term:', `"${utilityName}"`)
+      console.log('🔍 Searching for entity_name containing:', utilityName)
+      
+      // Check if there are ANY generators at all
+      const totalCount = await prisma.generators.count()
+      console.log('📊 Total generators in database:', totalCount)
+      
+      // Show some sample entity names
+      const sampleEntities = await prisma.generators.findMany({
+        select: {
+          entity_name: true
+        },
+        distinct: ['entity_name'],
+        take: 10
+      })
+      console.log('🔍 Sample entity names in database:', sampleEntities.map(e => e.entity_name))
     }
 
     // Calculate portfolio statistics
