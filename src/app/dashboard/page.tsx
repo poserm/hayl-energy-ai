@@ -420,9 +420,9 @@ export default function DashboardPage() {
                   height={40}
                   className="rounded-lg"
                 />
-                <h1 className="text-2xl font-bold text-gray-900">HAYL ENERGY AI</h1>
+                <h1 className="text-2xl font-bold text-white">HAYL ENERGY AI</h1>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <div className="flex items-center space-x-2 text-sm text-gray-300">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect x="2" y="5" width="20" height="14" rx="1" fill="#B91C1C"/>
                   <rect x="2" y="5" width="20" height="1.5" fill="#DC2626"/>
@@ -447,13 +447,13 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center space-x-6">
               <nav className="flex items-center space-x-6 text-sm">
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Home</a>
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Explore</a>
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Connections</a>
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Settings</a>
+                <a href="#" className="font-medium text-gray-300 hover:text-white">Home</a>
+                <a href="#" className="font-medium text-gray-300 hover:text-white">Explore</a>
+                <a href="#" className="font-medium text-gray-300 hover:text-white">Connections</a>
+                <a href="#" className="font-medium text-gray-300 hover:text-white">Settings</a>
               </nav>
               <div className="flex items-center space-x-2">
-                <button className="p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100">
+                <button className="p-2 text-gray-300 hover:text-white rounded-full hover:bg-blue-800">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -480,14 +480,14 @@ export default function DashboardPage() {
 
         {/* Welcome Section */}
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-gray-900">Welcome, {user.name || user.email.split('@')[0]}</h2>
+          <h2 className="text-3xl font-bold text-white">Welcome, {user.name || user.email.split('@')[0]}</h2>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <label className="text-sm text-gray-600">Focus area:</label>
-              <select 
+              <label className="text-sm text-gray-300">Focus area:</label>
+              <select
                 value={focusArea}
                 onChange={(e) => setFocusArea(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border border-blue-700 bg-blue-900 text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="Project Sales">Project Sales</option>
                 <option value="Market Analysis">Market Analysis</option>
@@ -495,11 +495,11 @@ export default function DashboardPage() {
               </select>
             </div>
             <div className="flex items-center space-x-2">
-              <label className="text-sm text-gray-600">Region:</label>
-              <select 
+              <label className="text-sm text-gray-300">Region:</label>
+              <select
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border border-blue-700 bg-blue-900 text-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="PJM">PJM</option>
                 <option value="ERCOT">ERCOT</option>
@@ -532,10 +532,10 @@ export default function DashboardPage() {
         {/* State Selection Pills */}
         <div className="bg-blue-900 rounded-2xl p-6 shadow-sm border border-blue-700 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Select State</h3>
+            <h3 className="text-lg font-semibold text-white">Select State</h3>
             <button
               onClick={() => updateSelectedStates([])}
-              className="text-sm text-gray-600 hover:text-gray-900"
+              className="text-sm text-gray-300 hover:text-white"
             >
               Clear
             </button>
@@ -557,7 +557,7 @@ export default function DashboardPage() {
                 </button>
               </div>
             ) : (
-              <p className="text-gray-500 italic">No state selected</p>
+              <p className="text-gray-400 italic">No state selected</p>
             )}
           </div>
 
@@ -574,8 +574,8 @@ export default function DashboardPage() {
                   disabled={selectedStates.includes(state)}
                   className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
                     selectedStates.includes(state)
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                      ? 'bg-blue-800 text-gray-500 cursor-not-allowed'
+                      : 'bg-blue-800 text-white hover:bg-blue-700 hover:shadow-md'
                   }`}
                 >
                   {state}
@@ -591,32 +591,32 @@ export default function DashboardPage() {
           <div className="lg:col-span-3 bg-blue-900 rounded-2xl p-6 shadow-sm border border-blue-700">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-2xl font-bold text-white mb-2">
                   {selectedStates.length > 0 ? `${selectedStates[0]} Energy Snapshot` : 'Energy Snapshot'}
                 </h3>
-                <p className="text-gray-600 max-w-lg">
+                <p className="text-gray-300 max-w-lg">
                   Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
                 </p>
-                <div className="text-3xl font-bold text-blue-600 mt-4">
+                <div className="text-3xl font-bold text-blue-400 mt-4">
                   {Math.round(metrics.totalCapacity / 1000)} GW
                 </div>
               </div>
               <div className="flex space-x-2">
-                <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button className="px-4 py-2 text-sm font-medium text-white hover:text-blue-200 border border-blue-700 rounded-lg hover:bg-blue-800">
                   Download
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button className="px-4 py-2 text-sm font-medium text-white hover:text-blue-200 border border-blue-700 rounded-lg hover:bg-blue-800">
                   Compare
                 </button>
               </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex space-x-1 border-b border-gray-200 mb-6">
-              <button className="px-4 py-2 text-sm font-medium text-gray-900 border-b-2 border-blue-500">
+            <div className="flex space-x-1 border-b border-blue-700 mb-6">
+              <button className="px-4 py-2 text-sm font-medium text-white border-b-2 border-blue-400">
                 Power supply
               </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
+              <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white">
                 Power demand
               </button>
             </div>
@@ -640,8 +640,8 @@ export default function DashboardPage() {
                   return (
                     <div key={tech.technology} className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${colors[tech.technology] || colors.Other}`} />
-                      <span className="text-sm text-gray-700">{tech.technology}:</span>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm text-gray-300">{tech.technology}:</span>
+                      <span className="text-sm font-semibold text-white">
                         {tech.capacity.toLocaleString()} MW
                       </span>
                     </div>
@@ -675,8 +675,8 @@ export default function DashboardPage() {
                   return (
                     <div key={tech} className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${colors[tech] || colors.Other}`} />
-                      <span className="text-sm text-gray-700">{tech}:</span>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm text-gray-300">{tech}:</span>
+                      <span className="text-sm font-semibold text-white">
                         {Math.round(capacity as number).toLocaleString()} MW
                       </span>
                     </div>
@@ -692,12 +692,12 @@ export default function DashboardPage() {
             </div>
 
             {/* Total capacity */}
-            <div className="text-xl font-semibold text-gray-900 mb-4">
+            <div className="text-xl font-semibold text-white mb-4">
               Total: {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
             </div>
 
             {/* Stacked Bar Chart */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="bg-blue-950 rounded-lg p-4 mb-4">
               {capacityTrendsLoading ? (
                 <div className="flex items-center justify-center h-48">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -815,12 +815,12 @@ export default function DashboardPage() {
             </div>
 
             {/* Sources */}
-            <div className="text-sm text-gray-600 mb-4">
+            <div className="text-sm text-gray-400 mb-4">
               Sources: EIA.gov, State Energy Data System
             </div>
 
             {/* Explore more button */}
-            <button className="w-full py-3 text-center text-blue-600 font-medium border border-blue-600 rounded-lg hover:bg-blue-50">
+            <button className="w-full py-3 text-center text-blue-400 font-medium border border-blue-400 rounded-lg hover:bg-blue-800">
               Explore more
             </button>
           </div>
@@ -855,7 +855,7 @@ export default function DashboardPage() {
         {/* Latest News Section */}
         <div className="bg-blue-900 rounded-2xl p-6 shadow-sm border border-blue-700">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-bold text-gray-900">Latest News</h3>
+            <h3 className="text-2xl font-bold text-white">Latest News</h3>
             <div className="flex items-center space-x-2">
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-blue-600 rounded-full" />
@@ -877,9 +877,9 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {['Policy', 'Indiana income', 'Energy target', 'Policy'].map((title, index) => (
               <div key={index} className="group cursor-pointer">
-                <div className="h-48 bg-gray-200 rounded-lg mb-3 group-hover:bg-gray-300 transition-colors" />
-                <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">{title}</h4>
-                <p className="text-sm text-gray-600">9 Dec, 2024 | CNN</p>
+                <div className="h-48 bg-blue-800 rounded-lg mb-3 group-hover:bg-blue-700 transition-colors" />
+                <h4 className="font-semibold text-white mb-1 group-hover:text-blue-300">{title}</h4>
+                <p className="text-sm text-gray-400">9 Dec, 2024 | CNN</p>
               </div>
             ))}
           </div>
@@ -889,21 +889,21 @@ export default function DashboardPage() {
         <div className="bg-blue-950 -mx-6 px-6 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              <h2 className="text-3xl font-bold text-white mb-3">
                 {selectedStates.length > 0 ? `${selectedStates[0]} Energy Buyers` : 'Energy Buyers'}
               </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-gray-300 max-w-2xl mx-auto">
                 Discover the largest energy consumers in your selected region, ranked by peak load demand from highest to lowest capacity requirements.
               </p>
             </div>
 
             {/* Tab Navigation */}
             <div className="flex justify-center mb-6">
-              <div className="inline-flex rounded-full bg-gray-200 p-1">
-                <button className="px-6 py-2 rounded-full bg-gray-900 text-white font-medium">
+              <div className="inline-flex rounded-full bg-blue-900 p-1">
+                <button className="px-6 py-2 rounded-full bg-blue-700 text-white font-medium">
                   Utilities
                 </button>
-                <button className="px-6 py-2 rounded-full text-gray-700 hover:text-gray-900 font-medium">
+                <button className="px-6 py-2 rounded-full text-gray-300 hover:text-white font-medium">
                   Corporates
                 </button>
               </div>
@@ -970,7 +970,7 @@ export default function DashboardPage() {
             {/* Utilities Count */}
             {selectedStates.length > 0 && (
               <div className="text-center mb-6">
-                <p className="text-gray-600">
+                <p className="text-gray-300">
                   {stateUtilitiesLoading ? 'Loading utilities...' : `Found ${stateUtilities.length} utilities in ${selectedStates[0]}`}
                 </p>
               </div>
@@ -981,8 +981,8 @@ export default function DashboardPage() {
               {stateUtilitiesLoading ? (
                 <div className="flex items-center justify-center h-64">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading utility companies...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                    <p className="text-gray-300">Loading utility companies...</p>
                   </div>
                 </div>
               ) : stateUtilities && stateUtilities.length > 0 ? (
