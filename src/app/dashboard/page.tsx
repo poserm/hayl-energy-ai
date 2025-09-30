@@ -55,7 +55,7 @@ function PlantsTableRows({ utility }: { utility: any }) {
   if (loading) {
     return (
       <tr>
-        <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+        <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
           Loading plants...
         </td>
@@ -76,7 +76,7 @@ function PlantsTableRows({ utility }: { utility: any }) {
   if (plants.length === 0) {
     return (
       <tr>
-        <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+        <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
           No plants found for this utility
         </td>
       </tr>
@@ -86,11 +86,11 @@ function PlantsTableRows({ utility }: { utility: any }) {
   return (
     <>
       {plants.map((plant, index) => (
-        <tr key={index} className="hover:bg-gray-50">
-          <td className="px-4 py-3 text-sm font-medium text-gray-900">
+        <tr key={index} className="hover:bg-slate-700">
+          <td className="px-4 py-3 text-sm font-medium text-slate-100">
             {plant.plant_name || 'Unknown Plant'}
           </td>
-          <td className="px-4 py-3 text-sm text-gray-600">
+          <td className="px-4 py-3 text-sm text-slate-300">
             <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
               plant.technology === 'Natural Gas' ? 'bg-blue-100 text-blue-800' :
               plant.technology === 'Coal' ? 'bg-gray-100 text-gray-800' :
@@ -103,13 +103,13 @@ function PlantsTableRows({ utility }: { utility: any }) {
               {plant.technology || 'Unknown'}
             </span>
           </td>
-          <td className="px-4 py-3 text-sm font-semibold text-right text-blue-600">
+          <td className="px-4 py-3 text-sm font-semibold text-right text-blue-400">
             {plant.nameplate_capacity_mw ? parseFloat(plant.nameplate_capacity_mw).toLocaleString() : '0'}
           </td>
-          <td className="px-4 py-3 text-sm text-center text-gray-600">
+          <td className="px-4 py-3 text-sm text-center text-slate-300">
             {plant.operating_year || 'N/A'}
           </td>
-          <td className="px-4 py-3 text-sm text-gray-600">
+          <td className="px-4 py-3 text-sm text-slate-300">
             {plant.county && plant.plant_state ? `${plant.county}, ${plant.plant_state}` : plant.plant_state || 'Unknown'}
           </td>
         </tr>
@@ -384,13 +384,13 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-900">
         <div className="flex items-center space-x-3">
           <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span className="text-lg font-medium text-gray-700">Loading dashboard...</span>
+          <span className="text-lg font-medium text-slate-200">Loading dashboard...</span>
         </div>
       </div>
     )
@@ -406,9 +406,9 @@ export default function DashboardPage() {
   const technologyData = getTechnologyChartData()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
       {/* Modern Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-slate-800 shadow-sm border-b border-slate-700 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-6">
@@ -420,9 +420,9 @@ export default function DashboardPage() {
                   height={40}
                   className="rounded-lg"
                 />
-                <h1 className="text-2xl font-bold text-gray-900">HAYL ENERGY AI</h1>
+                <h1 className="text-2xl font-bold text-slate-100">HAYL ENERGY AI</h1>
               </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
+              <div className="flex items-center space-x-2 text-sm text-slate-300">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <rect x="2" y="5" width="20" height="14" rx="1" fill="#B91C1C"/>
                   <rect x="2" y="5" width="20" height="1.5" fill="#DC2626"/>
@@ -447,13 +447,13 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center space-x-6">
               <nav className="flex items-center space-x-6 text-sm">
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Home</a>
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Explore</a>
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Connections</a>
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Settings</a>
+                <a href="#" className="font-medium text-slate-200 hover:text-slate-100">Home</a>
+                <a href="#" className="font-medium text-slate-200 hover:text-slate-100">Explore</a>
+                <a href="#" className="font-medium text-slate-200 hover:text-slate-100">Connections</a>
+                <a href="#" className="font-medium text-slate-200 hover:text-slate-100">Settings</a>
               </nav>
               <div className="flex items-center space-x-2">
-                <button className="p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100">
+                <button className="p-2 text-slate-300 hover:text-slate-100 rounded-full hover:bg-slate-700">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -468,26 +468,26 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         {/* Debug Info - Remove this in production */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-            <h3 className="font-semibold text-yellow-800">Debug Info:</h3>
-            <p className="text-sm text-yellow-700">Selected States: {JSON.stringify(selectedStates)}</p>
-            <p className="text-sm text-yellow-700">Utilities Count: {dashboardData.utilities?.length || 0}</p>
-            <p className="text-sm text-yellow-700">Generators Count: {generators.length}</p>
-            <p className="text-sm text-yellow-700">Loading: {dashboardData.loading ? 'Yes' : 'No'}</p>
-            <p className="text-sm text-yellow-700">Error: {dashboardData.error || 'None'}</p>
+          <div className="bg-yellow-950 border border-yellow-800 rounded-lg p-4 mb-4">
+            <h3 className="font-semibold text-yellow-200">Debug Info:</h3>
+            <p className="text-sm text-yellow-300">Selected States: {JSON.stringify(selectedStates)}</p>
+            <p className="text-sm text-yellow-300">Utilities Count: {dashboardData.utilities?.length || 0}</p>
+            <p className="text-sm text-yellow-300">Generators Count: {generators.length}</p>
+            <p className="text-sm text-yellow-300">Loading: {dashboardData.loading ? 'Yes' : 'No'}</p>
+            <p className="text-sm text-yellow-300">Error: {dashboardData.error || 'None'}</p>
           </div>
         )}
 
         {/* Welcome Section */}
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-gray-900">Welcome, {user.name || user.email.split('@')[0]}</h2>
+          <h2 className="text-3xl font-bold text-slate-100">Welcome, {user.name || user.email.split('@')[0]}</h2>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <label className="text-sm text-gray-600">Focus area:</label>
-              <select 
+              <label className="text-sm text-slate-300">Focus area:</label>
+              <select
                 value={focusArea}
                 onChange={(e) => setFocusArea(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 bg-slate-800 border border-slate-700 text-slate-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="Project Sales">Project Sales</option>
                 <option value="Market Analysis">Market Analysis</option>
@@ -495,11 +495,11 @@ export default function DashboardPage() {
               </select>
             </div>
             <div className="flex items-center space-x-2">
-              <label className="text-sm text-gray-600">Region:</label>
-              <select 
+              <label className="text-sm text-slate-300">Region:</label>
+              <select
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 bg-slate-800 border border-slate-700 text-slate-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="PJM">PJM</option>
                 <option value="ERCOT">ERCOT</option>
@@ -510,54 +510,54 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-        
+
         {/* Auto-loading indicator with better styling */}
         {dashboardData.loading && (
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 shadow-sm">
+          <div className="bg-gradient-to-r from-blue-950 to-indigo-950 border border-blue-800 rounded-xl p-4 shadow-sm">
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <svg className="animate-spin h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               </div>
               <div>
-                <span className="text-blue-800 font-medium">Updating energy data...</span>
-                <div className="text-xs text-blue-600 mt-0.5">Real-time market intelligence</div>
+                <span className="text-blue-200 font-medium">Updating energy data...</span>
+                <div className="text-xs text-blue-300 mt-0.5">Real-time market intelligence</div>
               </div>
             </div>
           </div>
         )}
 
         {/* State Selection Pills */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
+        <div className="bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-700 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Select State</h3>
+            <h3 className="text-lg font-semibold text-slate-100">Select State</h3>
             <button
               onClick={() => updateSelectedStates([])}
-              className="text-sm text-gray-600 hover:text-gray-900"
+              className="text-sm text-slate-300 hover:text-slate-100"
             >
               Clear
             </button>
           </div>
-          
+
           {/* Currently Selected State */}
           <div className="flex flex-wrap gap-2 mb-4">
             {selectedStates.length > 0 ? (
-              <div className="flex items-center bg-gray-900 text-white px-3 py-1 rounded-full text-sm">
+              <div className="flex items-center bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
                 <span>{selectedStates[0]}</span>
                 <button
                   onClick={() => {
                     console.log('Removing state:', selectedStates[0])
                     updateSelectedStates([])
                   }}
-                  className="ml-2 text-gray-300 hover:text-white"
+                  className="ml-2 text-blue-200 hover:text-white"
                 >
                   ×
                 </button>
               </div>
             ) : (
-              <p className="text-gray-500 italic">No state selected</p>
+              <p className="text-slate-400 italic">No state selected</p>
             )}
           </div>
 
@@ -574,8 +574,8 @@ export default function DashboardPage() {
                   disabled={selectedStates.includes(state)}
                   className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
                     selectedStates.includes(state)
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                      ? 'bg-slate-600 text-slate-400 cursor-not-allowed'
+                      : 'bg-slate-700 text-slate-200 hover:bg-slate-600 hover:shadow-md'
                   }`}
                 >
                   {state}
@@ -588,35 +588,35 @@ export default function DashboardPage() {
         {/* Energy Snapshot Section */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left Side - Energy Snapshot (60%) */}
-          <div className="lg:col-span-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="lg:col-span-3 bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-700">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-2xl font-bold text-slate-100 mb-2">
                   {selectedStates.length > 0 ? `${selectedStates[0]} Energy Snapshot` : 'Energy Snapshot'}
                 </h3>
-                <p className="text-gray-600 max-w-lg">
+                <p className="text-slate-300 max-w-lg">
                   Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
                 </p>
-                <div className="text-3xl font-bold text-blue-600 mt-4">
+                <div className="text-3xl font-bold text-blue-400 mt-4">
                   {Math.round(metrics.totalCapacity / 1000)} GW
                 </div>
               </div>
               <div className="flex space-x-2">
-                <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button className="px-4 py-2 text-sm font-medium text-slate-200 hover:text-slate-100 border border-slate-600 rounded-lg hover:bg-slate-700">
                   Download
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button className="px-4 py-2 text-sm font-medium text-slate-200 hover:text-slate-100 border border-slate-600 rounded-lg hover:bg-slate-700">
                   Compare
                 </button>
               </div>
             </div>
 
             {/* Tabs */}
-            <div className="flex space-x-1 border-b border-gray-200 mb-6">
-              <button className="px-4 py-2 text-sm font-medium text-gray-900 border-b-2 border-blue-500">
+            <div className="flex space-x-1 border-b border-slate-700 mb-6">
+              <button className="px-4 py-2 text-sm font-medium text-slate-100 border-b-2 border-blue-500">
                 Power supply
               </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
+              <button className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-slate-100">
                 Power demand
               </button>
             </div>
@@ -640,8 +640,8 @@ export default function DashboardPage() {
                   return (
                     <div key={tech.technology} className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${colors[tech.technology] || colors.Other}`} />
-                      <span className="text-sm text-gray-700">{tech.technology}:</span>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm text-slate-200">{tech.technology}:</span>
+                      <span className="text-sm font-semibold text-slate-100">
                         {tech.capacity.toLocaleString()} MW
                       </span>
                     </div>
@@ -649,8 +649,8 @@ export default function DashboardPage() {
                 }) : capacityTrendsLoading ? (
                 <div className="col-span-6 text-center py-4">
                   <div className="animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
-                    <p className="text-gray-500 text-sm">Loading energy data...</p>
+                    <div className="h-4 bg-slate-700 rounded w-32 mb-2"></div>
+                    <p className="text-slate-400 text-sm">Loading energy data...</p>
                   </div>
                 </div>
               ) : generators.length > 0 ? Object.entries(
@@ -675,8 +675,8 @@ export default function DashboardPage() {
                   return (
                     <div key={tech} className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${colors[tech] || colors.Other}`} />
-                      <span className="text-sm text-gray-700">{tech}:</span>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm text-slate-200">{tech}:</span>
+                      <span className="text-sm font-semibold text-slate-100">
                         {Math.round(capacity as number).toLocaleString()} MW
                       </span>
                     </div>
@@ -684,20 +684,20 @@ export default function DashboardPage() {
                 }) : (
                 <div className="col-span-6 text-center py-4">
                   <div className="animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
-                    <p className="text-gray-500 text-sm">Loading energy data...</p>
+                    <div className="h-4 bg-slate-700 rounded w-32 mb-2"></div>
+                    <p className="text-slate-400 text-sm">Loading energy data...</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Total capacity */}
-            <div className="text-xl font-semibold text-gray-900 mb-4">
+            <div className="text-xl font-semibold text-slate-100 mb-4">
               Total: {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
             </div>
 
             {/* Stacked Bar Chart */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+            <div className="bg-slate-900 rounded-lg p-4 mb-4">
               {capacityTrendsLoading ? (
                 <div className="flex items-center justify-center h-48">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -733,14 +733,14 @@ export default function DashboardPage() {
                               {/* Y-Axis Scale */}
                               <div className="w-8 flex flex-col justify-between text-right pr-2" style={{ height: `${chartHeight}px` }}>
                                 {[0, 1, 2, 3, 4, 5].reverse().map(i => (
-                                  <div key={i} className="text-xs text-gray-600">
+                                  <div key={i} className="text-xs text-slate-300">
                                     {Math.round((maxCapacity * i / 5) / 1000)}k
                                   </div>
                                 ))}
                               </div>
-                              
+
                               {/* Chart Bars */}
-                              <div className="flex-1 flex items-end justify-between space-x-8 border-l border-b border-gray-300 pl-4 pb-2" style={{ height: `${chartHeight}px` }}>
+                              <div className="flex-1 flex items-end justify-between space-x-8 border-l border-b border-slate-600 pl-4 pb-2" style={{ height: `${chartHeight}px` }}>
                                 {capacityTrends.chartData.map((yearData: any) => {
                                   const totalForYear = yearData.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
                                   
@@ -771,15 +771,15 @@ export default function DashboardPage() {
                                   return (
                                     <div key={yearData.year} className="flex flex-col items-center space-y-2 flex-1">
                                       {/* Single Stacked Bar */}
-                                      <div 
-                                        className="relative w-12 border border-gray-200" 
+                                      <div
+                                        className="relative w-12 border border-slate-600"
                                         style={{ height: `${chartHeight - 20}px` }}
                                       >
                                         {segments.map((segment, index) => (
                                           <div
                                             key={`${yearData.year}-${segment.tech}`}
                                             className="absolute w-full hover:opacity-80 transition-opacity cursor-pointer"
-                                            style={{ 
+                                            style={{
                                               height: `${segment.height}px`,
                                               backgroundColor: techColors[segment.tech],
                                               bottom: `${segment.startY}px`,
@@ -789,9 +789,9 @@ export default function DashboardPage() {
                                           />
                                         ))}
                                       </div>
-                                      
+
                                       {/* Year Label */}
-                                      <span className="text-sm font-medium text-gray-700">{yearData.year}</span>
+                                      <span className="text-sm font-medium text-slate-200">{yearData.year}</span>
                                     </div>
                                   )
                                 })}
@@ -807,20 +807,20 @@ export default function DashboardPage() {
                 // Fallback placeholder
                 <div className="h-48 flex items-center justify-center">
                   <div className="text-center">
-                    <div className="text-gray-500 mb-2">No data available</div>
-                    <div className="text-sm text-gray-400">Select a state to view capacity trends</div>
+                    <div className="text-slate-400 mb-2">No data available</div>
+                    <div className="text-sm text-slate-500">Select a state to view capacity trends</div>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Sources */}
-            <div className="text-sm text-gray-600 mb-4">
+            <div className="text-sm text-slate-300 mb-4">
               Sources: EIA.gov, State Energy Data System
             </div>
 
             {/* Explore more button */}
-            <button className="w-full py-3 text-center text-blue-600 font-medium border border-blue-600 rounded-lg hover:bg-blue-50">
+            <button className="w-full py-3 text-center text-blue-400 font-medium border border-blue-500 rounded-lg hover:bg-slate-700">
               Explore more
             </button>
           </div>
@@ -836,7 +836,7 @@ export default function DashboardPage() {
                 }
               </p>
             </div>
-            <div className="h-96 bg-gray-100 rounded-b-2xl overflow-hidden relative">
+            <div className="h-96 bg-slate-800 rounded-b-2xl overflow-hidden relative">
               <SimpleUSMap 
                 height="100%" 
                 width="100%" 
@@ -853,21 +853,21 @@ export default function DashboardPage() {
         </div>
 
         {/* Latest News Section */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+        <div className="bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-700">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-bold text-gray-900">Latest News</h3>
+            <h3 className="text-2xl font-bold text-slate-100">Latest News</h3>
             <div className="flex items-center space-x-2">
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-blue-600 rounded-full" />
-                <div className="w-2 h-2 bg-gray-300 rounded-full" />
-                <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                <div className="w-2 h-2 bg-slate-600 rounded-full" />
+                <div className="w-2 h-2 bg-slate-600 rounded-full" />
               </div>
-              <button className="p-1 text-gray-400 hover:text-gray-600">
+              <button className="p-1 text-slate-500 hover:text-slate-300">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <button className="p-1 text-gray-400 hover:text-gray-600">
+              <button className="p-1 text-slate-500 hover:text-slate-300">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -877,33 +877,33 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {['Policy', 'Indiana income', 'Energy target', 'Policy'].map((title, index) => (
               <div key={index} className="group cursor-pointer">
-                <div className="h-48 bg-gray-200 rounded-lg mb-3 group-hover:bg-gray-300 transition-colors" />
-                <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">{title}</h4>
-                <p className="text-sm text-gray-600">9 Dec, 2024 | CNN</p>
+                <div className="h-48 bg-slate-700 rounded-lg mb-3 group-hover:bg-slate-600 transition-colors" />
+                <h4 className="font-semibold text-slate-100 mb-1 group-hover:text-blue-400">{title}</h4>
+                <p className="text-sm text-slate-300">9 Dec, 2024 | CNN</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Energy Buyers Section */}
-        <div className="bg-gray-50 -mx-6 px-6 py-12">
+        <div className="bg-slate-900 -mx-6 px-6 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              <h2 className="text-3xl font-bold text-slate-100 mb-3">
                 {selectedStates.length > 0 ? `${selectedStates[0]} Energy Buyers` : 'Energy Buyers'}
               </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-slate-300 max-w-2xl mx-auto">
                 Discover the largest energy consumers in your selected region, ranked by peak load demand from highest to lowest capacity requirements.
               </p>
             </div>
 
             {/* Tab Navigation */}
             <div className="flex justify-center mb-6">
-              <div className="inline-flex rounded-full bg-gray-200 p-1">
-                <button className="px-6 py-2 rounded-full bg-gray-900 text-white font-medium">
+              <div className="inline-flex rounded-full bg-slate-700 p-1">
+                <button className="px-6 py-2 rounded-full bg-blue-600 text-white font-medium">
                   Utilities
                 </button>
-                <button className="px-6 py-2 rounded-full text-gray-700 hover:text-gray-900 font-medium">
+                <button className="px-6 py-2 rounded-full text-slate-200 hover:text-slate-100 font-medium">
                   Corporates
                 </button>
               </div>
@@ -918,7 +918,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === null
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-slate-700 text-slate-200 hover:bg-slate-600'
                     }`}
                   >
                     ALL
@@ -928,7 +928,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === 'Investor Owned'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-slate-700 text-slate-200 hover:bg-slate-600'
                     }`}
                   >
                     INVESTOR OWNED
@@ -938,7 +938,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === 'Cooperative'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-slate-700 text-slate-200 hover:bg-slate-600'
                     }`}
                   >
                     COOPERATIVE
@@ -948,7 +948,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === 'Municipal'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-slate-700 text-slate-200 hover:bg-slate-600'
                     }`}
                   >
                     MUNICIPAL
@@ -958,7 +958,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === 'Retail Power Marketer'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-slate-700 text-slate-200 hover:bg-slate-600'
                     }`}
                   >
                     RETAIL POWER MARKETER
@@ -970,7 +970,7 @@ export default function DashboardPage() {
             {/* Utilities Count */}
             {selectedStates.length > 0 && (
               <div className="text-center mb-6">
-                <p className="text-gray-600">
+                <p className="text-slate-300">
                   {stateUtilitiesLoading ? 'Loading utilities...' : `Found ${stateUtilities.length} utilities in ${selectedStates[0]}`}
                 </p>
               </div>
@@ -981,8 +981,8 @@ export default function DashboardPage() {
               {stateUtilitiesLoading ? (
                 <div className="flex items-center justify-center h-64">
                   <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading utility companies...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-slate-300">Loading utility companies...</p>
                   </div>
                 </div>
               ) : stateUtilities && stateUtilities.length > 0 ? (
@@ -993,30 +993,30 @@ export default function DashboardPage() {
                       <div
                         key={utility.id || index}
                         onClick={() => setSelectedUtilityForAnalysis(utility)}
-                        className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+                        className={`flex-shrink-0 w-72 bg-slate-800 rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
                           selectedUtilityForAnalysis?.id === utility.id
-                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                            : 'border-gray-200 hover:border-gray-300'
+                            ? 'border-blue-500 bg-blue-950 ring-2 ring-blue-800'
+                            : 'border-slate-700 hover:border-slate-600'
                         }`}
                       >
                         <div className="text-center">
-                          <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
+                          <h4 className="text-lg font-bold text-slate-100 leading-tight mb-2">
                             {utility.name || utility.utility_name || `Utility ${index + 1}`}
                           </h4>
                           {utility.ownershipType || utility.ownership_type ? (
-                            <p className="text-sm text-gray-500 uppercase font-medium mb-3">
+                            <p className="text-sm text-slate-400 uppercase font-medium mb-3">
                               {utility.ownershipType || utility.ownership_type}
                             </p>
                           ) : null}
                           {utility.utilityNumber && (
-                            <p className="text-xs text-gray-400 mb-2">
+                            <p className="text-xs text-slate-500 mb-2">
                               Utility #{utility.utilityNumber}
                             </p>
                           )}
                           <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                             selectedUtilityForAnalysis?.id === utility.id
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-gray-100 text-gray-600'
+                              ? 'bg-blue-900 text-blue-200'
+                              : 'bg-slate-700 text-slate-300'
                           }`}>
                             {selectedUtilityForAnalysis?.id === utility.id ? '✓ Selected' : 'Click to Select'}
                           </div>
@@ -1024,13 +1024,13 @@ export default function DashboardPage() {
                       </div>
                     ))}
                   </div>
-                  
+
                   {/* Scroll Indicators */}
                   <div className="flex justify-center mt-4 space-x-2">
                     {stateUtilities.map((_, index) => (
                       <div
                         key={index}
-                        className="w-2 h-2 rounded-full bg-gray-300"
+                        className="w-2 h-2 rounded-full bg-slate-600"
                       />
                     ))}
                   </div>
@@ -1038,22 +1038,22 @@ export default function DashboardPage() {
               ) : selectedStates.length === 0 ? (
                 <div className="flex items-center justify-center h-64">
                   <div className="text-center">
-                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-16 h-16 text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No States Selected</h3>
-                    <p className="text-gray-600">Select states above to view energy buyers</p>
+                    <h3 className="text-lg font-semibold text-slate-100 mb-2">No States Selected</h3>
+                    <p className="text-slate-300">Select states above to view energy buyers</p>
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center justify-center h-64">
                   <div className="text-center">
-                    <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-16 h-16 text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Utilities Found</h3>
-                    <p className="text-gray-600">No utility companies found for the selected state</p>
-                    <p className="text-sm text-gray-500 mt-2">Try selecting different states or check back later</p>
+                    <h3 className="text-lg font-semibold text-slate-100 mb-2">No Utilities Found</h3>
+                    <p className="text-slate-300">No utility companies found for the selected state</p>
+                    <p className="text-sm text-slate-400 mt-2">Try selecting different states or check back later</p>
                   </div>
                 </div>
               )}
@@ -1061,8 +1061,8 @@ export default function DashboardPage() {
 
             {/* CTA Button */}
             <div className="text-center">
-              <button 
-                className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg"
+              <button
+                className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:bg-slate-600 disabled:cursor-not-allowed shadow-lg"
                 disabled={!selectedUtilityForAnalysis}
                 onClick={() => {
                   if (selectedUtilityForAnalysis) {
@@ -1070,7 +1070,7 @@ export default function DashboardPage() {
                     // Scroll to analysis section
                     const analysisSection = document.getElementById('utility-analysis-section')
                     if (analysisSection) {
-                      analysisSection.scrollIntoView({ 
+                      analysisSection.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                       })
@@ -1088,41 +1088,41 @@ export default function DashboardPage() {
 
         {/* Utility Analysis Section - Wireframe Format */}
         {selectedUtilityForAnalysis && (
-          <section id="utility-analysis-section" className="bg-white py-16">
+          <section id="utility-analysis-section" className="bg-slate-800 py-16">
             <div className="max-w-7xl mx-auto px-6">
               {/* Header */}
-              <div className="bg-gray-900 text-white rounded-2xl mb-8">
+              <div className="bg-slate-900 text-white rounded-2xl mb-8 border border-slate-700">
                 <div className="px-8 py-6">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-6">
                       <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                          <span className="text-gray-900 font-bold text-lg">
+                        <div className="w-12 h-12 bg-slate-200 rounded-lg flex items-center justify-center">
+                          <span className="text-slate-900 font-bold text-lg">
                             {(selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name || 'UN').substring(0, 2).toUpperCase()}
                           </span>
                         </div>
                         <div>
                           <h1 className="text-2xl font-bold">{selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name}</h1>
-                          <p className="text-gray-300">{selectedUtilityForAnalysis.state}'s electric utility</p>
+                          <p className="text-slate-300">{selectedUtilityForAnalysis.state}'s electric utility</p>
                         </div>
                       </div>
                     </div>
                     <div className="flex space-x-3">
-                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                      <button className="px-4 py-2 text-sm font-medium text-white border border-slate-600 rounded-lg hover:bg-slate-800">
                         <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                         Compare
                       </button>
-                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                      <button className="px-4 py-2 text-sm font-medium text-white border border-slate-600 rounded-lg hover:bg-slate-800">
                         <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
                         Download
                       </button>
-                      <button 
+                      <button
                         onClick={() => setSelectedUtilityForAnalysis(null)}
-                        className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800"
+                        className="px-4 py-2 text-sm font-medium text-white border border-slate-600 rounded-lg hover:bg-slate-800"
                       >
                         <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -1217,31 +1217,31 @@ function GeneratorsList({ states }: { states: string[] }) {
       <div className="overflow-x-auto">
         <table className="min-w-full">
           <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Plant Name</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Utility</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Technology</th>
-              <th className="text-right py-3 px-4 font-medium text-gray-700">Capacity (MW)</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">State</th>
+            <tr className="border-b border-slate-700">
+              <th className="text-left py-3 px-4 font-medium text-slate-200">Plant Name</th>
+              <th className="text-left py-3 px-4 font-medium text-slate-200">Utility</th>
+              <th className="text-left py-3 px-4 font-medium text-slate-200">Technology</th>
+              <th className="text-right py-3 px-4 font-medium text-slate-200">Capacity (MW)</th>
+              <th className="text-left py-3 px-4 font-medium text-slate-200">State</th>
             </tr>
           </thead>
           <tbody>
             {generators.slice(0, tableShowMore.visibleCount).map((generator, index) => (
-              <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                <td className="py-3 px-4 font-medium text-gray-900">
+              <tr key={index} className="border-b border-slate-800 hover:bg-slate-700 transition-colors">
+                <td className="py-3 px-4 font-medium text-slate-100">
                   {generator.plantName}
                 </td>
-                <td className="py-3 px-4 text-gray-600">
+                <td className="py-3 px-4 text-slate-300">
                   {generator.utilityName}
                 </td>
-                <td className="py-3 px-4 text-gray-600">
+                <td className="py-3 px-4 text-slate-300">
                   {generator.technology}
                 </td>
-                <td className="py-3 px-4 text-right font-semibold text-blue-600">
+                <td className="py-3 px-4 text-right font-semibold text-blue-400">
                   {Math.round(generator.capacity.nameplate)}
                 </td>
                 <td className="py-3 px-4">
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                  <span className="px-2 py-1 bg-blue-900 text-blue-200 rounded-full text-xs font-medium">
                     {generator.state}
                   </span>
                 </td>
@@ -1250,13 +1250,13 @@ function GeneratorsList({ states }: { states: string[] }) {
           </tbody>
         </table>
       </div>
-      
+
       <ShowMoreControls
         totalItems={generators.length}
         visibleItems={tableShowMore.visibleCount}
         onShowMore={tableShowMore.showMore}
         onShowLess={tableShowMore.hasLess ? tableShowMore.showLess : undefined}
-        className="pt-4 border-t border-gray-100"
+        className="pt-4 border-t border-slate-800"
       />
     </div>
   )
@@ -1321,14 +1321,14 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                     onClick={() => setActiveSection(section.id)}
                     className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-colors ${
                       activeSection === section.id
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
                     }`}
                   >
                     {String(section.id).padStart(2, '0')}
                   </button>
                   {index < sections.length - 1 && (
-                    <div className="absolute left-6 top-12 w-0.5 h-8 bg-gray-300" />
+                    <div className="absolute left-6 top-12 w-0.5 h-8 bg-slate-600" />
                   )}
                 </div>
               ))}
@@ -1337,30 +1337,30 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
           {/* Section Content */}
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-slate-100 mb-2">
               {sections[activeSection - 1].title}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-slate-300 mb-6">
               Summary of their preferred scenario. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
             </p>
 
             {/* Power Plants Table */}
             {utility && activeSection === 1 && (
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plant Portfolio</h3>
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <h3 className="text-lg font-semibold text-slate-100 mb-4">Power Plant Portfolio</h3>
+                <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-slate-700">
+                      <thead className="bg-slate-900">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plant Name</th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity (MW)</th>
-                          <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Year</th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Plant Name</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Technology</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider">Capacity (MW)</th>
+                          <th className="px-4 py-3 text-center text-xs font-medium text-slate-400 uppercase tracking-wider">Operating Year</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Location</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-slate-800 divide-y divide-slate-700">
                         <PlantsTableRows utility={utility} />
                       </tbody>
                     </table>
@@ -1368,11 +1368,11 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
               </div>
             )}
-            
+
             {activeSection === 1 && (
               <div className="mt-6">
-                <p className="text-sm text-gray-600 text-center">
-                  The table above displays comprehensive power plant data including technology types, operational capacity, and geographic location. 
+                <p className="text-sm text-slate-300 text-center">
+                  The table above displays comprehensive power plant data including technology types, operational capacity, and geographic location.
                   Data sourced from EIA.gov and state regulatory filings.
                 </p>
               </div>
@@ -1381,32 +1381,32 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             {activeSection === 2 && (
               <>
                 {/* Demand Analysis */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                <div className="bg-slate-900 border border-slate-700 rounded-lg p-4 mb-6">
                   <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Peak Demand</p>
-                      <p className="text-xl font-bold text-gray-900">1.2 GW</p>
+                      <p className="text-sm text-slate-300">Peak Demand</p>
+                      <p className="text-xl font-bold text-slate-100">1.2 GW</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Annual Growth</p>
-                      <p className="text-xl font-bold text-gray-900">2.1%</p>
+                      <p className="text-sm text-slate-300">Annual Growth</p>
+                      <p className="text-xl font-bold text-slate-100">2.1%</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Forecast Year</p>
-                      <p className="text-xl font-bold text-gray-900">2025</p>
+                      <p className="text-sm text-slate-300">Forecast Year</p>
+                      <p className="text-xl font-bold text-slate-100">2025</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Mock Chart */}
-                <div className="h-64 bg-gray-50 rounded-lg p-4 flex items-end justify-between">
+                <div className="h-64 bg-slate-900 rounded-lg p-4 flex items-end justify-between">
                   {[2020, 2021, 2022, 2023, 2024].map((year) => (
                     <div key={year} className="flex flex-col items-center space-y-2">
-                      <div 
-                        className="w-16 bg-blue-500 rounded-t" 
+                      <div
+                        className="w-16 bg-blue-500 rounded-t"
                         style={{ height: `${Math.random() * 150 + 50}px` }}
                       />
-                      <span className="text-xs text-gray-600">{year}</span>
+                      <span className="text-xs text-slate-300">{year}</span>
                     </div>
                   ))}
                 </div>
@@ -1417,39 +1417,39 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               <>
                 {/* Supply Analysis */}
                 <div className="space-y-4 mb-6">
-                  <div className="bg-white border border-gray-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Generation Sources</h4>
+                  <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
+                    <h4 className="font-semibold text-slate-100 mb-2">Generation Sources</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-sm text-gray-600">Primary Source:</span>
-                        <span className="ml-2 font-medium">Natural Gas</span>
+                        <span className="text-sm text-slate-300">Primary Source:</span>
+                        <span className="ml-2 font-medium text-slate-100">Natural Gas</span>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-600">Renewable %:</span>
-                        <span className="ml-2 font-medium">15%</span>
+                        <span className="text-sm text-slate-300">Renewable %:</span>
+                        <span className="ml-2 font-medium text-slate-100">15%</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Projects Table */}
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <div className="bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-slate-900">
                       <tr>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Project</th>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Type</th>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Status</th>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Timeline</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-slate-200">Project</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-slate-200">Type</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-slate-200">Status</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-slate-200">Timeline</th>
                       </tr>
                     </thead>
                     <tbody>
                       {[...Array(4)].map((_, i) => (
-                        <tr key={i} className="border-t border-gray-200">
-                          <td className="px-4 py-2 text-sm text-gray-900">Project {i + 1}</td>
-                          <td className="px-4 py-2 text-sm text-gray-900">Solar</td>
-                          <td className="px-4 py-2 text-sm text-green-600">Planned</td>
-                          <td className="px-4 py-2 text-sm text-gray-900">2025</td>
+                        <tr key={i} className="border-t border-slate-700">
+                          <td className="px-4 py-2 text-sm text-slate-100">Project {i + 1}</td>
+                          <td className="px-4 py-2 text-sm text-slate-100">Solar</td>
+                          <td className="px-4 py-2 text-sm text-green-400">Planned</td>
+                          <td className="px-4 py-2 text-sm text-slate-100">2025</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1470,12 +1470,12 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               Now showing: {sections[activeSection - 1].title}
             </p>
           </div>
-          <div className="h-64 bg-gray-800 flex items-center justify-center">
+          <div className="h-64 bg-slate-800 flex items-center justify-center">
             <svg viewBox="0 0 200 150" className="w-32 h-24">
-              <path 
-                d="M 50 30 L 150 30 L 150 50 L 140 60 L 140 100 L 130 110 L 120 120 L 80 120 L 70 110 L 60 100 L 60 60 L 50 50 Z" 
-                fill="#6B7280" 
-                stroke="#4B5563" 
+              <path
+                d="M 50 30 L 150 30 L 150 50 L 140 60 L 140 100 L 130 110 L 120 120 L 80 120 L 70 110 L 60 100 L 60 60 L 50 50 Z"
+                fill="#475569"
+                stroke="#334155"
                 strokeWidth="2"
               />
               <text x="100" y="75" textAnchor="middle" className="fill-white text-sm">
@@ -1486,11 +1486,11 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
           <div className="p-4 space-y-2">
             <h4 className="text-white text-sm font-medium mb-2">Utility Details</h4>
             <div className="flex items-center justify-between">
-              <span className="text-gray-300 text-sm">Ownership</span>
+              <span className="text-slate-300 text-sm">Ownership</span>
               <span className="text-white text-sm font-medium">{utility.ownershipType || utility.ownership_type || 'N/A'}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-300 text-sm">Region</span>
+              <span className="text-slate-300 text-sm">Region</span>
               <span className="text-white text-sm font-medium">{utility.nercRegion || 'N/A'}</span>
             </div>
           </div>
