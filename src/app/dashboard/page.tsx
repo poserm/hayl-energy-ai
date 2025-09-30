@@ -28,17 +28,21 @@ function PlantsTableRows({ utility }: { utility: any }) {
       setError(null)
       try {
         const utilityName = utility.name || utility.utility_name
+        console.log('🔍 Fetching plants for utility:', utilityName)
         const response = await fetch(`/api/plants?utility=${encodeURIComponent(utilityName)}`)
-        
+
         if (!response.ok) {
-          throw new Error(`Failed to fetch plants: ${response.status}`)
+          const errorData = await response.json()
+          console.error('❌ API Error:', errorData)
+          throw new Error(errorData.details || errorData.error || `HTTP ${response.status}`)
         }
-        
+
         const data = await response.json()
+        console.log(`✅ Received ${data.length} plants`)
         setPlants(data)
       } catch (error) {
         console.error('Error fetching plants:', error)
-        setError('Failed to load plant data')
+        setError(error instanceof Error ? error.message : 'Failed to load plant data')
         setPlants([])
       } finally {
         setLoading(false)
