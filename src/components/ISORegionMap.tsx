@@ -48,8 +48,12 @@ export default function ISORegionMap({ selectedRegion, onRegionClick }: ISORegio
   const tooltipRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!svgRef.current) return
+    if (!svgRef.current) {
+      console.log('ISORegionMap: svgRef not available')
+      return
+    }
 
+    console.log('ISORegionMap: Initializing map...')
     const width = 800
     const height = 500
 
@@ -71,11 +75,20 @@ export default function ISORegionMap({ selectedRegion, onRegionClick }: ISORegio
 
     const path = d3.geoPath().projection(projection)
 
+    console.log('ISORegionMap: Fetching US states data...')
     // Load US states TopoJSON
     fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
-      .then(response => response.json())
+      .then(response => {
+        console.log('ISORegionMap: Fetch response received', response.ok)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        return response.json()
+      })
       .then(us => {
+        console.log('ISORegionMap: TopoJSON data loaded', us)
         const states = feature(us, us.objects.states)
+        console.log('ISORegionMap: States features extracted', states.features.length)
 
         // State name to abbreviation mapping
         const stateNameToAbbr: Record<string, string> = {
@@ -177,8 +190,8 @@ export default function ISORegionMap({ selectedRegion, onRegionClick }: ISORegio
   }, [selectedRegion, onRegionClick])
 
   return (
-    <div className="relative w-full h-full">
-      <svg ref={svgRef} className="w-full h-full" />
+    <div className="relative w-full h-full min-h-[500px]">
+      <svg ref={svgRef} className="w-full h-full" style={{ minHeight: '500px' }} />
       <div
         ref={tooltipRef}
         className="absolute hidden bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg pointer-events-none z-50"
