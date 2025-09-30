@@ -40,8 +40,7 @@ export async function GET(request: NextRequest) {
         technology: true,
         operating_year: true,
         plant_state: true,
-        county: true,
-        prime_mover_code: true
+        county: true
       },
       orderBy: [
         { nameplate_capacity_mw: 'desc' },
