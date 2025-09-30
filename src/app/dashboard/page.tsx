@@ -554,7 +554,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Latest News Ticker - State Tailored */}
-        <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-4 shadow-sm border border-gray-700 mb-6 overflow-hidden">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-6 overflow-hidden">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 bg-blue-600 px-3 py-1.5 rounded-md flex-shrink-0">
               <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -613,13 +613,13 @@ export default function DashboardPage() {
                     key={index}
                     className="flex items-center space-x-3 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
                   >
-                    <span className="text-white font-medium text-sm whitespace-nowrap">
+                    <span className="text-gray-900 font-medium text-sm whitespace-nowrap">
                       {news.title}
                     </span>
-                    <span className="text-gray-400 text-xs whitespace-nowrap">
+                    <span className="text-gray-600 text-xs whitespace-nowrap">
                       {news.source} • {news.date}
                     </span>
-                    <span className="text-blue-400 text-xl">•</span>
+                    <span className="text-blue-600 text-xl">•</span>
                   </div>
                 ))}
               </div>
