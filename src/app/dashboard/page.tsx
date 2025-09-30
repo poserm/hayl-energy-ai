@@ -406,9 +406,9 @@ export default function DashboardPage() {
   const technologyData = getTechnologyChartData()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-950">
       {/* Modern Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-blue-950 shadow-sm border-b border-blue-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-6">
@@ -530,7 +530,7 @@ export default function DashboardPage() {
         )}
 
         {/* State Selection Pills */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
+        <div className="bg-blue-900 rounded-2xl p-6 shadow-sm border border-blue-700 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Select State</h3>
             <button
@@ -588,7 +588,7 @@ export default function DashboardPage() {
         {/* Energy Snapshot Section */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left Side - Energy Snapshot (60%) */}
-          <div className="lg:col-span-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="lg:col-span-3 bg-blue-900 rounded-2xl p-6 shadow-sm border border-blue-700">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -826,7 +826,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Right Side - Interactive Map (40%) */}
-          <div className="lg:col-span-2 bg-gray-900 rounded-2xl overflow-hidden">
+          <div className="lg:col-span-2 bg-blue-950 rounded-2xl overflow-hidden">
             <div className="p-4">
               <h3 className="text-white font-semibold">Interactive map</h3>
               <p className="text-gray-400 text-sm">
@@ -853,7 +853,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Latest News Section */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+        <div className="bg-blue-900 rounded-2xl p-6 shadow-sm border border-blue-700">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-2xl font-bold text-gray-900">Latest News</h3>
             <div className="flex items-center space-x-2">
@@ -886,7 +886,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Energy Buyers Section */}
-        <div className="bg-gray-50 -mx-6 px-6 py-12">
+        <div className="bg-blue-950 -mx-6 px-6 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-3">
@@ -1088,7 +1088,7 @@ export default function DashboardPage() {
 
         {/* Utility Analysis Section - Wireframe Format */}
         {selectedUtilityForAnalysis && (
-          <section id="utility-analysis-section" className="bg-white py-16">
+          <section id="utility-analysis-section" className="bg-blue-900 py-16">
             <div className="max-w-7xl mx-auto px-6">
               {/* Header */}
               <div className="bg-gray-900 text-white rounded-2xl mb-8">
