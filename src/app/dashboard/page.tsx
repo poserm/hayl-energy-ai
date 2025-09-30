@@ -905,17 +905,12 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="h-96 bg-gray-100 rounded-b-2xl overflow-hidden relative">
-              <SimpleUSMap 
-                height="100%" 
-                width="100%" 
+              <SimpleUSMap
+                height="100%"
+                width="100%"
                 selectedState={selectedStates[0] || undefined}
+                selectedStates={selectedStates}
               />
-              {/* Debug info */}
-              {selectedStates.length > 0 && (
-                <div className="absolute top-2 right-2 bg-black bg-opacity-75 text-white text-xs p-2 rounded z-[1000]">
-                  Map should zoom to: {selectedStates[0]}
-                </div>
-              )}
             </div>
           </div>
         </div>

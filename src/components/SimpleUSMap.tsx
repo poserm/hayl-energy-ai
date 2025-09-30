@@ -13,9 +13,10 @@ interface SimpleUSMapProps {
   height?: string
   width?: string
   selectedState?: string
+  selectedStates?: string[]
 }
 
-export default function SimpleUSMap({ height = '500px', width = '100%', selectedState }: SimpleUSMapProps) {
+export default function SimpleUSMap({ height = '500px', width = '100%', selectedState, selectedStates = [] }: SimpleUSMapProps) {
   const [isClient, setIsClient] = useState(false)
   const [geoData, setGeoData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -104,13 +105,19 @@ export default function SimpleUSMap({ height = '500px', width = '100%', selected
     return () => clearTimeout(timer)
   }, [selectedState])
 
-  // Simple style for state boundaries - just lines, no fills
-  const stateStyle = {
-    color: '#666666',
-    weight: 2,
-    opacity: 1,
-    fillOpacity: 0,
-    fill: false
+  // Dynamic style function for state boundaries
+  const stateStyle = (feature: any) => {
+    const stateName = feature.properties.name
+    const isSelected = selectedStates.includes(stateName)
+
+    return {
+      color: isSelected ? '#3b82f6' : '#666666',
+      weight: isSelected ? 3 : 2,
+      opacity: 1,
+      fillOpacity: isSelected ? 0.3 : 0,
+      fillColor: isSelected ? '#3b82f6' : undefined,
+      fill: isSelected
+    }
   }
 
   if (!isClient) {
@@ -174,6 +181,7 @@ export default function SimpleUSMap({ height = '500px', width = '100%', selected
         
         {geoData && (
           <GeoJSON
+            key={selectedStates.join(',')}
             data={geoData}
             style={stateStyle}
             interactive={false}
