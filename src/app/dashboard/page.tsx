@@ -510,7 +510,40 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-        
+
+        {/* Latest News Section */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">Latest News</h3>
+            <div className="flex items-center space-x-2">
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-blue-600 rounded-full" />
+                <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                <div className="w-2 h-2 bg-gray-300 rounded-full" />
+              </div>
+              <button className="p-1 text-gray-400 hover:text-gray-600">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button className="p-1 text-gray-400 hover:text-gray-600">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {['Policy', 'Indiana income', 'Energy target', 'Policy'].map((title, index) => (
+              <div key={index} className="group cursor-pointer">
+                <div className="h-48 bg-gray-200 rounded-lg mb-3 group-hover:bg-gray-300 transition-colors" />
+                <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">{title}</h4>
+                <p className="text-sm text-gray-600">9 Dec, 2024 | CNN</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Auto-loading indicator with better styling */}
         {dashboardData.loading && (
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 shadow-sm">
@@ -531,37 +564,6 @@ export default function DashboardPage() {
 
         {/* State Selection Pills */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Select State</h3>
-            <button
-              onClick={() => updateSelectedStates([])}
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              Clear
-            </button>
-          </div>
-          
-          {/* Currently Selected State */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {selectedStates.length > 0 ? (
-              <div className="flex items-center bg-gray-900 text-white px-3 py-1 rounded-full text-sm">
-                <span>{selectedStates[0]}</span>
-                <button
-                  onClick={() => {
-                    console.log('Removing state:', selectedStates[0])
-                    updateSelectedStates([])
-                  }}
-                  className="ml-2 text-gray-300 hover:text-white"
-                >
-                  ×
-                </button>
-              </div>
-            ) : (
-              <p className="text-gray-500 italic">No state selected</p>
-            )}
-          </div>
-
-          {/* Available States to Select */}
           <div className="flex flex-wrap gap-2">
             {(['Delaware', 'Illinois', 'Indiana', 'Kentucky', 'Maryland', 'Michigan', 'New Jersey', 'North Carolina', 'Ohio', 'Pennsylvania', 'Tennessee', 'Virginia', 'West Virginia', 'District of Columbia'] as const)
               .map((state) => (
@@ -571,11 +573,10 @@ export default function DashboardPage() {
                     console.log('Selecting state:', state)
                     updateSelectedStates([state])
                   }}
-                  disabled={selectedStates.includes(state)}
                   className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
                     selectedStates.includes(state)
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
                   }`}
                 >
                   {state}
@@ -849,39 +850,6 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-          </div>
-        </div>
-
-        {/* Latest News Section */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-bold text-gray-900">Latest News</h3>
-            <div className="flex items-center space-x-2">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-blue-600 rounded-full" />
-                <div className="w-2 h-2 bg-gray-300 rounded-full" />
-                <div className="w-2 h-2 bg-gray-300 rounded-full" />
-              </div>
-              <button className="p-1 text-gray-400 hover:text-gray-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button className="p-1 text-gray-400 hover:text-gray-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {['Policy', 'Indiana income', 'Energy target', 'Policy'].map((title, index) => (
-              <div key={index} className="group cursor-pointer">
-                <div className="h-48 bg-gray-200 rounded-lg mb-3 group-hover:bg-gray-300 transition-colors" />
-                <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">{title}</h4>
-                <p className="text-sm text-gray-600">9 Dec, 2024 | CNN</p>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -1310,7 +1278,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   return (
     <div className="grid grid-cols-12 gap-8">
       {/* Left Side - Timeline and Content */}
-      <div className="col-span-8">
+      <div className="col-span-12">
         <div className="flex">
           {/* Timeline Navigation */}
           <div className="mr-8">
@@ -1457,42 +1425,6 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
               </>
             )}
-          </div>
-        </div>
-      </div>
-
-      {/* Right Side - Map */}
-      <div className="col-span-4">
-        <div className="bg-gray-900 rounded-2xl overflow-hidden sticky top-8">
-          <div className="p-4">
-            <h3 className="text-white font-semibold">Interactive map</h3>
-            <p className="text-gray-400 text-sm">
-              Now showing: {sections[activeSection - 1].title}
-            </p>
-          </div>
-          <div className="h-64 bg-gray-800 flex items-center justify-center">
-            <svg viewBox="0 0 200 150" className="w-32 h-24">
-              <path 
-                d="M 50 30 L 150 30 L 150 50 L 140 60 L 140 100 L 130 110 L 120 120 L 80 120 L 70 110 L 60 100 L 60 60 L 50 50 Z" 
-                fill="#6B7280" 
-                stroke="#4B5563" 
-                strokeWidth="2"
-              />
-              <text x="100" y="75" textAnchor="middle" className="fill-white text-sm">
-                {utility.state || 'State'}
-              </text>
-            </svg>
-          </div>
-          <div className="p-4 space-y-2">
-            <h4 className="text-white text-sm font-medium mb-2">Utility Details</h4>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-300 text-sm">Ownership</span>
-              <span className="text-white text-sm font-medium">{utility.ownershipType || utility.ownership_type || 'N/A'}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-300 text-sm">Region</span>
-              <span className="text-white text-sm font-medium">{utility.nercRegion || 'N/A'}</span>
-            </div>
           </div>
         </div>
       </div>
