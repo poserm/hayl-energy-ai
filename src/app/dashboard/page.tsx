@@ -174,6 +174,17 @@ export default function DashboardPage() {
     fetchPortfolioData()
   }, [selectedUtilityForAnalysis])
   
+  // Region to states mapping
+  const regionStatesMap: { [key: string]: string[] } = {
+    'CAISO': ['California', 'Nevada'],
+    'ERCOT': ['Texas'],
+    'ISO-NE': ['Connecticut', 'Maine', 'Massachusetts', 'New Hampshire', 'Rhode Island', 'Vermont'],
+    'MISO': ['Arkansas', 'Illinois', 'Indiana', 'Iowa', 'Kentucky', 'Louisiana', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'North Dakota', 'South Dakota', 'Texas', 'Wisconsin'],
+    'NYISO': ['New York'],
+    'PJM': ['Delaware', 'Illinois', 'Indiana', 'Kentucky', 'Maryland', 'Michigan', 'New Jersey', 'North Carolina', 'Ohio', 'Pennsylvania', 'Tennessee', 'Virginia', 'West Virginia', 'District of Columbia'],
+    'SPP': ['Arkansas', 'Kansas', 'Louisiana', 'Mississippi', 'Missouri', 'Nebraska', 'New Mexico', 'Oklahoma', 'North Dakota', 'South Dakota', 'Texas', 'Wyoming']
+  }
+
   const {
     selectedStates,
     updateSelectedStates,
@@ -182,7 +193,14 @@ export default function DashboardPage() {
     getTechnologyChartData,
     getStateMetrics,
     refreshData
-  } = useEnergyDashboard(['Pennsylvania'])
+  } = useEnergyDashboard(regionStatesMap[region] || ['Pennsylvania'])
+
+  // Update selected states when region changes
+  useEffect(() => {
+    if (regionStatesMap[region]) {
+      updateSelectedStates(regionStatesMap[region])
+    }
+  }, [region])
 
   // Pagination hooks (after dashboardData is available)
   const utilityShowMore = useShowMore(dashboardData?.utilities?.length || 0, 8, 8)
@@ -496,16 +514,25 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center space-x-2">
               <label className="text-sm text-gray-600">Region:</label>
-              <select 
+              <select
                 value={region}
-                onChange={(e) => setRegion(e.target.value)}
+                onChange={(e) => {
+                  const selectedRegion = e.target.value
+                  setRegion(selectedRegion)
+                  // Update state pills based on selected region
+                  if (regionStatesMap[selectedRegion]) {
+                    updateSelectedStates(regionStatesMap[selectedRegion])
+                  }
+                }}
                 className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="PJM">PJM</option>
+                <option value="CAISO">CAISO</option>
                 <option value="ERCOT">ERCOT</option>
                 <option value="ISO-NE">ISO-NE</option>
-                <option value="CAISO">CAISO</option>
                 <option value="MISO">MISO</option>
+                <option value="NYISO">NYISO</option>
+                <option value="PJM">PJM</option>
+                <option value="SPP">SPP</option>
               </select>
             </div>
           </div>
@@ -532,21 +559,20 @@ export default function DashboardPage() {
         {/* State Selection Pills */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
           <div className="flex flex-wrap gap-2">
-            {(['Delaware', 'Illinois', 'Indiana', 'Kentucky', 'Maryland', 'Michigan', 'New Jersey', 'North Carolina', 'Ohio', 'Pennsylvania', 'Tennessee', 'Virginia', 'West Virginia', 'District of Columbia'] as const)
-              .map((state) => (
-                <button
-                  key={state}
-                  onClick={() => {
-                    console.log('Selecting state:', state)
-                    updateSelectedStates([state])
-                  }}
-                  className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
-                    selectedStates.includes(state)
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
-                  }`}
-                >
-                  {state}
+            {regionStatesMap[region]?.map((state) => (
+              <button
+                key={state}
+                onClick={() => {
+                  console.log('Selecting state:', state)
+                  updateSelectedStates([state])
+                }}
+                className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
+                  selectedStates.includes(state)
+                    ? 'bg-gray-900 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
+                }`}
+              >
+                {state}
                 </button>
               ))
             }
