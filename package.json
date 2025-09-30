@@ -40,6 +40,7 @@
     "bcryptjs": "^3.0.2",
     "clsx": "^2.1.1",
     "critters": "^0.0.23",
+    "d3": "^7.9.0",
     "jose": "^6.0.12",
     "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
@@ -51,6 +52,7 @@
     "react-leaflet": "^5.0.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.11",
+    "topojson-client": "^3.1.0",
     "typescript": "^5"
   },
   "devDependencies": {
@@ -59,9 +61,11 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/bcryptjs": "^3.0.0",
+    "@types/d3": "^7.4.3",
     "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/supertest": "^6.0.3",
+    "@types/topojson-client": "^3.1.5",
     "eslint": "^9",
     "eslint-config-next": "15.4.4",
     "jest": "^30.0.5",

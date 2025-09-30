@@ -12,6 +12,7 @@ import DetailPanel from '@/components/ui/DetailPanel'
 import ShowMoreControls, { useShowMore } from '@/components/ui/ShowMoreControls'
 import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
 import SimpleUSMap from '@/components/SimpleUSMap'
+import ISORegionMap from '@/components/ISORegionMap'
 import Image from 'next/image'
 
 // Plants Table Rows Component
@@ -128,6 +129,7 @@ export default function DashboardPage() {
   const [generatorsLoading, setGeneratorsLoading] = useState(false)
   const [focusArea, setFocusArea] = useState('Project Sales')
   const [region, setRegion] = useState('PJM')
+  const [selectedRegion, setSelectedRegion] = useState<string | undefined>(undefined)
   const [activeView, setActiveView] = useState<'dashboard' | 'utility-analysis'>('dashboard')
   const [selectedUtilityAnalysis, setSelectedUtilityAnalysis] = useState<any>(null)
   const [capacityTrends, setCapacityTrends] = useState<any>(null)
@@ -898,6 +900,27 @@ export default function DashboardPage() {
                 />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* ISO/RTO Region Map Section */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="mb-4">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              ISO/RTO Regional Map
+            </h3>
+            <p className="text-gray-600">
+              Explore the Independent System Operator (ISO) and Regional Transmission Organization (RTO) regions across the United States. Click on states to view their regional affiliations.
+            </p>
+          </div>
+          <div className="h-[600px] bg-gray-50 rounded-lg overflow-hidden border border-gray-200">
+            <ISORegionMap
+              selectedRegion={selectedRegion}
+              onRegionClick={(region) => {
+                console.log('Region clicked:', region)
+                setSelectedRegion(region)
+              }}
+            />
           </div>
         </div>
 
