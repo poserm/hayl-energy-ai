@@ -511,39 +511,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Latest News Section */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-bold text-gray-900">Latest News</h3>
-            <div className="flex items-center space-x-2">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-blue-600 rounded-full" />
-                <div className="w-2 h-2 bg-gray-300 rounded-full" />
-                <div className="w-2 h-2 bg-gray-300 rounded-full" />
-              </div>
-              <button className="p-1 text-gray-400 hover:text-gray-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button className="p-1 text-gray-400 hover:text-gray-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {['Policy', 'Indiana income', 'Energy target', 'Policy'].map((title, index) => (
-              <div key={index} className="group cursor-pointer">
-                <div className="h-48 bg-gray-200 rounded-lg mb-3 group-hover:bg-gray-300 transition-colors" />
-                <h4 className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600">{title}</h4>
-                <p className="text-sm text-gray-600">9 Dec, 2024 | CNN</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Auto-loading indicator with better styling */}
         {dashboardData.loading && (
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 shadow-sm">
@@ -583,6 +550,62 @@ export default function DashboardPage() {
                 </button>
               ))
             }
+          </div>
+        </div>
+
+        {/* Latest News Feed - State Tailored */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">
+              Latest News {selectedStates.length > 0 ? `- ${selectedStates[0]}` : ''}
+            </h3>
+          </div>
+          <div className="space-y-4">
+            {[
+              {
+                title: 'Virginia Clean Energy Act Implementation Update',
+                source: 'Energy Wire',
+                date: 'Dec 15, 2024',
+                description: 'State regulators approve new renewable energy targets for major utilities, expanding solar capacity requirements.'
+              },
+              {
+                title: 'Dominion Energy Announces Major Solar Investment',
+                source: 'Bloomberg Energy',
+                date: 'Dec 14, 2024',
+                description: 'Utility commits $2.5 billion to solar projects across the state, expected to add 1,000 MW by 2026.'
+              },
+              {
+                title: 'Power Grid Modernization Bill Passes Committee',
+                source: 'Reuters Energy',
+                date: 'Dec 13, 2024',
+                description: 'Legislation advances to modernize transmission infrastructure and improve grid reliability.'
+              },
+              {
+                title: 'Energy Storage Project Approved for Northern Region',
+                source: 'Power Magazine',
+                date: 'Dec 12, 2024',
+                description: '300 MWh battery storage facility receives final permits, supporting renewable energy integration.'
+              },
+              {
+                title: 'Utility Rate Review Scheduled for Early 2025',
+                source: 'Local Energy Report',
+                date: 'Dec 11, 2024',
+                description: 'State commission sets hearing dates for comprehensive review of electricity rates and cost recovery.'
+              }
+            ].map((news, index) => (
+              <div
+                key={index}
+                className="border-l-4 border-blue-500 pl-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                <h4 className="font-semibold text-gray-900 mb-1">{news.title}</h4>
+                <p className="text-sm text-gray-600 mb-2">{news.description}</p>
+                <div className="flex items-center space-x-3 text-xs text-gray-500">
+                  <span>{news.date}</span>
+                  <span>•</span>
+                  <span>{news.source}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
