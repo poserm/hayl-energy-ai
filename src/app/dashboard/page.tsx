@@ -553,59 +553,77 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Latest News Feed - State Tailored */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-2xl font-bold text-gray-900">
-              Latest News {selectedStates.length > 0 ? `- ${selectedStates[0]}` : ''}
-            </h3>
-          </div>
-          <div className="space-y-4">
-            {[
-              {
-                title: 'Virginia Clean Energy Act Implementation Update',
-                source: 'Energy Wire',
-                date: 'Dec 15, 2024',
-                description: 'State regulators approve new renewable energy targets for major utilities, expanding solar capacity requirements.'
-              },
-              {
-                title: 'Dominion Energy Announces Major Solar Investment',
-                source: 'Bloomberg Energy',
-                date: 'Dec 14, 2024',
-                description: 'Utility commits $2.5 billion to solar projects across the state, expected to add 1,000 MW by 2026.'
-              },
-              {
-                title: 'Power Grid Modernization Bill Passes Committee',
-                source: 'Reuters Energy',
-                date: 'Dec 13, 2024',
-                description: 'Legislation advances to modernize transmission infrastructure and improve grid reliability.'
-              },
-              {
-                title: 'Energy Storage Project Approved for Northern Region',
-                source: 'Power Magazine',
-                date: 'Dec 12, 2024',
-                description: '300 MWh battery storage facility receives final permits, supporting renewable energy integration.'
-              },
-              {
-                title: 'Utility Rate Review Scheduled for Early 2025',
-                source: 'Local Energy Report',
-                date: 'Dec 11, 2024',
-                description: 'State commission sets hearing dates for comprehensive review of electricity rates and cost recovery.'
-              }
-            ].map((news, index) => (
-              <div
-                key={index}
-                className="border-l-4 border-blue-500 pl-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer"
-              >
-                <h4 className="font-semibold text-gray-900 mb-1">{news.title}</h4>
-                <p className="text-sm text-gray-600 mb-2">{news.description}</p>
-                <div className="flex items-center space-x-3 text-xs text-gray-500">
-                  <span>{news.date}</span>
-                  <span>•</span>
-                  <span>{news.source}</span>
-                </div>
+        {/* Latest News Ticker - State Tailored */}
+        <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-4 shadow-sm border border-gray-700 mb-6 overflow-hidden">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 bg-blue-600 px-3 py-1.5 rounded-md flex-shrink-0">
+              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+              </svg>
+              <span className="text-white text-sm font-semibold">
+                {selectedStates.length > 0 ? selectedStates[0] : 'ENERGY'} NEWS
+              </span>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <div className="flex animate-scroll space-x-8">
+                {[
+                  {
+                    title: 'Virginia Clean Energy Act Implementation Update',
+                    source: 'Energy Wire',
+                    date: 'Dec 15'
+                  },
+                  {
+                    title: 'Dominion Energy Announces Major Solar Investment - $2.5B Commitment',
+                    source: 'Bloomberg Energy',
+                    date: 'Dec 14'
+                  },
+                  {
+                    title: 'Power Grid Modernization Bill Passes Committee',
+                    source: 'Reuters Energy',
+                    date: 'Dec 13'
+                  },
+                  {
+                    title: 'Energy Storage Project Approved for Northern Region - 300 MWh',
+                    source: 'Power Magazine',
+                    date: 'Dec 12'
+                  },
+                  {
+                    title: 'Utility Rate Review Scheduled for Early 2025',
+                    source: 'Local Energy Report',
+                    date: 'Dec 11'
+                  }
+                ].concat([
+                  {
+                    title: 'Virginia Clean Energy Act Implementation Update',
+                    source: 'Energy Wire',
+                    date: 'Dec 15'
+                  },
+                  {
+                    title: 'Dominion Energy Announces Major Solar Investment - $2.5B Commitment',
+                    source: 'Bloomberg Energy',
+                    date: 'Dec 14'
+                  },
+                  {
+                    title: 'Power Grid Modernization Bill Passes Committee',
+                    source: 'Reuters Energy',
+                    date: 'Dec 13'
+                  }
+                ]).map((news, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-3 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                  >
+                    <span className="text-white font-medium text-sm whitespace-nowrap">
+                      {news.title}
+                    </span>
+                    <span className="text-gray-400 text-xs whitespace-nowrap">
+                      {news.source} • {news.date}
+                    </span>
+                    <span className="text-blue-400 text-xl">•</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
