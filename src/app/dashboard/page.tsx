@@ -498,9 +498,7 @@ export default function DashboardPage() {
 
         {/* Header Section - Minimalist Design */}
         <div className="flex justify-between items-center">
-          <div className="text-sm text-gray-500">
-            Welcome, <span className="text-gray-700">{user.name || user.email.split('@')[0]}</span>
-          </div>
+          <h2 className="text-2xl font-bold text-gray-900">Welcome, {user.name || user.email.split('@')[0]}</h2>
           <div className="flex items-center space-x-3">
             <label className="text-lg font-semibold text-gray-900">Region:</label>
             <select
@@ -753,14 +751,17 @@ export default function DashboardPage() {
               Total: {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
             </div>
 
-            {/* Stacked Bar Chart */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
-              {capacityTrendsLoading ? (
-                <div className="flex items-center justify-center h-48">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                </div>
-              ) : capacityTrends?.chartData ? (
-                <div className="h-48">
+            {/* Chart and Map Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+              {/* Stacked Bar Chart */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">Capacity Trends</h4>
+                {capacityTrendsLoading ? (
+                  <div className="flex items-center justify-center h-48">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  </div>
+                ) : capacityTrends?.chartData ? (
+                  <div className="h-48">
                   {/* Chart Container */}
                   <div className="relative h-full">
                     {/* Chart Area */}
@@ -869,6 +870,20 @@ export default function DashboardPage() {
                   </div>
                 </div>
               )}
+              </div>
+
+              {/* Interactive US Map */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">US Energy Map</h4>
+                <div className="h-48 bg-white rounded-lg overflow-hidden border border-gray-200">
+                  <SimpleUSMap
+                    height="100%"
+                    width="100%"
+                    selectedState={selectedStates[0] || undefined}
+                    selectedStates={selectedStates}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Sources */}
