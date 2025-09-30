@@ -496,45 +496,33 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Welcome Section */}
+        {/* Header Section - Minimalist Design */}
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-gray-900">Welcome, {user.name || user.email.split('@')[0]}</h2>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <label className="text-sm text-gray-600">Focus area:</label>
-              <select 
-                value={focusArea}
-                onChange={(e) => setFocusArea(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="Project Sales">Project Sales</option>
-                <option value="Market Analysis">Market Analysis</option>
-                <option value="Regulatory Updates">Regulatory Updates</option>
-              </select>
-            </div>
-            <div className="flex items-center space-x-2">
-              <label className="text-sm text-gray-600">Region:</label>
-              <select
-                value={region}
-                onChange={(e) => {
-                  const selectedRegion = e.target.value
-                  setRegion(selectedRegion)
-                  // Update state pills based on selected region
-                  if (regionStatesMap[selectedRegion]) {
-                    updateSelectedStates(regionStatesMap[selectedRegion])
-                  }
-                }}
-                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="CAISO">CAISO</option>
-                <option value="ERCOT">ERCOT</option>
-                <option value="ISO-NE">ISO-NE</option>
-                <option value="MISO">MISO</option>
-                <option value="NYISO">NYISO</option>
-                <option value="PJM">PJM</option>
-                <option value="SPP">SPP</option>
-              </select>
-            </div>
+          <div className="text-sm text-gray-500">
+            Welcome, <span className="text-gray-700">{user.name || user.email.split('@')[0]}</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <label className="text-lg font-semibold text-gray-900">Region:</label>
+            <select
+              value={region}
+              onChange={(e) => {
+                const selectedRegion = e.target.value
+                setRegion(selectedRegion)
+                // Update state pills based on selected region
+                if (regionStatesMap[selectedRegion]) {
+                  updateSelectedStates(regionStatesMap[selectedRegion])
+                }
+              }}
+              className="px-5 py-2.5 border-2 border-blue-500 rounded-lg text-base font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-white shadow-sm hover:border-blue-600 transition-colors"
+            >
+              <option value="CAISO">CAISO</option>
+              <option value="ERCOT">ERCOT</option>
+              <option value="ISO-NE">ISO-NE</option>
+              <option value="MISO">MISO</option>
+              <option value="NYISO">NYISO</option>
+              <option value="PJM">PJM</option>
+              <option value="SPP">SPP</option>
+            </select>
           </div>
         </div>
 
@@ -653,10 +641,11 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Energy Snapshot Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Left Side - Energy Snapshot (60%) */}
-          <div className="lg:col-span-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+        {/* Energy Snapshot Section - Full Width with Integrated Map */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Side - Energy Data (2/3) */}
+            <div className="lg:col-span-2">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
@@ -891,26 +880,24 @@ export default function DashboardPage() {
             <button className="w-full py-3 text-center text-blue-600 font-medium border border-blue-600 rounded-lg hover:bg-blue-50">
               Explore more
             </button>
-          </div>
-
-          {/* Right Side - Interactive Map (40%) */}
-          <div className="lg:col-span-2 bg-gray-900 rounded-2xl overflow-hidden">
-            <div className="p-4">
-              <h3 className="text-white font-semibold">Interactive map</h3>
-              <p className="text-gray-400 text-sm">
-                {selectedStates.length > 0 
-                  ? `Generators in ${selectedStates[0]}` 
-                  : 'Select a state to view generators'
-                }
-              </p>
             </div>
-            <div className="h-96 bg-gray-100 rounded-b-2xl overflow-hidden relative">
-              <SimpleUSMap
-                height="100%"
-                width="100%"
-                selectedState={selectedStates[0] || undefined}
-                selectedStates={selectedStates}
-              />
+
+            {/* Right Side - Integrated Map (1/3) */}
+            <div className="lg:col-span-1">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">
+                {selectedStates.length > 0
+                  ? `${selectedStates[0]} Generators`
+                  : 'Interactive Map'
+                }
+              </h3>
+              <div className="h-[600px] bg-gray-50 rounded-lg overflow-hidden border border-gray-200">
+                <SimpleUSMap
+                  height="100%"
+                  width="100%"
+                  selectedState={selectedStates[0] || undefined}
+                  selectedStates={selectedStates}
+                />
+              </div>
             </div>
           </div>
         </div>
