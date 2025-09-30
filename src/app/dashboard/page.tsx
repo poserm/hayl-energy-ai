@@ -51,7 +51,7 @@ function PlantsTableRows({ utility }: { utility: any }) {
   if (loading) {
     return (
       <tr>
-        <td colSpan={2} className="px-4 py-8 text-center text-gray-500">
+        <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-2"></div>
           Loading plants...
         </td>
@@ -62,7 +62,7 @@ function PlantsTableRows({ utility }: { utility: any }) {
   if (error) {
     return (
       <tr>
-        <td colSpan={2} className="px-4 py-8 text-center text-red-500">
+        <td colSpan={6} className="px-4 py-8 text-center text-red-500">
           {error}
         </td>
       </tr>
@@ -72,7 +72,7 @@ function PlantsTableRows({ utility }: { utility: any }) {
   if (plants.length === 0) {
     return (
       <tr>
-        <td colSpan={2} className="px-4 py-8 text-center text-gray-500">
+        <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
           No plants found for this utility
         </td>
       </tr>
