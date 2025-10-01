@@ -252,10 +252,10 @@ export default function DashboardPage() {
     return () => clearTimeout(timeoutId)
   }, [selectedStates])
 
-  // Fetch state utilities data with debouncing
+  // Fetch state utilities data for all states in region with debouncing
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>
-    
+
     const fetchStateUtilities = async () => {
       if (selectedStates.length === 0) {
         setStateUtilities([])
@@ -264,30 +264,50 @@ export default function DashboardPage() {
 
       try {
         setStateUtilitiesLoading(true)
-        const stateName = selectedStates[0] // Use first selected state
-        
-        let url = `/api/utilities/by-state?state=${encodeURIComponent(stateName)}`
-        if (selectedOwnershipType) {
-          url += `&ownership=${encodeURIComponent(selectedOwnershipType)}`
-        }
-        
-        console.log('=== DASHBOARD: Fetching utilities ===')
-        console.log('Selected state:', stateName)
-        console.log('API URL:', url)
-        
-        const response = await fetch(url)
-        
-        if (!response.ok) {
-          const errorData = await response.json()
-          console.error('API Error Response:', errorData)
-          throw new Error(errorData.error || 'Failed to fetch utilities')
-        }
-        
-        const data = await response.json()
-        console.log('=== DASHBOARD: API Response ===', data)
-        console.log('Number of utilities found:', data.utilities?.length || 0)
-        
-        setStateUtilities(data.utilities || [])
+
+        // Fetch utilities for ALL states in the region
+        const allUtilitiesPromises = selectedStates.map(async (stateName) => {
+          let url = `/api/utilities/by-state?state=${encodeURIComponent(stateName)}`
+          if (selectedOwnershipType) {
+            url += `&ownership=${encodeURIComponent(selectedOwnershipType)}`
+          }
+
+          const response = await fetch(url)
+          if (!response.ok) return { utilities: [] }
+          const data = await response.json()
+          return { utilities: data.utilities || [], state: stateName }
+        })
+
+        const allResults = await Promise.all(allUtilitiesPromises)
+
+        // Flatten all utilities and add state information
+        const allUtilities = allResults.flatMap(result =>
+          result.utilities.map((utility: any) => ({
+            ...utility,
+            states: [result.state] // Track which state this utility is in
+          }))
+        )
+
+        // Deduplicate by utility_number and merge states
+        const utilityMap = new Map()
+        allUtilities.forEach((utility: any) => {
+          const key = utility.utility_number || utility.utilityNumber || utility.id
+          if (utilityMap.has(key)) {
+            // Merge states if utility already exists
+            const existing = utilityMap.get(key)
+            existing.states = [...new Set([...existing.states, ...utility.states])]
+          } else {
+            utilityMap.set(key, utility)
+          }
+        })
+
+        const deduplicatedUtilities = Array.from(utilityMap.values())
+
+        console.log('=== DASHBOARD: Utilities ===')
+        console.log(`Fetched from ${selectedStates.length} states`)
+        console.log(`Total utilities (deduplicated): ${deduplicatedUtilities.length}`)
+
+        setStateUtilities(deduplicatedUtilities)
       } catch (error) {
         console.error('Error fetching state utilities:', error)
         setStateUtilities([])
@@ -298,7 +318,7 @@ export default function DashboardPage() {
 
     // Debounce API calls
     timeoutId = setTimeout(fetchStateUtilities, 300)
-    
+
     return () => clearTimeout(timeoutId)
   }, [selectedStates, selectedOwnershipType])
 
@@ -880,10 +900,10 @@ export default function DashboardPage() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-3">
-                {selectedStates.length > 0 ? `${selectedStates[0]} Energy Buyers` : 'Energy Buyers'}
+                {region} Energy Buyers
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Discover the largest energy consumers in your selected region, ranked by peak load demand from highest to lowest capacity requirements.
+                Discover the largest energy consumers in the {region} region across {selectedStates.length} states, ranked by peak load demand from highest to lowest capacity requirements.
               </p>
             </div>
 
@@ -961,7 +981,7 @@ export default function DashboardPage() {
             {selectedStates.length > 0 && (
               <div className="text-center mb-6">
                 <p className="text-gray-600">
-                  {stateUtilitiesLoading ? 'Loading utilities...' : `Found ${stateUtilities.length} utilities in ${selectedStates[0]}`}
+                  {stateUtilitiesLoading ? 'Loading utilities...' : `Found ${stateUtilities.length} utilities across ${region} region`}
                 </p>
               </div>
             )}
@@ -993,6 +1013,37 @@ export default function DashboardPage() {
                           <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
                             {utility.name || utility.utility_name || `Utility ${index + 1}`}
                           </h4>
+
+                          {/* Multi-state badge */}
+                          {utility.states && utility.states.length > 1 && (
+                            <div className="mb-2">
+                              <span className="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
+                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                                </svg>
+                                Multi-State ({utility.states.length})
+                              </span>
+                            </div>
+                          )}
+
+                          {/* States operated in */}
+                          {utility.states && utility.states.length > 0 && (
+                            <div className="mb-3">
+                              <div className="flex flex-wrap gap-1 justify-center">
+                                {utility.states.slice(0, 3).map((state: string) => (
+                                  <span key={state} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                                    {state}
+                                  </span>
+                                ))}
+                                {utility.states.length > 3 && (
+                                  <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                                    +{utility.states.length - 3} more
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
                           {utility.ownershipType || utility.ownership_type ? (
                             <p className="text-sm text-gray-500 uppercase font-medium mb-3">
                               {utility.ownershipType || utility.ownership_type}
