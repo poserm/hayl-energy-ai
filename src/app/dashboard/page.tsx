@@ -636,15 +636,12 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Energy Snapshot Section - Full Width with Integrated Map */}
+        {/* Energy Snapshot Section - Full Width */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Side - Energy Data (2/3) */}
-            <div className="lg:col-span-2">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  {selectedStates.length > 0 ? `${selectedStates[0]} Energy Snapshot` : 'Energy Snapshot'}
+                  {region} Energy Snapshot
                 </h3>
                 <p className="text-gray-600 max-w-lg">
                   Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
@@ -876,24 +873,6 @@ export default function DashboardPage() {
             <button className="w-full py-3 text-center text-blue-600 font-medium border border-blue-600 rounded-lg hover:bg-blue-50">
               Explore more
             </button>
-            </div>
-
-            {/* Right Side - Integrated Map (1/3) */}
-            <div className="lg:col-span-1">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">
-                Interactive Map
-              </h3>
-              <div className="h-[600px] bg-gray-50 rounded-lg overflow-hidden border border-gray-200">
-                <ISORegionMap
-                  selectedState={selectedStates[0] || undefined}
-                  onStateClick={(stateName) => {
-                    console.log('State clicked:', stateName)
-                    updateSelectedStates([stateName])
-                  }}
-                />
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Energy Buyers Section */}
