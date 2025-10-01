@@ -499,29 +499,6 @@ export default function DashboardPage() {
         {/* Header Section - Minimalist Design */}
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold text-gray-900">Welcome, {user.name || user.email.split('@')[0]}</h2>
-          <div className="flex items-center space-x-3">
-            <label className="text-lg font-semibold text-gray-900">Region:</label>
-            <select
-              value={region}
-              onChange={(e) => {
-                const selectedRegion = e.target.value
-                setRegion(selectedRegion)
-                // Update state pills based on selected region
-                if (regionStatesMap[selectedRegion]) {
-                  updateSelectedStates(regionStatesMap[selectedRegion])
-                }
-              }}
-              className="px-5 py-2.5 border-2 border-blue-500 rounded-lg text-base font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-white shadow-sm hover:border-blue-600 transition-colors"
-            >
-              <option value="CAISO">CAISO</option>
-              <option value="ERCOT">ERCOT</option>
-              <option value="ISO-NE">ISO-NE</option>
-              <option value="MISO">MISO</option>
-              <option value="NYISO">NYISO</option>
-              <option value="PJM">PJM</option>
-              <option value="SPP">SPP</option>
-            </select>
-          </div>
         </div>
 
         {/* Auto-loading indicator with better styling */}
@@ -542,27 +519,47 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* State Selection Pills */}
+        {/* Region Selection Pills */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
-          <div className="flex flex-wrap gap-2">
-            {regionStatesMap[region]?.map((state) => (
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Select ISO/RTO Region</h3>
+          <div className="flex flex-wrap gap-3">
+            {Object.keys(regionStatesMap).map((regionName) => (
               <button
-                key={state}
+                key={regionName}
                 onClick={() => {
-                  console.log('Selecting state:', state)
-                  updateSelectedStates([state])
+                  console.log('Selecting region:', regionName)
+                  setRegion(regionName)
+                  updateSelectedStates(regionStatesMap[regionName])
                 }}
-                className={`px-4 py-2 rounded-full text-sm transition-all duration-200 ${
-                  selectedStates.includes(state)
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
+                className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                  region === regionName
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
                 }`}
               >
-                {state}
-                </button>
-              ))
-            }
+                {regionName}
+              </button>
+            ))}
           </div>
+
+          {/* States in Selected Region */}
+          {region && regionStatesMap[region] && (
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <h4 className="text-sm font-medium text-gray-700 mb-3">
+                States in {region} ({regionStatesMap[region].length} states)
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {regionStatesMap[region].map((state) => (
+                  <span
+                    key={state}
+                    className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-medium"
+                  >
+                    {state}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Latest News Ticker - State Tailored */}
