@@ -140,6 +140,7 @@ export default function DashboardPage() {
   const [selectedUtilityForAnalysis, setSelectedUtilityForAnalysis] = useState<any>(null)
   const [portfolioData, setPortfolioData] = useState<any>(null)
   const [portfolioLoading, setPortfolioLoading] = useState(false)
+  const [energyBuyersTab, setEnergyBuyersTab] = useState<'utilities' | 'corporates'>('utilities')
 
   // Fetch portfolio data when utility is selected
   useEffect(() => {
@@ -183,6 +184,59 @@ export default function DashboardPage() {
     'NYISO': ['New York'],
     'PJM': ['Delaware', 'Illinois', 'Indiana', 'Kentucky', 'Maryland', 'Michigan', 'New Jersey', 'North Carolina', 'Ohio', 'Pennsylvania', 'Tennessee', 'Virginia', 'West Virginia', 'District of Columbia'],
     'SPP': ['Arkansas', 'Kansas', 'Louisiana', 'Mississippi', 'Missouri', 'Nebraska', 'New Mexico', 'Oklahoma', 'North Dakota', 'South Dakota', 'Texas', 'Wyoming']
+  }
+
+  // Corporate data centers by region (placeholder data)
+  const corporatesByRegion: { [key: string]: any[] } = {
+    'PJM': [
+      { id: 1, name: 'Amazon Web Services', type: 'Hyperscale', estimatedLoad: '2000 MW', states: ['Virginia', 'Pennsylvania', 'Ohio'], facilities: 50 },
+      { id: 2, name: 'Google', type: 'Hyperscale', estimatedLoad: '1500 MW', states: ['Virginia', 'Pennsylvania'], facilities: 25 },
+      { id: 3, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '1800 MW', states: ['Virginia', 'Maryland'], facilities: 35 },
+      { id: 4, name: 'Meta (Facebook)', type: 'Hyperscale', estimatedLoad: '800 MW', states: ['Virginia'], facilities: 12 },
+      { id: 5, name: 'Oracle Cloud', type: 'Hyperscale', estimatedLoad: '600 MW', states: ['Virginia', 'Pennsylvania'], facilities: 15 }
+    ],
+    'ERCOT': [
+      { id: 6, name: 'Amazon Web Services', type: 'Hyperscale', estimatedLoad: '1200 MW', states: ['Texas'], facilities: 30 },
+      { id: 7, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '900 MW', states: ['Texas'], facilities: 20 },
+      { id: 8, name: 'Google', type: 'Hyperscale', estimatedLoad: '700 MW', states: ['Texas'], facilities: 15 },
+      { id: 9, name: 'Meta (Facebook)', type: 'Hyperscale', estimatedLoad: '500 MW', states: ['Texas'], facilities: 10 },
+      { id: 10, name: 'Tesla', type: 'Industrial', estimatedLoad: '400 MW', states: ['Texas'], facilities: 5 }
+    ],
+    'CAISO': [
+      { id: 11, name: 'Google', type: 'Hyperscale', estimatedLoad: '2500 MW', states: ['California'], facilities: 45 },
+      { id: 12, name: 'Apple', type: 'Hyperscale', estimatedLoad: '1000 MW', states: ['California', 'Nevada'], facilities: 18 },
+      { id: 13, name: 'Amazon Web Services', type: 'Hyperscale', estimatedLoad: '1400 MW', states: ['California'], facilities: 25 },
+      { id: 14, name: 'Meta (Facebook)', type: 'Hyperscale', estimatedLoad: '900 MW', states: ['California'], facilities: 16 },
+      { id: 15, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '800 MW', states: ['California'], facilities: 14 }
+    ],
+    'MISO': [
+      { id: 16, name: 'Google', type: 'Hyperscale', estimatedLoad: '1200 MW', states: ['Iowa', 'Illinois'], facilities: 22 },
+      { id: 17, name: 'Meta (Facebook)', type: 'Hyperscale', estimatedLoad: '1500 MW', states: ['Illinois', 'Indiana'], facilities: 28 },
+      { id: 18, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '900 MW', states: ['Illinois', 'Minnesota'], facilities: 18 },
+      { id: 19, name: 'Amazon Web Services', type: 'Hyperscale', estimatedLoad: '700 MW', states: ['Iowa', 'Minnesota'], facilities: 15 },
+      { id: 20, name: 'Oracle Cloud', type: 'Hyperscale', estimatedLoad: '400 MW', states: ['Illinois'], facilities: 8 }
+    ],
+    'NYISO': [
+      { id: 21, name: 'Amazon Web Services', type: 'Hyperscale', estimatedLoad: '800 MW', states: ['New York'], facilities: 18 },
+      { id: 22, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '900 MW', states: ['New York'], facilities: 20 },
+      { id: 23, name: 'Google', type: 'Hyperscale', estimatedLoad: '600 MW', states: ['New York'], facilities: 12 },
+      { id: 24, name: 'Digital Realty', type: 'Colocation', estimatedLoad: '500 MW', states: ['New York'], facilities: 15 },
+      { id: 25, name: 'Equinix', type: 'Colocation', estimatedLoad: '400 MW', states: ['New York'], facilities: 10 }
+    ],
+    'ISO-NE': [
+      { id: 26, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '500 MW', states: ['Massachusetts'], facilities: 10 },
+      { id: 27, name: 'Amazon Web Services', type: 'Hyperscale', estimatedLoad: '400 MW', states: ['Massachusetts', 'Connecticut'], facilities: 8 },
+      { id: 28, name: 'Google', type: 'Hyperscale', estimatedLoad: '600 MW', states: ['Massachusetts'], facilities: 12 },
+      { id: 29, name: 'Servistar', type: 'Developer', estimatedLoad: '3000 MW', states: ['Massachusetts'], facilities: 1 },
+      { id: 30, name: 'Eversource Energy', type: 'Utility Partner', estimatedLoad: 'N/A', states: ['Massachusetts', 'Connecticut'], facilities: 2 }
+    ],
+    'SPP': [
+      { id: 31, name: 'Meta (Facebook)', type: 'Hyperscale', estimatedLoad: '1000 MW', states: ['Kansas', 'Missouri'], facilities: 20 },
+      { id: 32, name: 'Google', type: 'Hyperscale', estimatedLoad: '1000 MW', states: ['Kansas', 'Missouri'], facilities: 18 },
+      { id: 33, name: 'Amazon Web Services', type: 'Hyperscale', estimatedLoad: '600 MW', states: ['Kansas', 'Oklahoma'], facilities: 12 },
+      { id: 34, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '500 MW', states: ['Kansas'], facilities: 10 },
+      { id: 35, name: 'Edged Data Centers', type: 'Developer', estimatedLoad: '150 MW', states: ['Kansas', 'Missouri'], facilities: 5 }
+    ]
   }
 
   const {
@@ -927,17 +981,31 @@ export default function DashboardPage() {
             {/* Tab Navigation */}
             <div className="flex justify-center mb-6">
               <div className="inline-flex rounded-full bg-gray-200 p-1">
-                <button className="px-6 py-2 rounded-full bg-gray-900 text-white font-medium">
+                <button
+                  onClick={() => setEnergyBuyersTab('utilities')}
+                  className={`px-6 py-2 rounded-full font-medium transition-colors ${
+                    energyBuyersTab === 'utilities'
+                      ? 'bg-gray-900 text-white'
+                      : 'text-gray-700 hover:text-gray-900'
+                  }`}
+                >
                   Utilities
                 </button>
-                <button className="px-6 py-2 rounded-full text-gray-700 hover:text-gray-900 font-medium">
+                <button
+                  onClick={() => setEnergyBuyersTab('corporates')}
+                  className={`px-6 py-2 rounded-full font-medium transition-colors ${
+                    energyBuyersTab === 'corporates'
+                      ? 'bg-gray-900 text-white'
+                      : 'text-gray-700 hover:text-gray-900'
+                  }`}
+                >
                   Corporates
                 </button>
               </div>
             </div>
 
-            {/* Ownership Type Filter */}
-            {selectedStates.length > 0 && (
+            {/* Ownership Type Filter - Only show for Utilities tab */}
+            {energyBuyersTab === 'utilities' && selectedStates.length > 0 && (
               <div className="flex justify-center mb-6">
                 <div className="flex space-x-3">
                   <button
@@ -994,17 +1062,20 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Utilities Count */}
-            {selectedStates.length > 0 && (
-              <div className="text-center mb-6">
-                <p className="text-gray-600">
-                  {stateUtilitiesLoading ? 'Loading utilities...' : `Found ${stateUtilities.length} utilities across ${region} region`}
-                </p>
-              </div>
-            )}
+            {/* Utilities Tab Content */}
+            {energyBuyersTab === 'utilities' && (
+              <>
+                {/* Utilities Count */}
+                {selectedStates.length > 0 && (
+                  <div className="text-center mb-6">
+                    <p className="text-gray-600">
+                      {stateUtilitiesLoading ? 'Loading utilities...' : `Found ${stateUtilities.length} utilities across ${region} region`}
+                    </p>
+                  </div>
+                )}
 
-            {/* Company Grid Visualization */}
-            <div className="mb-10">
+                {/* Company Grid Visualization */}
+                <div className="mb-10">
               {stateUtilitiesLoading ? (
                 <div className="flex items-center justify-center h-64">
                   <div className="text-center">
@@ -1119,7 +1190,7 @@ export default function DashboardPage() {
 
             {/* CTA Button */}
             <div className="text-center">
-              <button 
+              <button
                 className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg"
                 disabled={!selectedUtilityForAnalysis}
                 onClick={() => {
@@ -1128,7 +1199,7 @@ export default function DashboardPage() {
                     // Scroll to analysis section
                     const analysisSection = document.getElementById('utility-analysis-section')
                     if (analysisSection) {
-                      analysisSection.scrollIntoView({ 
+                      analysisSection.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                       })
@@ -1141,6 +1212,113 @@ export default function DashboardPage() {
                 {selectedUtilityForAnalysis ? `ANALYZE ${(selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name || 'UTILITY').toUpperCase()}` : 'SELECT A UTILITY FIRST'}
               </button>
             </div>
+              </>
+            )}
+
+            {/* Corporates Tab Content */}
+            {energyBuyersTab === 'corporates' && (
+              <>
+                {/* Corporates Count */}
+                <div className="text-center mb-6">
+                  <p className="text-gray-600">
+                    {corporatesByRegion[region]?.length || 0} major tech companies with data center facilities in {region} region
+                  </p>
+                </div>
+
+                {/* Corporates Grid */}
+                <div className="mb-10">
+                  <div className="relative">
+                    {/* Horizontal Scrollable Tiles */}
+                    <div className="flex overflow-x-auto space-x-4 pb-4 scroll-smooth">
+                      {corporatesByRegion[region]?.map((corporate, index) => (
+                        <div
+                          key={corporate.id || index}
+                          className="flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 border-gray-200 hover:border-gray-300 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105"
+                        >
+                          <div className="text-center">
+                            <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
+                              {corporate.name}
+                            </h4>
+
+                            {/* Company Type Badge */}
+                            <div className="mb-3">
+                              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
+                                corporate.type === 'Hyperscale' ? 'bg-blue-100 text-blue-700' :
+                                corporate.type === 'Colocation' ? 'bg-green-100 text-green-700' :
+                                corporate.type === 'Developer' ? 'bg-purple-100 text-purple-700' :
+                                'bg-gray-100 text-gray-700'
+                              }`}>
+                                {corporate.type}
+                              </span>
+                            </div>
+
+                            {/* Multi-state badge */}
+                            {corporate.states && corporate.states.length > 1 && (
+                              <div className="mb-2">
+                                <span className="inline-flex items-center px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold">
+                                  <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                                  </svg>
+                                  Multi-State ({corporate.states.length})
+                                </span>
+                              </div>
+                            )}
+
+                            {/* States operated in */}
+                            {corporate.states && corporate.states.length > 0 && (
+                              <div className="mb-3">
+                                <div className="flex flex-wrap gap-1 justify-center">
+                                  {corporate.states.slice(0, 3).map((state: string) => (
+                                    <span key={state} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                                      {state}
+                                    </span>
+                                  ))}
+                                  {corporate.states.length > 3 && (
+                                    <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                                      +{corporate.states.length - 3} more
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Estimated Load */}
+                            <div className="mb-3 px-3 py-2 bg-green-50 rounded-lg">
+                              <p className="text-xs text-gray-600 mb-1">Estimated Load</p>
+                              <p className="text-lg font-bold text-green-600">
+                                {corporate.estimatedLoad}
+                              </p>
+                            </div>
+
+                            {/* Facilities Count */}
+                            <div className="text-sm text-gray-500">
+                              {corporate.facilities} facilities
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Scroll Indicators */}
+                    <div className="flex justify-center mt-4 space-x-2">
+                      {corporatesByRegion[region]?.map((_, index) => (
+                        <div
+                          key={index}
+                          className="w-2 h-2 rounded-full bg-gray-300"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Info Note */}
+                <div className="text-center">
+                  <p className="text-sm text-gray-500 italic">
+                    Data center load estimates based on public announcements and industry reports. Actual loads may vary.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
