@@ -219,10 +219,27 @@ export default function DashboardPage() {
       setGeneratorsLoading(true)
       try {
         const stateMap: { [key: string]: string } = {
+          // PJM states
           'Delaware': 'DE', 'Illinois': 'IL', 'Indiana': 'IN', 'Kentucky': 'KY',
           'Maryland': 'MD', 'Michigan': 'MI', 'New Jersey': 'NJ', 'North Carolina': 'NC',
           'Ohio': 'OH', 'Pennsylvania': 'PA', 'Tennessee': 'TN', 'Virginia': 'VA',
-          'West Virginia': 'WV', 'District of Columbia': 'DC'
+          'West Virginia': 'WV', 'District of Columbia': 'DC',
+          // CAISO states
+          'California': 'CA', 'Nevada': 'NV',
+          // ERCOT states
+          'Texas': 'TX',
+          // ISO-NE states
+          'Connecticut': 'CT', 'Maine': 'ME', 'Massachusetts': 'MA',
+          'New Hampshire': 'NH', 'Rhode Island': 'RI', 'Vermont': 'VT',
+          // MISO states
+          'Arkansas': 'AR', 'Iowa': 'IA', 'Louisiana': 'LA', 'Minnesota': 'MN',
+          'Mississippi': 'MS', 'Missouri': 'MO', 'Montana': 'MT', 'North Dakota': 'ND',
+          'South Dakota': 'SD', 'Wisconsin': 'WI',
+          // NYISO states
+          'New York': 'NY',
+          // SPP states
+          'Kansas': 'KS', 'Nebraska': 'NE', 'New Mexico': 'NM', 'Oklahoma': 'OK',
+          'Wyoming': 'WY'
         }
         const stateCodes = selectedStates.map(state => stateMap[state] || state)
         
