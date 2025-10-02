@@ -622,7 +622,6 @@ export default function DashboardPage() {
 
         {/* Region Selection Pills */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Select ISO/RTO Region</h3>
           <div className="flex flex-wrap gap-3">
             {Object.keys(regionStatesMap).map((regionName) => (
               <button
@@ -653,7 +652,7 @@ export default function DashboardPage() {
                 <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
               </svg>
               <span className="text-white text-sm font-semibold">
-                {selectedStates.length > 0 ? selectedStates[0] : 'ENERGY'} NEWS
+                {region} NEWS
               </span>
             </div>
             <div className="flex-1 overflow-hidden">
@@ -1495,125 +1494,8 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Profile Content */}
-              <div className="w-full">
-                  {/* Key Stats */}
-                  <div className="grid grid-cols-4 gap-6 mb-8">
-                    <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
-                      <div className="text-sm text-green-700 mb-2 font-medium">Company Type</div>
-                      <div className="text-2xl font-bold text-green-900">{selectedCorporate.type}</div>
-                    </div>
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6">
-                      <div className="text-sm text-blue-700 mb-2 font-medium">Estimated Load</div>
-                      <div className="text-2xl font-bold text-blue-900">{selectedCorporate.estimatedLoad}</div>
-                    </div>
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6">
-                      <div className="text-sm text-purple-700 mb-2 font-medium">Total Facilities</div>
-                      <div className="text-2xl font-bold text-purple-900">{selectedCorporate.facilities}</div>
-                    </div>
-                    <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6">
-                      <div className="text-sm text-orange-700 mb-2 font-medium">States</div>
-                      <div className="text-2xl font-bold text-orange-900">{selectedCorporate.states?.length || 0}</div>
-                    </div>
-                  </div>
-
-                  {/* Data Center Locations Map */}
-                  <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Data Center Locations</h3>
-                    <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-                      <div className="h-96 flex items-center justify-center">
-                        <div className="text-center">
-                          <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          <p className="text-gray-500 font-medium">Interactive Map Placeholder</p>
-                          <p className="text-sm text-gray-400 mt-2">Will show data center facility locations across the region</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Facilities by State */}
-                  <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Facilities by State</h3>
-                    <div className="space-y-3">
-                      {selectedCorporate.states?.map((state: string) => (
-                        <div key={state} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                              <span className="text-green-700 font-bold text-sm">{state.substring(0, 2).toUpperCase()}</span>
-                            </div>
-                            <div>
-                              <div className="font-semibold text-gray-900">{state}</div>
-                              <div className="text-sm text-gray-500">Region: {region}</div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-green-600">{Math.floor(selectedCorporate.facilities / selectedCorporate.states.length)}</div>
-                            <div className="text-xs text-gray-500">facilities</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Infrastructure Overview */}
-                  <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4">Infrastructure Overview</h3>
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="text-sm font-semibold text-gray-700 mb-3">Data Center Specifications</h4>
-                        <div className="space-y-2">
-                          <div className="flex justify-between py-2 border-b border-gray-200">
-                            <span className="text-gray-600">Tier Classification</span>
-                            <span className="font-semibold text-gray-900">Tier III/IV</span>
-                          </div>
-                          <div className="flex justify-between py-2 border-b border-gray-200">
-                            <span className="text-gray-600">Cooling Technology</span>
-                            <span className="font-semibold text-gray-900">Advanced Liquid Cooling</span>
-                          </div>
-                          <div className="flex justify-between py-2 border-b border-gray-200">
-                            <span className="text-gray-600">Power Redundancy</span>
-                            <span className="font-semibold text-gray-900">N+1</span>
-                          </div>
-                          <div className="flex justify-between py-2">
-                            <span className="text-gray-600">Renewable Energy %</span>
-                            <span className="font-semibold text-green-600">60-80%</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-semibold text-gray-700 mb-3">Connectivity</h4>
-                        <div className="space-y-2">
-                          <div className="flex justify-between py-2 border-b border-gray-200">
-                            <span className="text-gray-600">Network Providers</span>
-                            <span className="font-semibold text-gray-900">10+ carriers</span>
-                          </div>
-                          <div className="flex justify-between py-2 border-b border-gray-200">
-                            <span className="text-gray-600">Bandwidth Capacity</span>
-                            <span className="font-semibold text-gray-900">400G+</span>
-                          </div>
-                          <div className="flex justify-between py-2 border-b border-gray-200">
-                            <span className="text-gray-600">Cloud Interconnect</span>
-                            <span className="font-semibold text-gray-900">Direct Connect</span>
-                          </div>
-                          <div className="flex justify-between py-2">
-                            <span className="text-gray-600">Edge Locations</span>
-                            <span className="font-semibold text-gray-900">Yes</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Placeholder Note */}
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                    <p className="text-sm text-yellow-800">
-                      <strong>Note:</strong> This is placeholder data for demonstration purposes. Production version will connect to real-time data center databases and APIs.
-                    </p>
-                  </div>
-              </div>
+              {/* Profile Content with Timeline */}
+              <CorporateAnalysisInline corporate={selectedCorporate} region={region} />
             </div>
           </section>
         )}
@@ -1955,5 +1837,342 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
           </div>
         </div>
       </div>
+  )
+}
+
+// Inline Corporate Analysis Component (Timeline-based)
+function CorporateAnalysisInline({ corporate, region }: { corporate: any; region: string }) {
+  const [activeSection, setActiveSection] = useState(1)
+
+  const sections = [
+    { id: 1, title: 'Infrastructure & Facilities' },
+    { id: 2, title: 'Energy Consumption' },
+    { id: 3, title: 'Sustainability & Future Plans' }
+  ]
+
+  return (
+    <div className="w-full">
+      {/* Main Content Container */}
+      <div className="flex gap-8">
+        {/* Timeline Navigation */}
+        <div className="flex-shrink-0">
+          <div className="relative">
+            {sections.map((section, index) => (
+              <div key={section.id} className="flex items-center mb-8">
+                <button
+                  onClick={() => setActiveSection(section.id)}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-colors ${
+                    activeSection === section.id
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                  }`}
+                >
+                  {String(section.id).padStart(2, '0')}
+                </button>
+                {index < sections.length - 1 && (
+                  <div className="absolute left-6 top-12 w-0.5 h-8 bg-gray-300" />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Section Content */}
+        <div className="flex-1 min-w-0">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {sections[activeSection - 1].title}
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Comprehensive analysis of {corporate.name}'s data center operations and energy strategy in the {region} region.
+          </p>
+
+          {/* Section 1: Infrastructure & Facilities */}
+          {activeSection === 1 && (
+            <>
+              {/* Data Center Locations Map */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Center Locations</h3>
+                <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+                  <div className="h-96 flex items-center justify-center">
+                    <div className="text-center">
+                      <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <p className="text-gray-500 font-medium">Interactive Map Placeholder</p>
+                      <p className="text-sm text-gray-400 mt-2">Will show {corporate.facilities} data center facilities across {corporate.states?.length} states</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Facilities by State */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Facilities by State</h3>
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Facilities</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Estimated Load</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Primary Use</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {corporate.states?.map((state: string, idx: number) => (
+                          <tr key={state}>
+                            <td className="px-4 py-3 text-sm font-medium text-gray-900">{state}</td>
+                            <td className="px-4 py-3 text-sm text-gray-900 text-right">{Math.floor(corporate.facilities / corporate.states.length)}</td>
+                            <td className="px-4 py-3 text-sm text-gray-900 text-right">{Math.round(parseInt(corporate.estimatedLoad) / corporate.states.length)} MW</td>
+                            <td className="px-4 py-3 text-sm text-gray-600">Cloud Computing, AI/ML</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Infrastructure Specifications */}
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Infrastructure Specifications</h3>
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Data Center Specs</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between py-2 border-b border-gray-300">
+                        <span className="text-gray-600">Tier Classification</span>
+                        <span className="font-semibold text-gray-900">Tier III/IV</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-gray-300">
+                        <span className="text-gray-600">Cooling Technology</span>
+                        <span className="font-semibold text-gray-900">Advanced Liquid Cooling</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-gray-300">
+                        <span className="text-gray-600">Power Redundancy</span>
+                        <span className="font-semibold text-gray-900">N+1 / 2N</span>
+                      </div>
+                      <div className="flex justify-between py-2">
+                        <span className="text-gray-600">Total IT Capacity</span>
+                        <span className="font-semibold text-gray-900">{corporate.estimatedLoad}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Connectivity & Network</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between py-2 border-b border-gray-300">
+                        <span className="text-gray-600">Network Providers</span>
+                        <span className="font-semibold text-gray-900">10+ carriers</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-gray-300">
+                        <span className="text-gray-600">Bandwidth Capacity</span>
+                        <span className="font-semibold text-gray-900">400G+</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-gray-300">
+                        <span className="text-gray-600">Cloud Interconnect</span>
+                        <span className="font-semibold text-gray-900">Direct Connect</span>
+                      </div>
+                      <div className="flex justify-between py-2">
+                        <span className="text-gray-600">Edge Computing</span>
+                        <span className="font-semibold text-gray-900">Enabled</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Section 2: Energy Consumption */}
+          {activeSection === 2 && (
+            <>
+              {/* Energy Usage Overview */}
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">Total Load</p>
+                    <p className="text-xl font-bold text-gray-900">{corporate.estimatedLoad}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">PUE Rating</p>
+                    <p className="text-xl font-bold text-gray-900">1.15 - 1.25</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">Annual Growth</p>
+                    <p className="text-xl font-bold text-gray-900">12-18%</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600">Peak Demand</p>
+                    <p className="text-xl font-bold text-gray-900">{Math.round(parseInt(corporate.estimatedLoad) * 1.3)} MW</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Energy Source Breakdown */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Energy Source Mix</h3>
+                <div className="space-y-3">
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium text-gray-900">Grid Power (Mixed Source)</span>
+                      <span className="font-bold text-gray-900">35%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-blue-500 h-2 rounded-full" style={{width: '35%'}}></div>
+                    </div>
+                  </div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium text-gray-900">Renewable PPAs (Solar/Wind)</span>
+                      <span className="font-bold text-green-600">45%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-green-500 h-2 rounded-full" style={{width: '45%'}}></div>
+                    </div>
+                  </div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-medium text-gray-900">On-site Generation</span>
+                      <span className="font-bold text-gray-900">20%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="bg-yellow-500 h-2 rounded-full" style={{width: '20%'}}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Power Purchase Agreements */}
+              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Active Power Purchase Agreements</h3>
+                </div>
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Project Name</th>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Type</th>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Capacity</th>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Term</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { name: 'Sunlight Solar Farm', type: 'Solar', capacity: '200 MW', term: '15 years' },
+                      { name: 'Prairie Wind Project', type: 'Wind', capacity: '350 MW', term: '20 years' },
+                      { name: 'Mountain Ridge Solar', type: 'Solar', capacity: '150 MW', term: '12 years' },
+                    ].map((ppa, i) => (
+                      <tr key={i} className="border-t border-gray-200">
+                        <td className="px-4 py-2 text-sm text-gray-900">{ppa.name}</td>
+                        <td className="px-4 py-2 text-sm text-gray-900">{ppa.type}</td>
+                        <td className="px-4 py-2 text-sm text-gray-900">{ppa.capacity}</td>
+                        <td className="px-4 py-2 text-sm text-gray-600">{ppa.term}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {/* Section 3: Sustainability & Future Plans */}
+          {activeSection === 3 && (
+            <>
+              {/* Sustainability Goals */}
+              <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-6 mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Sustainability Commitments</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-700 mb-1">100% Renewable Energy Target</p>
+                    <p className="text-2xl font-bold text-green-700">2030</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-700 mb-1">Carbon Neutral Operations</p>
+                    <p className="text-2xl font-bold text-green-700">2025</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-700 mb-1">Water Usage Efficiency</p>
+                    <p className="text-2xl font-bold text-green-700">30% reduction</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-700 mb-1">Renewable Investment</p>
+                    <p className="text-2xl font-bold text-green-700">$5B+ committed</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Planned Expansions */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Planned Facility Expansions (2024-2026)</h3>
+                <div className="space-y-3">
+                  {[
+                    { location: 'Northern Virginia', capacity: '500 MW', timeline: 'Q2 2025', investment: '$2.5B' },
+                    { location: 'Central Ohio', capacity: '350 MW', timeline: 'Q4 2025', investment: '$1.8B' },
+                    { location: 'Western Pennsylvania', capacity: '250 MW', timeline: 'Q1 2026', investment: '$1.2B' },
+                  ].map((project, i) => (
+                    <div key={i} className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-semibold text-gray-900">{project.location} Expansion</h4>
+                          <div className="mt-2 space-y-1">
+                            <p className="text-sm text-gray-600">Capacity: <span className="font-medium text-gray-900">{project.capacity}</span></p>
+                            <p className="text-sm text-gray-600">Investment: <span className="font-medium text-gray-900">{project.investment}</span></p>
+                          </div>
+                        </div>
+                        <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">{project.timeline}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Technology Initiatives */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Emerging Technology Initiatives</h3>
+                <div className="space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">AI-Driven Energy Optimization</h4>
+                      <p className="text-sm text-gray-600 mt-1">Machine learning algorithms to reduce energy consumption by up to 15% through predictive cooling and workload management.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd"/>
+                        <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">Battery Energy Storage Systems</h4>
+                      <p className="text-sm text-gray-600 mt-1">Deploying 500+ MWh of battery storage across facilities to provide grid services and backup power with renewable integration.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M17.778 8.222c-4.296-4.296-11.26-4.296-15.556 0A1 1 0 01.808 6.808c5.076-5.077 13.308-5.077 18.384 0a1 1 0 01-1.414 1.414zM14.95 11.05a7 7 0 00-9.9 0 1 1 0 01-1.414-1.414 9 9 0 0112.728 0 1 1 0 01-1.414 1.414zM12.12 13.88a3 3 0 00-4.242 0 1 1 0 01-1.415-1.415 5 5 0 017.072 0 1 1 0 01-1.415 1.415zM9 16a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">Advanced Cooling Technologies</h4>
+                      <p className="text-sm text-gray-600 mt-1">Implementing liquid immersion cooling and direct-to-chip cooling for next-gen AI compute infrastructure.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }
