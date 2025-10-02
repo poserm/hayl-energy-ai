@@ -1662,10 +1662,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   }, [utility])
 
   const sections = [
-    { id: 1, title: 'Existing Portfolio' },
+    { id: 1, title: 'Energy Supply' },
     { id: 2, title: 'Energy demand' },
-    { id: 3, title: 'Energy Supply' },
-    { id: 4, title: 'RFP Opportunities' }
+    { id: 3, title: 'RFP Opportunities' }
   ]
 
   return (
@@ -1701,59 +1700,106 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               {sections[activeSection - 1].title}
             </h2>
             <p className="text-gray-600 mb-6">
-              Summary of their preferred scenario. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
+              Comprehensive overview of {utility?.name || utility?.utility_name}'s generation portfolio, supply sources, and future projects.
             </p>
 
-            {/* Facilities Map */}
-            {utility && activeSection === 1 && (
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Facility Locations</h3>
-                <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-                  <div className="h-96 flex items-center justify-center">
-                    <div className="text-center">
-                      <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                      </svg>
-                      <p className="text-gray-500 font-medium">Interactive Map Placeholder</p>
-                      <p className="text-sm text-gray-400 mt-2">Will show power plant locations across service territory</p>
+            {/* Section 1: Energy Supply */}
+            {activeSection === 1 && (
+              <>
+                {/* Facilities Map */}
+                {utility && (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Facility Locations</h3>
+                    <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+                      <div className="h-96 flex items-center justify-center">
+                        <div className="text-center">
+                          <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                          </svg>
+                          <p className="text-gray-500 font-medium">Interactive Map Placeholder</p>
+                          <p className="text-sm text-gray-400 mt-2">Will show power plant locations across service territory</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Power Plants Table */}
+                {utility && (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plant Portfolio</h3>
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plant Name</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
+                              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity (MW)</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Year</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            <PlantsTableRows utility={utility} />
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Generation Sources */}
+                <div className="space-y-4 mb-6">
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-900 mb-2">Generation Sources</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <span className="text-sm text-gray-600">Primary Source:</span>
+                        <span className="ml-2 font-medium">Natural Gas</span>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-600">Renewable %:</span>
+                        <span className="ml-2 font-medium">15%</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
 
-            {/* Power Plants Table */}
-            {utility && activeSection === 1 && (
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plant Portfolio</h3>
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
+                {/* Future Projects Table */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Future Supply Projects</h3>
+                  <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <table className="w-full">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plant Name</th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity (MW)</th>
-                          <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Year</th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Project</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Type</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Status</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Timeline</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        <PlantsTableRows utility={utility} />
+                      <tbody>
+                        {[...Array(4)].map((_, i) => (
+                          <tr key={i} className="border-t border-gray-200">
+                            <td className="px-4 py-2 text-sm text-gray-900">Project {i + 1}</td>
+                            <td className="px-4 py-2 text-sm text-gray-900">Solar</td>
+                            <td className="px-4 py-2 text-sm text-green-600">Planned</td>
+                            <td className="px-4 py-2 text-sm text-gray-900">2025</td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
                 </div>
-              </div>
-            )}
-            
-            {activeSection === 1 && (
-              <div className="mt-6">
-                <p className="text-sm text-gray-600 text-center">
-                  The table above displays comprehensive power plant data including technology types, operational capacity, and geographic location. 
-                  Data sourced from EIA.gov and state regulatory filings.
-                </p>
-              </div>
+
+                <div className="mt-6">
+                  <p className="text-sm text-gray-600 text-center">
+                    The data above displays comprehensive power plant information including technology types, operational capacity, and geographic location.
+                    Data sourced from EIA.gov and state regulatory filings.
+                  </p>
+                </div>
+              </>
             )}
 
             {activeSection === 2 && (
@@ -1930,51 +1976,6 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             )}
 
             {activeSection === 3 && (
-              <>
-                {/* Supply Analysis */}
-                <div className="space-y-4 mb-6">
-                  <div className="bg-white border border-gray-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Generation Sources</h4>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <span className="text-sm text-gray-600">Primary Source:</span>
-                        <span className="ml-2 font-medium">Natural Gas</span>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-600">Renewable %:</span>
-                        <span className="ml-2 font-medium">15%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Projects Table */}
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Project</th>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Type</th>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Status</th>
-                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Timeline</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[...Array(4)].map((_, i) => (
-                        <tr key={i} className="border-t border-gray-200">
-                          <td className="px-4 py-2 text-sm text-gray-900">Project {i + 1}</td>
-                          <td className="px-4 py-2 text-sm text-gray-900">Solar</td>
-                          <td className="px-4 py-2 text-sm text-green-600">Planned</td>
-                          <td className="px-4 py-2 text-sm text-gray-900">2025</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-
-            {activeSection === 4 && (
               <>
                 {/* RFP Overview */}
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 mb-6">
