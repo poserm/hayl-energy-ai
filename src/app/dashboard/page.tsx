@@ -195,21 +195,29 @@ export default function DashboardPage() {
       { id: 2, name: 'Google', type: 'Hyperscale', estimatedLoad: '1500 MW', states: ['Virginia', 'Pennsylvania'], facilities: 25 },
       { id: 3, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '1800 MW', states: ['Virginia', 'Maryland'], facilities: 35 },
       { id: 4, name: 'Meta (Facebook)', type: 'Hyperscale', estimatedLoad: '800 MW', states: ['Virginia'], facilities: 12 },
-      { id: 5, name: 'Oracle Cloud', type: 'Hyperscale', estimatedLoad: '600 MW', states: ['Virginia', 'Pennsylvania'], facilities: 15 }
+      { id: 5, name: 'Oracle Cloud', type: 'Hyperscale', estimatedLoad: '600 MW', states: ['Virginia', 'Pennsylvania'], facilities: 15 },
+      { id: 36, name: 'NVIDIA', type: 'AI Infrastructure', estimatedLoad: '950 MW', states: ['Virginia', 'Maryland'], facilities: 8 },
+      { id: 37, name: 'CoreWeave', type: 'AI Cloud', estimatedLoad: '750 MW', states: ['Virginia', 'Pennsylvania'], facilities: 6 },
+      { id: 38, name: 'QTS Realty Trust', type: 'Data Center REIT', estimatedLoad: '450 MW', states: ['Virginia', 'Pennsylvania'], facilities: 12 },
+      { id: 39, name: 'CyrusOne', type: 'Colocation', estimatedLoad: '380 MW', states: ['Virginia', 'Ohio'], facilities: 9 }
     ],
     'ERCOT': [
       { id: 6, name: 'Amazon Web Services', type: 'Hyperscale', estimatedLoad: '1200 MW', states: ['Texas'], facilities: 30 },
       { id: 7, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '900 MW', states: ['Texas'], facilities: 20 },
       { id: 8, name: 'Google', type: 'Hyperscale', estimatedLoad: '700 MW', states: ['Texas'], facilities: 15 },
       { id: 9, name: 'Meta (Facebook)', type: 'Hyperscale', estimatedLoad: '500 MW', states: ['Texas'], facilities: 10 },
-      { id: 10, name: 'Tesla', type: 'Industrial', estimatedLoad: '400 MW', states: ['Texas'], facilities: 5 }
+      { id: 10, name: 'Tesla', type: 'Industrial', estimatedLoad: '400 MW', states: ['Texas'], facilities: 5 },
+      { id: 40, name: 'NVIDIA', type: 'AI Infrastructure', estimatedLoad: '850 MW', states: ['Texas'], facilities: 7 },
+      { id: 41, name: 'CoreWeave', type: 'AI Cloud', estimatedLoad: '620 MW', states: ['Texas'], facilities: 5 }
     ],
     'CAISO': [
       { id: 11, name: 'Google', type: 'Hyperscale', estimatedLoad: '2500 MW', states: ['California'], facilities: 45 },
       { id: 12, name: 'Apple', type: 'Hyperscale', estimatedLoad: '1000 MW', states: ['California', 'Nevada'], facilities: 18 },
       { id: 13, name: 'Amazon Web Services', type: 'Hyperscale', estimatedLoad: '1400 MW', states: ['California'], facilities: 25 },
       { id: 14, name: 'Meta (Facebook)', type: 'Hyperscale', estimatedLoad: '900 MW', states: ['California'], facilities: 16 },
-      { id: 15, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '800 MW', states: ['California'], facilities: 14 }
+      { id: 15, name: 'Microsoft Azure', type: 'Hyperscale', estimatedLoad: '800 MW', states: ['California'], facilities: 14 },
+      { id: 42, name: 'NVIDIA', type: 'AI Infrastructure', estimatedLoad: '1100 MW', states: ['California'], facilities: 10 },
+      { id: 43, name: 'CoreWeave', type: 'AI Cloud', estimatedLoad: '680 MW', states: ['California'], facilities: 6 }
     ],
     'MISO': [
       { id: 16, name: 'Google', type: 'Hyperscale', estimatedLoad: '1200 MW', states: ['Iowa', 'Illinois'], facilities: 22 },
@@ -1442,7 +1450,7 @@ export default function DashboardPage() {
 
               {/* Company Overview */}
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
                   <div>
                     <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Company Description</h3>
                     <p className="text-gray-700 leading-relaxed">
@@ -1708,23 +1716,30 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
     <div className="w-full">
       {/* Main Content Container */}
       <div className="flex gap-8">
-        {/* Timeline Navigation */}
-        <div className="flex-shrink-0">
-          <div className="relative">
+        {/* Timeline Navigation with Section Titles */}
+        <div className="flex-shrink-0 w-64">
+          <div className="sticky top-24">
             {sections.map((section, index) => (
-              <div key={section.id} className="flex items-center mb-8">
+              <div key={section.id} className="mb-6">
                 <button
                   onClick={() => setActiveSection(section.id)}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-colors ${
+                  className={`w-full flex items-center space-x-4 p-3 rounded-lg transition-all ${
                     activeSection === section.id
                       ? 'bg-gray-900 text-white'
-                      : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  {String(section.id).padStart(2, '0')}
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
+                    activeSection === section.id
+                      ? 'bg-white text-gray-900'
+                      : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {String(section.id).padStart(2, '0')}
+                  </div>
+                  <span className="text-left font-medium">{section.title}</span>
                 </button>
                 {index < sections.length - 1 && (
-                  <div className="absolute left-6 top-12 w-0.5 h-8 bg-gray-300" />
+                  <div className="ml-5 mt-2 mb-2 w-0.5 h-6 bg-gray-200" />
                 )}
               </div>
             ))}
@@ -1737,55 +1752,15 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               {sections[activeSection - 1].title}
             </h2>
             <p className="text-gray-600 mb-6">
-              Comprehensive overview of {utility?.name || utility?.utility_name}'s generation portfolio, supply sources, and future projects.
+              {activeSection === 1 && `Comprehensive overview of ${utility?.name || utility?.utility_name}'s generation portfolio, capacity mix, and supply infrastructure.`}
+              {activeSection === 2 && `Detailed analysis of ${utility?.name || utility?.utility_name}'s energy demand patterns, customer segments, and load profiles.`}
+              {activeSection === 3 && `Current and upcoming procurement opportunities, RFPs, and partnership initiatives from ${utility?.name || utility?.utility_name}.`}
+              {activeSection === 4 && `Access regulatory filings, integrated resource plans, and key documents from ${utility?.name || utility?.utility_name}.`}
             </p>
 
             {/* Section 1: Energy Supply */}
             {activeSection === 1 && (
               <>
-                {/* Facilities Map */}
-                {utility && (
-                  <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Facility Locations</h3>
-                    <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-                      <div className="h-96 flex items-center justify-center">
-                        <div className="text-center">
-                          <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                          </svg>
-                          <p className="text-gray-500 font-medium">Interactive Map Placeholder</p>
-                          <p className="text-sm text-gray-400 mt-2">Will show power plant locations across service territory</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Power Plants Table */}
-                {utility && (
-                  <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plant Portfolio</h3>
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plant Name</th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
-                              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity (MW)</th>
-                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Year</th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                            </tr>
-                          </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
-                            <PlantsTableRows utility={utility} />
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 {/* Capacity by Technology Chart */}
                 {utility && (
                   <div className="mb-8">
@@ -1844,6 +1819,49 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                             </div>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Facilities Map */}
+                {utility && (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Facility Locations</h3>
+                    <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+                      <div className="h-96 flex items-center justify-center">
+                        <div className="text-center">
+                          <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                          </svg>
+                          <p className="text-gray-500 font-medium">Interactive Map Placeholder</p>
+                          <p className="text-sm text-gray-400 mt-2">Will show power plant locations across service territory</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Power Plants Table */}
+                {utility && (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plant Portfolio</h3>
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                          <thead className="bg-gray-50">
+                            <tr>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plant Name</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
+                              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity (MW)</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Year</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                            </tr>
+                          </thead>
+                          <tbody className="bg-white divide-y divide-gray-200">
+                            <PlantsTableRows utility={utility} />
+                          </tbody>
+                        </table>
                       </div>
                     </div>
                   </div>
@@ -2106,7 +2124,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         capacity: '500 MW Solar + 200 MW/800 MWh Storage',
                         deadline: 'March 15, 2025',
                         status: 'Open',
-                        link: 'https://example.com/rfp/solar-storage-2025'
+                        link: (utility?.name || utility?.utility_name)?.toLowerCase().includes('appalachian')
+                          ? 'https://www.appalachianpower.com/business/b2b/energy-rfps/2025-RFPS'
+                          : 'https://example.com/rfp/solar-storage-2025'
                       },
                       {
                         title: 'Wind Power Purchase Agreement',
@@ -2408,7 +2428,11 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
             {sections[activeSection - 1].title}
           </h2>
           <p className="text-gray-600 mb-6">
-            Comprehensive analysis of {corporate.name}'s data center operations and energy strategy in the {region} region.
+            {activeSection === 1 && `Overview of ${corporate.name}'s data center infrastructure, facilities, and operational footprint in the ${region} region.`}
+            {activeSection === 2 && `Analysis of ${corporate.name}'s energy consumption patterns, load requirements, and power purchase agreements.`}
+            {activeSection === 3 && `${corporate.name}'s sustainability commitments, carbon-free energy goals, and future expansion plans.`}
+            {activeSection === 4 && `Partnership opportunities and energy procurement initiatives with ${corporate.name}.`}
+            {activeSection === 5 && `Access financial reports, sustainability disclosures, and corporate documents from ${corporate.name}.`}
           </p>
 
           {/* Section 1: Infrastructure & Facilities */}
