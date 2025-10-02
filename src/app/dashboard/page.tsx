@@ -141,6 +141,7 @@ export default function DashboardPage() {
   const [portfolioData, setPortfolioData] = useState<any>(null)
   const [portfolioLoading, setPortfolioLoading] = useState(false)
   const [energyBuyersTab, setEnergyBuyersTab] = useState<'utilities' | 'corporates'>('utilities')
+  const [selectedCorporate, setSelectedCorporate] = useState<any>(null)
 
   // Fetch portfolio data when utility is selected
   useEffect(() => {
@@ -1233,7 +1234,12 @@ export default function DashboardPage() {
                       {corporatesByRegion[region]?.map((corporate, index) => (
                         <div
                           key={corporate.id || index}
-                          className="flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 border-gray-200 hover:border-gray-300 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105"
+                          onClick={() => setSelectedCorporate(corporate)}
+                          className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+                            selectedCorporate?.id === corporate.id
+                              ? 'border-green-500 bg-green-50 ring-2 ring-green-200'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
                         >
                           <div className="text-center">
                             <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
@@ -1291,8 +1297,17 @@ export default function DashboardPage() {
                             </div>
 
                             {/* Facilities Count */}
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-gray-500 mb-3">
                               {corporate.facilities} facilities
+                            </div>
+
+                            {/* Selection Indicator */}
+                            <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                              selectedCorporate?.id === corporate.id
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-gray-100 text-gray-600'
+                            }`}>
+                              {selectedCorporate?.id === corporate.id ? '✓ Selected' : 'Click to Select'}
                             </div>
                           </div>
                         </div>
@@ -1312,10 +1327,35 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Info Note */}
-                <div className="text-center">
+                <div className="text-center mb-6">
                   <p className="text-sm text-gray-500 italic">
                     Data center load estimates based on public announcements and industry reports. Actual loads may vary.
                   </p>
+                </div>
+
+                {/* CTA Button */}
+                <div className="text-center">
+                  <button
+                    className="px-8 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg"
+                    disabled={!selectedCorporate}
+                    onClick={() => {
+                      if (selectedCorporate) {
+                        console.log('Analyzing selected corporate:', selectedCorporate)
+                        // Scroll to analysis section
+                        const analysisSection = document.getElementById('corporate-analysis-section')
+                        if (analysisSection) {
+                          analysisSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                          })
+                        }
+                      } else {
+                        alert('Please select a company first by clicking on one of the tiles above.')
+                      }
+                    }}
+                  >
+                    {selectedCorporate ? `VIEW ${selectedCorporate.name.toUpperCase()} PROFILE` : 'SELECT A COMPANY FIRST'}
+                  </button>
                 </div>
               </>
             )}
@@ -1372,6 +1412,140 @@ export default function DashboardPage() {
 
               {/* Main Analysis Content */}
               <UtilityAnalysisInline utility={selectedUtilityForAnalysis} />
+            </div>
+          </section>
+        )}
+
+        {/* Corporate Analysis Section */}
+        {selectedCorporate && (
+          <section id="corporate-analysis-section" className="bg-white py-16">
+            <div className="max-w-7xl mx-auto px-6">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-green-600 to-green-700 text-white rounded-2xl mb-8">
+                <div className="px-8 py-6">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h2 className="text-3xl font-bold mb-2">{selectedCorporate.name}</h2>
+                      <p className="text-green-100 text-lg">
+                        {selectedCorporate.type} Data Center Operator | {selectedCorporate.states?.join(', ')}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setSelectedCorporate(null)}
+                      className="text-white hover:text-green-100 transition-colors"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Profile Content */}
+              <div className="grid grid-cols-12 gap-8">
+                <div className="col-span-12">
+                  {/* Key Stats */}
+                  <div className="grid grid-cols-4 gap-6 mb-8">
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
+                      <div className="text-sm text-green-700 mb-2 font-medium">Company Type</div>
+                      <div className="text-2xl font-bold text-green-900">{selectedCorporate.type}</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6">
+                      <div className="text-sm text-blue-700 mb-2 font-medium">Estimated Load</div>
+                      <div className="text-2xl font-bold text-blue-900">{selectedCorporate.estimatedLoad}</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6">
+                      <div className="text-sm text-purple-700 mb-2 font-medium">Total Facilities</div>
+                      <div className="text-2xl font-bold text-purple-900">{selectedCorporate.facilities}</div>
+                    </div>
+                    <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6">
+                      <div className="text-sm text-orange-700 mb-2 font-medium">States</div>
+                      <div className="text-2xl font-bold text-orange-900">{selectedCorporate.states?.length || 0}</div>
+                    </div>
+                  </div>
+
+                  {/* Facilities by State */}
+                  <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Facilities by State</h3>
+                    <div className="space-y-3">
+                      {selectedCorporate.states?.map((state: string) => (
+                        <div key={state} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                              <span className="text-green-700 font-bold text-sm">{state.substring(0, 2).toUpperCase()}</span>
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-900">{state}</div>
+                              <div className="text-sm text-gray-500">Region: {region}</div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-green-600">{Math.floor(selectedCorporate.facilities / selectedCorporate.states.length)}</div>
+                            <div className="text-xs text-gray-500">facilities</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Infrastructure Overview */}
+                  <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Infrastructure Overview</h3>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-700 mb-3">Data Center Specifications</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between py-2 border-b border-gray-200">
+                            <span className="text-gray-600">Tier Classification</span>
+                            <span className="font-semibold text-gray-900">Tier III/IV</span>
+                          </div>
+                          <div className="flex justify-between py-2 border-b border-gray-200">
+                            <span className="text-gray-600">Cooling Technology</span>
+                            <span className="font-semibold text-gray-900">Advanced Liquid Cooling</span>
+                          </div>
+                          <div className="flex justify-between py-2 border-b border-gray-200">
+                            <span className="text-gray-600">Power Redundancy</span>
+                            <span className="font-semibold text-gray-900">N+1</span>
+                          </div>
+                          <div className="flex justify-between py-2">
+                            <span className="text-gray-600">Renewable Energy %</span>
+                            <span className="font-semibold text-green-600">60-80%</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-700 mb-3">Connectivity</h4>
+                        <div className="space-y-2">
+                          <div className="flex justify-between py-2 border-b border-gray-200">
+                            <span className="text-gray-600">Network Providers</span>
+                            <span className="font-semibold text-gray-900">10+ carriers</span>
+                          </div>
+                          <div className="flex justify-between py-2 border-b border-gray-200">
+                            <span className="text-gray-600">Bandwidth Capacity</span>
+                            <span className="font-semibold text-gray-900">400G+</span>
+                          </div>
+                          <div className="flex justify-between py-2 border-b border-gray-200">
+                            <span className="text-gray-600">Cloud Interconnect</span>
+                            <span className="font-semibold text-gray-900">Direct Connect</span>
+                          </div>
+                          <div className="flex justify-between py-2">
+                            <span className="text-gray-600">Edge Locations</span>
+                            <span className="font-semibold text-gray-900">Yes</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Placeholder Note */}
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Note:</strong> This is placeholder data for demonstration purposes. Production version will connect to real-time data center databases and APIs.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
         )}
