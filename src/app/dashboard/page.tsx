@@ -143,6 +143,8 @@ export default function DashboardPage() {
   const [energyBuyersTab, setEnergyBuyersTab] = useState<'utilities' | 'corporates'>('utilities')
   const [selectedCorporate, setSelectedCorporate] = useState<any>(null)
   const [selectedStateFilter, setSelectedStateFilter] = useState<string | null>(null)
+  const [snapshotTab, setSnapshotTab] = useState<'supply' | 'demand'>('supply')
+  const [selectedRFP, setSelectedRFP] = useState<any>(null)
 
   // Fetch portfolio data when utility is selected
   useEffect(() => {
@@ -786,16 +788,31 @@ export default function DashboardPage() {
 
             {/* Tabs */}
             <div className="flex space-x-1 border-b border-gray-200 mb-6">
-              <button className="px-4 py-2 text-sm font-medium text-gray-900 border-b-2 border-blue-500">
+              <button
+                onClick={() => setSnapshotTab('supply')}
+                className={`px-4 py-2 text-sm font-medium ${
+                  snapshotTab === 'supply'
+                    ? 'text-gray-900 border-b-2 border-blue-500'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
                 Power supply
               </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900">
+              <button
+                onClick={() => setSnapshotTab('demand')}
+                className={`px-4 py-2 text-sm font-medium ${
+                  snapshotTab === 'demand'
+                    ? 'text-gray-900 border-b-2 border-blue-500'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
                 Power demand
               </button>
             </div>
 
-            {/* Energy breakdown by technology */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            {/* Power Supply Content */}
+            {snapshotTab === 'supply' && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
               {capacityTrends?.technologyBreakdown ? capacityTrends.technologyBreakdown
                 .slice(0, 6)
                 .map((tech: any) => {
@@ -862,12 +879,114 @@ export default function DashboardPage() {
                   </div>
                 </div>
               )}
-            </div>
+              </div>
+            )}
 
-            {/* Total capacity */}
-            <div className="text-xl font-semibold text-gray-900 mb-4">
-              Total: {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
-            </div>
+            {/* Power Demand Content */}
+            {snapshotTab === 'demand' && (
+              <div>
+                {/* Peak Load Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 border border-red-200">
+                    <p className="text-sm text-red-600 font-medium mb-1">Peak Load</p>
+                    <p className="text-3xl font-bold text-red-900">68.5 GW</p>
+                    <p className="text-xs text-red-600 mt-1">Summer 2024</p>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                    <p className="text-sm text-blue-600 font-medium mb-1">Average Load</p>
+                    <p className="text-3xl font-bold text-blue-900">42.3 GW</p>
+                    <p className="text-xs text-blue-600 mt-1">Annual average</p>
+                  </div>
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
+                    <p className="text-sm text-purple-600 font-medium mb-1">Load Growth</p>
+                    <p className="text-3xl font-bold text-purple-900">+3.2%</p>
+                    <p className="text-xs text-purple-600 mt-1">YoY growth rate</p>
+                  </div>
+                </div>
+
+                {/* Load by Customer Class */}
+                <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Load by Customer Class</h4>
+                  <div className="space-y-4">
+                    {/* Residential */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                          <span className="text-sm font-medium text-gray-700">Residential</span>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900">24.1 GW (35%)</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-blue-500 h-2 rounded-full" style={{ width: '35%' }}></div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">8.2M customers • 156 TWh/year</p>
+                    </div>
+
+                    {/* Commercial */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                          <span className="text-sm font-medium text-gray-700">Commercial</span>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900">20.6 GW (30%)</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-green-500 h-2 rounded-full" style={{ width: '30%' }}></div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">1.1M customers • 134 TWh/year</p>
+                    </div>
+
+                    {/* Industrial */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                          <span className="text-sm font-medium text-gray-700">Industrial</span>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900">24.1 GW (35%)</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-purple-500 h-2 rounded-full" style={{ width: '35%' }}></div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">42K customers • 156 TWh/year</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Demand Trends */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="bg-white border border-gray-200 rounded-lg p-3">
+                    <p className="text-xs text-gray-600">Data Centers</p>
+                    <p className="text-lg font-bold text-gray-900">12.8 GW</p>
+                    <p className="text-xs text-green-600">↑ 18% YoY</p>
+                  </div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-3">
+                    <p className="text-xs text-gray-600">EV Charging</p>
+                    <p className="text-lg font-bold text-gray-900">2.4 GW</p>
+                    <p className="text-xs text-green-600">↑ 45% YoY</p>
+                  </div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-3">
+                    <p className="text-xs text-gray-600">Manufacturing</p>
+                    <p className="text-lg font-bold text-gray-900">15.2 GW</p>
+                    <p className="text-xs text-gray-600">↑ 2% YoY</p>
+                  </div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-3">
+                    <p className="text-xs text-gray-600">Other</p>
+                    <p className="text-lg font-bold text-gray-900">13.5 GW</p>
+                    <p className="text-xs text-gray-600">→ Flat</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Total capacity (for supply tab only) */}
+            {snapshotTab === 'supply' && (
+              <div className="text-xl font-semibold text-gray-900 mb-4">
+                Total: {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
+              </div>
+            )}
 
             {/* Stacked Bar Chart */}
             <div className="bg-gray-50 rounded-lg p-4 mb-4">
@@ -1716,33 +1835,35 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
     <div className="w-full">
       {/* Main Content Container */}
       <div className="flex gap-8">
-        {/* Timeline Navigation with Section Titles */}
-        <div className="flex-shrink-0 w-64">
-          <div className="sticky top-24">
-            {sections.map((section, index) => (
-              <div key={section.id} className="mb-6">
+        {/* Vertical Navigation Bar */}
+        <div className="flex-shrink-0 w-56">
+          <div className="sticky top-24 bg-gray-50 rounded-xl p-4 border border-gray-200">
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-2">Sections</h3>
+            <nav className="space-y-1">
+              {sections.map((section) => (
                 <button
+                  key={section.id}
                   onClick={() => setActiveSection(section.id)}
-                  className={`w-full flex items-center space-x-4 p-3 rounded-lg transition-all ${
+                  className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all text-left ${
                     activeSection === section.id
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
-                    activeSection === section.id
-                      ? 'bg-white text-gray-900'
-                      : 'bg-gray-200 text-gray-600'
+                  <span className={`text-xs font-bold ${
+                    activeSection === section.id ? 'text-blue-200' : 'text-gray-400'
                   }`}>
                     {String(section.id).padStart(2, '0')}
-                  </div>
-                  <span className="text-left font-medium">{section.title}</span>
+                  </span>
+                  <span className="text-sm font-medium flex-1">{section.title}</span>
+                  {activeSection === section.id && (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  )}
                 </button>
-                {index < sections.length - 1 && (
-                  <div className="ml-5 mt-2 mb-2 w-0.5 h-6 bg-gray-200" />
-                )}
-              </div>
-            ))}
+              ))}
+            </nav>
           </div>
         </div>
 
@@ -2169,17 +2290,28 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                             <p className="text-sm font-medium text-gray-900">{rfp.deadline}</p>
                           </div>
                         </div>
-                        <a
-                          href={rfp.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
-                        >
-                          View RFP Details
-                          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                        </a>
+                        <div className="flex items-center space-x-3">
+                          <button
+                            onClick={() => setSelectedRFP(rfp)}
+                            className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                          >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            Explore RFP
+                          </button>
+                          <a
+                            href={rfp.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -3037,6 +3169,202 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
           )}
         </div>
       </div>
+
+      {/* RFP Details Modal */}
+      {selectedRFP && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={() => setSelectedRFP(null)}>
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-6 rounded-t-2xl">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-2xl font-bold mb-2">{selectedRFP.title}</h2>
+                  <div className="flex items-center space-x-4 text-blue-100">
+                    <span className="flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                      {selectedRFP.type}
+                    </span>
+                    <span className="flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Due: {selectedRFP.deadline}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedRFP(null)}
+                  className="text-white hover:bg-blue-500 rounded-full p-2 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-8">
+              {/* RFP Summary */}
+              <div className="mb-8">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">RFP Summary</h3>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    This Request for Proposals seeks qualified developers and energy providers to deliver {selectedRFP.capacity}
+                    of renewable energy capacity. The project aims to support the utility's clean energy transition and meet growing demand
+                    from commercial and industrial customers seeking carbon-free power solutions.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="bg-white rounded-lg p-3">
+                      <p className="text-xs text-gray-600 mb-1">Target Capacity</p>
+                      <p className="text-lg font-bold text-blue-900">{selectedRFP.capacity}</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3">
+                      <p className="text-xs text-gray-600 mb-1">Expected COD</p>
+                      <p className="text-lg font-bold text-blue-900">Q4 2026 - Q2 2027</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Key Requirements */}
+              <div className="mb-8">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Key Requirements</h3>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Technology Requirements</h4>
+                      <p className="text-sm text-gray-600">Solar PV with battery energy storage system (BESS). Minimum 4-hour duration for storage component.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Location & Interconnection</h4>
+                      <p className="text-sm text-gray-600">Projects must be located within or directly interconnected to the utility service territory. Interconnection studies required.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Contract Structure</h4>
+                      <p className="text-sm text-gray-600">20-year Power Purchase Agreement (PPA) or tolling arrangement. Pricing must include energy, capacity, and ancillary services.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Developer Qualifications</h4>
+                      <p className="text-sm text-gray-600">Demonstrated experience with utility-scale renewable projects. Financial capability to support development and construction.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">Environmental & Permitting</h4>
+                      <p className="text-sm text-gray-600">All necessary environmental permits and approvals must be obtained. Compliance with state and federal regulations required.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Timeline */}
+              <div className="mb-8">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">RFP Timeline</h3>
+                <div className="relative">
+                  <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                  <div className="space-y-6">
+                    <div className="flex items-start">
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">1</div>
+                      <div className="ml-4 flex-1">
+                        <p className="font-semibold text-gray-900">RFP Release</p>
+                        <p className="text-sm text-gray-600">January 15, 2025</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">2</div>
+                      <div className="ml-4 flex-1">
+                        <p className="font-semibold text-gray-900">Pre-Bid Conference</p>
+                        <p className="text-sm text-gray-600">February 1, 2025</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">3</div>
+                      <div className="ml-4 flex-1">
+                        <p className="font-semibold text-gray-900">Proposal Submission Deadline</p>
+                        <p className="text-sm text-gray-600">{selectedRFP.deadline}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold text-sm z-10">4</div>
+                      <div className="ml-4 flex-1">
+                        <p className="font-semibold text-gray-900">Shortlist Notification</p>
+                        <p className="text-sm text-gray-600">April 2025</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold text-sm z-10">5</div>
+                      <div className="ml-4 flex-1">
+                        <p className="font-semibold text-gray-900">Contract Award</p>
+                        <p className="text-sm text-gray-600">June 2025</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                <p className="text-sm text-gray-600">
+                  For more information, visit the official RFP portal
+                </p>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setSelectedRFP(null)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  >
+                    Close
+                  </button>
+                  <a
+                    href={selectedRFP.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
+                  >
+                    View Full RFP
+                    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
