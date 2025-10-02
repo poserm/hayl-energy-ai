@@ -1440,6 +1440,42 @@ export default function DashboardPage() {
                 </div>
               </div>
 
+              {/* Company Overview */}
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Company Description</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      {selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name} is a major electric utility serving customers across {selectedUtilityForAnalysis.state}.
+                      The company is engaged in the generation, transmission, and distribution of electricity, providing reliable power to residential, commercial, and industrial customers.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Line of Business</h3>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Generation
+                      </span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                        Transmission
+                      </span>
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        Distribution
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Main Analysis Content */}
               <UtilityAnalysisInline utility={selectedUtilityForAnalysis} />
             </div>
@@ -1664,7 +1700,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   const sections = [
     { id: 1, title: 'Energy Supply' },
     { id: 2, title: 'Energy demand' },
-    { id: 3, title: 'RFP Opportunities' }
+    { id: 3, title: 'RFP Opportunities' },
+    { id: 4, title: 'Key Documents' }
   ]
 
   return (
@@ -1744,6 +1781,69 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                             <PlantsTableRows utility={utility} />
                           </tbody>
                         </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Capacity by Technology Chart */}
+                {utility && (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Capacity by Technology</h3>
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Bar Chart Visualization */}
+                        <div>
+                          <div className="space-y-3">
+                            {[
+                              { tech: 'Natural Gas', capacity: 3200, color: 'bg-blue-500', percent: 45 },
+                              { tech: 'Coal', capacity: 2100, color: 'bg-gray-600', percent: 29 },
+                              { tech: 'Nuclear', capacity: 900, color: 'bg-purple-500', percent: 13 },
+                              { tech: 'Solar', capacity: 450, color: 'bg-yellow-500', percent: 6 },
+                              { tech: 'Wind', capacity: 350, color: 'bg-green-500', percent: 5 },
+                              { tech: 'Hydro', capacity: 150, color: 'bg-cyan-500', percent: 2 }
+                            ].map((item) => (
+                              <div key={item.tech}>
+                                <div className="flex items-center justify-between mb-1">
+                                  <span className="text-sm font-medium text-gray-700">{item.tech}</span>
+                                  <span className="text-sm text-gray-600">{item.capacity} MW ({item.percent}%)</span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-3">
+                                  <div
+                                    className={`${item.color} h-3 rounded-full transition-all duration-500`}
+                                    style={{ width: `${item.percent}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Summary Statistics */}
+                        <div className="space-y-4">
+                          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
+                            <p className="text-sm text-blue-600 font-medium">Total Capacity</p>
+                            <p className="text-3xl font-bold text-blue-900">7,150 MW</p>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-gray-50 rounded-lg p-3">
+                              <p className="text-xs text-gray-600">Fossil Fuels</p>
+                              <p className="text-lg font-bold text-gray-900">74%</p>
+                            </div>
+                            <div className="bg-green-50 rounded-lg p-3">
+                              <p className="text-xs text-green-600">Renewables</p>
+                              <p className="text-lg font-bold text-green-900">13%</p>
+                            </div>
+                            <div className="bg-purple-50 rounded-lg p-3">
+                              <p className="text-xs text-purple-600">Nuclear</p>
+                              <p className="text-lg font-bold text-purple-900">13%</p>
+                            </div>
+                            <div className="bg-blue-50 rounded-lg p-3">
+                              <p className="text-xs text-blue-600">Avg. Age</p>
+                              <p className="text-lg font-bold text-blue-900">28 yrs</p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2117,6 +2217,146 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
               </>
             )}
+
+            {/* Section 4: Key Documents */}
+            {activeSection === 4 && (
+              <>
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-lg p-6 mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Regulatory & Planning Documents</h3>
+                  <p className="text-gray-600">
+                    Access key regulatory filings, integrated resource plans, and financial documents for {utility?.name || utility?.utility_name}.
+                  </p>
+                </div>
+
+                {/* Document Categories */}
+                <div className="space-y-6">
+                  {/* Integrated Resource Plan */}
+                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-gray-900">Integrated Resource Plan (IRP)</h4>
+                          <p className="text-sm text-gray-600 mt-1">Long-term resource planning and generation strategy</p>
+                        </div>
+                      </div>
+                      <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">2024</span>
+                    </div>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        <span>📄 PDF • 15.2 MB</span>
+                        <span>Updated: Jan 2024</span>
+                      </div>
+                      <a
+                        href="https://example.com/irp-2024.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download IRP
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* FERC Form 1 */}
+                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-gray-900">FERC Form 1</h4>
+                          <p className="text-sm text-gray-600 mt-1">Annual electric utility financial report</p>
+                        </div>
+                      </div>
+                      <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">2023</span>
+                    </div>
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        <span>📄 PDF • 8.7 MB</span>
+                        <span>Filed: April 2024</span>
+                      </div>
+                      <a
+                        href="https://example.com/ferc-form-1-2023.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download FERC Form 1
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Additional Documents */}
+                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Additional Resources</h4>
+                    <div className="space-y-3">
+                      <a
+                        href="https://example.com/rate-case-2024.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Rate Case Filing (2024)</span>
+                        </div>
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                      <a
+                        href="https://example.com/sustainability-report-2023.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Sustainability Report (2023)</span>
+                        </div>
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                      <a
+                        href="https://example.com/grid-modernization-plan.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Grid Modernization Plan</span>
+                        </div>
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -2131,7 +2371,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
     { id: 1, title: 'Infrastructure & Facilities' },
     { id: 2, title: 'Energy Consumption' },
     { id: 3, title: 'Sustainability & Future Plans' },
-    { id: 4, title: 'Partnership Opportunities' }
+    { id: 4, title: 'Partnership Opportunities' },
+    { id: 5, title: 'Key Documents' }
   ]
 
   return (
@@ -2591,6 +2832,181 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                   <p className="text-sm text-gray-700">
                     <strong>Partnerships Portal:</strong> <a href="https://example.com/partnerships" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">View All Opportunities →</a>
                   </p>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Section 5: Key Documents */}
+          {activeSection === 5 && (
+            <>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Corporate & Financial Documents</h3>
+                <p className="text-gray-600">
+                  Access key financial reports, sustainability disclosures, and corporate documents for {corporate.name}.
+                </p>
+              </div>
+
+              {/* Document Categories */}
+              <div className="space-y-6">
+                {/* Annual Report */}
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900">Annual Report</h4>
+                        <p className="text-sm text-gray-600 mt-1">Comprehensive overview of business operations and financial performance</p>
+                      </div>
+                    </div>
+                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">2023</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <span>📄 PDF • 12.4 MB</span>
+                      <span>Published: March 2024</span>
+                    </div>
+                    <a
+                      href="https://example.com/annual-report-2023.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Download Report
+                    </a>
+                  </div>
+                </div>
+
+                {/* 10-K Filing */}
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900">10-K Annual Filing</h4>
+                        <p className="text-sm text-gray-600 mt-1">SEC annual report with comprehensive financial statements</p>
+                      </div>
+                    </div>
+                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">FY2023</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <span>📄 PDF • 9.8 MB</span>
+                      <span>Filed: Feb 2024</span>
+                    </div>
+                    <a
+                      href="https://www.sec.gov/edgar/browse/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Download 10-K
+                    </a>
+                  </div>
+                </div>
+
+                {/* ESG & Sustainability */}
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900">ESG & Sustainability Report</h4>
+                        <p className="text-sm text-gray-600 mt-1">Environmental, social, and governance initiatives and metrics</p>
+                      </div>
+                    </div>
+                    <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">2023</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <span>📄 PDF • 6.2 MB</span>
+                      <span>Published: May 2024</span>
+                    </div>
+                    <a
+                      href="https://example.com/esg-report-2023.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Download ESG Report
+                    </a>
+                  </div>
+                </div>
+
+                {/* Additional Documents */}
+                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Additional Resources</h4>
+                  <div className="space-y-3">
+                    <a
+                      href="https://example.com/q4-2023-earnings.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Q4 2023 Earnings Report</span>
+                      </div>
+                      <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                    <a
+                      href="https://example.com/investor-presentation-2024.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Investor Presentation 2024</span>
+                      </div>
+                      <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                    <a
+                      href="https://example.com/data-center-whitepaper.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Data Center Energy Efficiency Whitepaper</span>
+                      </div>
+                      <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
               </div>
             </>
