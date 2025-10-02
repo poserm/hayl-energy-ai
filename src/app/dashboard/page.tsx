@@ -1427,23 +1427,45 @@ export default function DashboardPage() {
           <section id="corporate-analysis-section" className="bg-white py-16">
             <div className="max-w-7xl mx-auto px-6">
               {/* Header */}
-              <div className="bg-gradient-to-r from-green-600 to-green-700 text-white rounded-2xl mb-8">
+              <div className="bg-gray-900 text-white rounded-2xl mb-8">
                 <div className="px-8 py-6">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h2 className="text-3xl font-bold mb-2">{selectedCorporate.name}</h2>
-                      <p className="text-green-100 text-lg">
-                        {selectedCorporate.type} Data Center Operator | {selectedCorporate.states?.join(', ')}
-                      </p>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-6">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
+                          <span className="text-gray-900 font-bold text-lg">
+                            {selectedCorporate.name.substring(0, 2).toUpperCase()}
+                          </span>
+                        </div>
+                        <div>
+                          <h1 className="text-2xl font-bold">{selectedCorporate.name}</h1>
+                          <p className="text-gray-300">{selectedCorporate.type} Data Center Operator | {selectedCorporate.states?.join(', ')}</p>
+                        </div>
+                      </div>
                     </div>
-                    <button
-                      onClick={() => setSelectedCorporate(null)}
-                      className="text-white hover:text-green-100 transition-colors"
-                    >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
+                    <div className="flex space-x-3">
+                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                        <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Compare
+                      </button>
+                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                        <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download
+                      </button>
+                      <button
+                        onClick={() => setSelectedCorporate(null)}
+                        className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800"
+                      >
+                        <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Close
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
