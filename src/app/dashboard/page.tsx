@@ -142,6 +142,7 @@ export default function DashboardPage() {
   const [portfolioLoading, setPortfolioLoading] = useState(false)
   const [energyBuyersTab, setEnergyBuyersTab] = useState<'utilities' | 'corporates'>('utilities')
   const [selectedCorporate, setSelectedCorporate] = useState<any>(null)
+  const [selectedStateFilter, setSelectedStateFilter] = useState<string | null>(null)
 
   // Fetch portfolio data when utility is selected
   useEffect(() => {
@@ -395,27 +396,35 @@ export default function DashboardPage() {
   }, [selectedStates, selectedOwnershipType])
 
   // Fetch capacity trends data with debouncing
+  // Reset state filter when region changes
+  useEffect(() => {
+    setSelectedStateFilter(null)
+  }, [region])
+
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>
-    
+
     const fetchCapacityTrends = async () => {
       if (selectedStates.length === 0) {
         setCapacityTrends(null)
         return
       }
-      
+
+      // Use selectedStateFilter if set, otherwise use all selectedStates
+      const statesToFetch = selectedStateFilter ? [selectedStateFilter] : selectedStates
+
       setCapacityTrendsLoading(true)
       try {
         const response = await fetch('/api/energy/capacity-trends', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ states: selectedStates })
+          body: JSON.stringify({ states: statesToFetch })
         })
-        
+
         if (!response.ok) {
           throw new Error(`API error: ${response.status}`)
         }
-        
+
         const data = await response.json()
         setCapacityTrends(data)
       } catch (error) {
@@ -428,9 +437,9 @@ export default function DashboardPage() {
 
     // Debounce API calls
     timeoutId = setTimeout(fetchCapacityTrends, 300)
-    
+
     return () => clearTimeout(timeoutId)
-  }, [selectedStates])
+  }, [selectedStates, selectedStateFilter])
 
   // Fetch map data with debouncing
   useEffect(() => {
@@ -634,24 +643,6 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          {/* States in Selected Region */}
-          {region && regionStatesMap[region] && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <h4 className="text-sm font-medium text-gray-700 mb-3">
-                States in {region} ({regionStatesMap[region].length} states)
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {regionStatesMap[region].map((state) => (
-                  <span
-                    key={state}
-                    className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-medium"
-                  >
-                    {state}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Latest News Ticker - State Tailored */}
@@ -731,11 +722,11 @@ export default function DashboardPage() {
         {/* Energy Snapshot Section - Full Width */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
             <div className="flex justify-between items-start mb-4">
-              <div>
+              <div className="flex-1">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  {region} Energy Snapshot
+                  {region} Energy Snapshot {selectedStateFilter && `- ${selectedStateFilter}`}
                 </h3>
-                <p className="text-gray-600 max-w-lg">
+                <p className="text-gray-600">
                   Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
                 </p>
                 <div className="text-3xl font-bold text-blue-600 mt-4">
@@ -751,6 +742,40 @@ export default function DashboardPage() {
                 </button>
               </div>
             </div>
+
+            {/* States in Selected Region - Selectable Pills */}
+            {region && regionStatesMap[region] && (
+              <div className="mb-6 pb-4 border-b border-gray-200">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-medium text-gray-700">
+                    Filter by State ({regionStatesMap[region].length} states in {region})
+                  </h4>
+                  {selectedStateFilter && (
+                    <button
+                      onClick={() => setSelectedStateFilter(null)}
+                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      Clear filter
+                    </button>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {regionStatesMap[region].map((state) => (
+                    <button
+                      key={state}
+                      onClick={() => setSelectedStateFilter(selectedStateFilter === state ? null : state)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                        selectedStateFilter === state
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                      }`}
+                    >
+                      {state}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Tabs */}
             <div className="flex space-x-1 border-b border-gray-200 mb-6">
