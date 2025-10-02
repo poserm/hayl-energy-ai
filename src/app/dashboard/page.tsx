@@ -1091,7 +1091,10 @@ export default function DashboardPage() {
                     {stateUtilities.map((utility, index) => (
                       <div
                         key={utility.id || index}
-                        onClick={() => setSelectedUtilityForAnalysis(utility)}
+                        onClick={() => {
+                          setSelectedUtilityForAnalysis(utility)
+                          setSelectedCorporate(null) // Clear corporate selection
+                        }}
                         className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
                           selectedUtilityForAnalysis?.id === utility.id
                             ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
@@ -1234,7 +1237,10 @@ export default function DashboardPage() {
                       {corporatesByRegion[region]?.map((corporate, index) => (
                         <div
                           key={corporate.id || index}
-                          onClick={() => setSelectedCorporate(corporate)}
+                          onClick={() => {
+                            setSelectedCorporate(corporate)
+                            setSelectedUtilityForAnalysis(null) // Clear utility selection
+                          }}
                           className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
                             selectedCorporate?.id === corporate.id
                               ? 'border-green-500 bg-green-50 ring-2 ring-green-200'
