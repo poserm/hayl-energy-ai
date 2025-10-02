@@ -1470,6 +1470,23 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
+                  {/* Data Center Locations Map */}
+                  <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Data Center Locations</h3>
+                    <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+                      <div className="h-96 flex items-center justify-center">
+                        <div className="text-center">
+                          <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <p className="text-gray-500 font-medium">Interactive Map Placeholder</p>
+                          <p className="text-sm text-gray-400 mt-2">Will show data center facility locations across the region</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Facilities by State */}
                   <div className="bg-white border border-gray-200 rounded-xl p-6 mb-8">
                     <h3 className="text-xl font-bold text-gray-900 mb-4">Facilities by State</h3>
@@ -1756,6 +1773,24 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             <p className="text-gray-600 mb-6">
               Summary of their preferred scenario. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
             </p>
+
+            {/* Facilities Map */}
+            {utility && activeSection === 1 && (
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Facility Locations</h3>
+                <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+                  <div className="h-96 flex items-center justify-center">
+                    <div className="text-center">
+                      <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                      <p className="text-gray-500 font-medium">Interactive Map Placeholder</p>
+                      <p className="text-sm text-gray-400 mt-2">Will show power plant locations across service territory</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Power Plants Table */}
             {utility && activeSection === 1 && (
