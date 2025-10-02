@@ -1757,35 +1757,173 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
             {activeSection === 2 && (
               <>
-                {/* Demand Analysis */}
+                {/* Demand Overview */}
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-4 gap-4">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600">Total Customers</p>
+                      <p className="text-xl font-bold text-gray-900">2.4M</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600">Annual Sales</p>
+                      <p className="text-xl font-bold text-gray-900">45,600 GWh</p>
+                    </div>
                     <div className="text-center">
                       <p className="text-sm text-gray-600">Peak Demand</p>
-                      <p className="text-xl font-bold text-gray-900">1.2 GW</p>
+                      <p className="text-xl font-bold text-gray-900">8.5 GW</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Annual Growth</p>
-                      <p className="text-xl font-bold text-gray-900">2.1%</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-gray-600">Forecast Year</p>
-                      <p className="text-xl font-bold text-gray-900">2025</p>
+                      <p className="text-sm text-gray-600">Load Factor</p>
+                      <p className="text-xl font-bold text-gray-900">61%</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Mock Chart */}
-                <div className="h-64 bg-gray-50 rounded-lg p-4 flex items-end justify-between">
-                  {[2020, 2021, 2022, 2023, 2024].map((year) => (
-                    <div key={year} className="flex flex-col items-center space-y-2">
-                      <div 
-                        className="w-16 bg-blue-500 rounded-t" 
-                        style={{ height: `${Math.random() * 150 + 50}px` }}
-                      />
-                      <span className="text-xs text-gray-600">{year}</span>
+                {/* Customer Class Breakdown */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Load by Customer Class</h3>
+                  <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Class</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Customers</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Annual Sales (GWh)</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">% of Total</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Avg. Usage per Customer</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        <tr>
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">Residential</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 text-right">2,150,000</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 text-right">15,960</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 text-right">35%</td>
+                          <td className="px-4 py-3 text-sm text-gray-600 text-right">7,420 kWh/yr</td>
+                        </tr>
+                        <tr className="bg-gray-50">
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">Commercial</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 text-right">245,000</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 text-right">13,680</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 text-right">30%</td>
+                          <td className="px-4 py-3 text-sm text-gray-600 text-right">55,840 kWh/yr</td>
+                        </tr>
+                        <tr>
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">Industrial</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 text-right">5,200</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 text-right">15,960</td>
+                          <td className="px-4 py-3 text-sm text-gray-900 text-right">35%</td>
+                          <td className="px-4 py-3 text-sm text-gray-600 text-right">3.07 GWh/yr</td>
+                        </tr>
+                      </tbody>
+                      <tfoot className="bg-gray-100">
+                        <tr>
+                          <td className="px-4 py-3 text-sm font-bold text-gray-900">Total</td>
+                          <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">2,400,200</td>
+                          <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">45,600</td>
+                          <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">100%</td>
+                          <td className="px-4 py-3 text-sm text-gray-600 text-right">-</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Load Profile by Customer Class */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Customer Class Contribution</h3>
+                  <div className="space-y-3">
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                          <span className="font-medium text-gray-900">Residential</span>
+                        </div>
+                        <span className="font-bold text-gray-900">35%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div className="bg-blue-500 h-3 rounded-full" style={{width: '35%'}}></div>
+                      </div>
+                      <div className="mt-2 text-sm text-gray-600">
+                        2.15M customers | 15,960 GWh annual sales
+                      </div>
                     </div>
-                  ))}
+
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-4 h-4 bg-green-500 rounded"></div>
+                          <span className="font-medium text-gray-900">Commercial</span>
+                        </div>
+                        <span className="font-bold text-gray-900">30%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div className="bg-green-500 h-3 rounded-full" style={{width: '30%'}}></div>
+                      </div>
+                      <div className="mt-2 text-sm text-gray-600">
+                        245K customers | 13,680 GWh annual sales
+                      </div>
+                    </div>
+
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-4 h-4 bg-purple-500 rounded"></div>
+                          <span className="font-medium text-gray-900">Industrial</span>
+                        </div>
+                        <span className="font-bold text-gray-900">35%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div className="bg-purple-500 h-3 rounded-full" style={{width: '35%'}}></div>
+                      </div>
+                      <div className="mt-2 text-sm text-gray-600">
+                        5.2K customers | 15,960 GWh annual sales
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Demand Trends */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Historical Demand Growth by Class</h3>
+                  <div className="h-64 bg-white rounded-lg p-4 flex items-end justify-between border border-gray-200">
+                    {[2020, 2021, 2022, 2023, 2024].map((year) => (
+                      <div key={year} className="flex flex-col items-center space-y-2 flex-1">
+                        <div className="w-full max-w-[60px] space-y-0.5">
+                          <div
+                            className="w-full bg-blue-500 rounded-t"
+                            style={{ height: `${Math.random() * 40 + 30}px` }}
+                            title="Residential"
+                          />
+                          <div
+                            className="w-full bg-green-500"
+                            style={{ height: `${Math.random() * 35 + 25}px` }}
+                            title="Commercial"
+                          />
+                          <div
+                            className="w-full bg-purple-500"
+                            style={{ height: `${Math.random() * 40 + 30}px` }}
+                            title="Industrial"
+                          />
+                        </div>
+                        <span className="text-xs text-gray-600 font-medium">{year}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-center space-x-6 mt-4">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                      <span className="text-xs text-gray-600">Residential</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-green-500 rounded"></div>
+                      <span className="text-xs text-gray-600">Commercial</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 bg-purple-500 rounded"></div>
+                      <span className="text-xs text-gray-600">Industrial</span>
+                    </div>
+                  </div>
                 </div>
               </>
             )}
