@@ -1835,35 +1835,33 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
     <div className="w-full">
       {/* Main Content Container */}
       <div className="flex gap-8">
-        {/* Vertical Navigation Bar */}
-        <div className="flex-shrink-0 w-56">
-          <div className="sticky top-24 bg-gray-50 rounded-xl p-4 border border-gray-200">
-            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4 px-2">Sections</h3>
-            <nav className="space-y-1">
-              {sections.map((section) => (
+        {/* Timeline Navigation with Section Titles */}
+        <div className="flex-shrink-0 w-64">
+          <div className="sticky top-24">
+            {sections.map((section, index) => (
+              <div key={section.id} className="mb-6">
                 <button
-                  key={section.id}
                   onClick={() => setActiveSection(section.id)}
-                  className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all text-left ${
+                  className={`w-full flex items-center space-x-4 p-3 rounded-lg transition-all ${
                     activeSection === section.id
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  <span className={`text-xs font-bold ${
-                    activeSection === section.id ? 'text-blue-200' : 'text-gray-400'
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
+                    activeSection === section.id
+                      ? 'bg-white text-gray-900'
+                      : 'bg-gray-200 text-gray-600'
                   }`}>
                     {String(section.id).padStart(2, '0')}
-                  </span>
-                  <span className="text-sm font-medium flex-1">{section.title}</span>
-                  {activeSection === section.id && (
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  )}
+                  </div>
+                  <span className="text-left font-medium">{section.title}</span>
                 </button>
-              ))}
-            </nav>
+                {index < sections.length - 1 && (
+                  <div className="ml-5 mt-2 mb-2 w-0.5 h-6 bg-gray-200" />
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
