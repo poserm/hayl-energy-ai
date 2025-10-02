@@ -2290,7 +2290,193 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         </div>
                         <div className="flex items-center space-x-3">
                           <button
-                            onClick={() => setSelectedRFP(rfp)}
+                            onClick={() => {
+                              const rfpWindow = window.open('', '_blank', 'width=1200,height=800')
+                              if (rfpWindow) {
+                                rfpWindow.document.write(`
+                                  <!DOCTYPE html>
+                                  <html lang="en">
+                                  <head>
+                                    <meta charset="UTF-8">
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                    <title>${rfp.title} - RFP Details</title>
+                                    <script src="https://cdn.tailwindcss.com"></script>
+                                  </head>
+                                  <body class="bg-gray-50">
+                                    <div class="min-h-screen">
+                                      <!-- Header -->
+                                      <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-8">
+                                        <div class="max-w-5xl mx-auto">
+                                          <h1 class="text-3xl font-bold mb-3">${rfp.title}</h1>
+                                          <div class="flex items-center space-x-6 text-blue-100">
+                                            <span class="flex items-center">
+                                              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                              </svg>
+                                              ${rfp.type}
+                                            </span>
+                                            <span class="flex items-center">
+                                              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                              </svg>
+                                              Deadline: ${rfp.deadline}
+                                            </span>
+                                            <span class="px-3 py-1 rounded-full text-sm font-medium ${rfp.status === 'Open' ? 'bg-green-500' : 'bg-blue-500'}">
+                                              ${rfp.status}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Content -->
+                                      <div class="max-w-5xl mx-auto px-8 py-8">
+                                        <!-- RFP Summary -->
+                                        <div class="mb-8">
+                                          <h2 class="text-2xl font-bold text-gray-900 mb-4">RFP Summary</h2>
+                                          <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                                            <p class="text-gray-700 leading-relaxed mb-4">
+                                              This Request for Proposals seeks qualified developers and energy providers to deliver ${rfp.capacity}
+                                              of renewable energy capacity. The project aims to support the utility's clean energy transition and meet growing demand
+                                              from commercial and industrial customers seeking carbon-free power solutions.
+                                            </p>
+                                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                              <div class="bg-white rounded-lg p-4">
+                                                <p class="text-sm text-gray-600 mb-1">Target Capacity</p>
+                                                <p class="text-xl font-bold text-blue-900">${rfp.capacity}</p>
+                                              </div>
+                                              <div class="bg-white rounded-lg p-4">
+                                                <p class="text-sm text-gray-600 mb-1">Expected COD</p>
+                                                <p class="text-xl font-bold text-blue-900">Q4 2026 - Q2 2027</p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <!-- Key Requirements -->
+                                        <div class="mb-8">
+                                          <h2 class="text-2xl font-bold text-gray-900 mb-4">Key Requirements</h2>
+                                          <div class="space-y-4">
+                                            <div class="flex items-start space-x-3">
+                                              <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                              </div>
+                                              <div>
+                                                <h3 class="font-semibold text-gray-900 text-lg">Technology Requirements</h3>
+                                                <p class="text-gray-600">Solar PV with battery energy storage system (BESS). Minimum 4-hour duration for storage component.</p>
+                                              </div>
+                                            </div>
+                                            <div class="flex items-start space-x-3">
+                                              <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                              </div>
+                                              <div>
+                                                <h3 class="font-semibold text-gray-900 text-lg">Location & Interconnection</h3>
+                                                <p class="text-gray-600">Projects must be located within or directly interconnected to the utility service territory. Interconnection studies required.</p>
+                                              </div>
+                                            </div>
+                                            <div class="flex items-start space-x-3">
+                                              <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                              </div>
+                                              <div>
+                                                <h3 class="font-semibold text-gray-900 text-lg">Contract Structure</h3>
+                                                <p class="text-gray-600">20-year Power Purchase Agreement (PPA) or tolling arrangement. Pricing must include energy, capacity, and ancillary services.</p>
+                                              </div>
+                                            </div>
+                                            <div class="flex items-start space-x-3">
+                                              <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                              </div>
+                                              <div>
+                                                <h3 class="font-semibold text-gray-900 text-lg">Developer Qualifications</h3>
+                                                <p class="text-gray-600">Demonstrated experience with utility-scale renewable projects. Financial capability to support development and construction.</p>
+                                              </div>
+                                            </div>
+                                            <div class="flex items-start space-x-3">
+                                              <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                              </div>
+                                              <div>
+                                                <h3 class="font-semibold text-gray-900 text-lg">Environmental & Permitting</h3>
+                                                <p class="text-gray-600">All necessary environmental permits and approvals must be obtained. Compliance with state and federal regulations required.</p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <!-- Timeline -->
+                                        <div class="mb-8">
+                                          <h2 class="text-2xl font-bold text-gray-900 mb-4">RFP Timeline</h2>
+                                          <div class="relative pl-8">
+                                            <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-300"></div>
+                                            <div class="space-y-6">
+                                              <div class="flex items-start">
+                                                <div class="absolute left-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">1</div>
+                                                <div class="ml-8">
+                                                  <p class="font-semibold text-gray-900 text-lg">RFP Release</p>
+                                                  <p class="text-gray-600">January 15, 2025</p>
+                                                </div>
+                                              </div>
+                                              <div class="flex items-start">
+                                                <div class="absolute left-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">2</div>
+                                                <div class="ml-8">
+                                                  <p class="font-semibold text-gray-900 text-lg">Pre-Bid Conference</p>
+                                                  <p class="text-gray-600">February 1, 2025</p>
+                                                </div>
+                                              </div>
+                                              <div class="flex items-start">
+                                                <div class="absolute left-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">3</div>
+                                                <div class="ml-8">
+                                                  <p class="font-semibold text-gray-900 text-lg">Proposal Submission Deadline</p>
+                                                  <p class="text-gray-600">${rfp.deadline}</p>
+                                                </div>
+                                              </div>
+                                              <div class="flex items-start">
+                                                <div class="absolute left-0 w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-gray-700 font-bold text-sm">4</div>
+                                                <div class="ml-8">
+                                                  <p class="font-semibold text-gray-900 text-lg">Shortlist Notification</p>
+                                                  <p class="text-gray-600">April 2025</p>
+                                                </div>
+                                              </div>
+                                              <div class="flex items-start">
+                                                <div class="absolute left-0 w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-gray-700 font-bold text-sm">5</div>
+                                                <div class="ml-8">
+                                                  <p class="font-semibold text-gray-900 text-lg">Contract Award</p>
+                                                  <p class="text-gray-600">June 2025</p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <!-- Footer -->
+                                        <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+                                          <p class="text-gray-600">For more information, visit the official RFP portal</p>
+                                          <a href="${rfp.link}" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">
+                                            View Full RFP
+                                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                            </svg>
+                                          </a>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </body>
+                                  </html>
+                                `)
+                                rfpWindow.document.close()
+                              }
+                            }}
                             className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
                           >
                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
