@@ -1664,7 +1664,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   const sections = [
     { id: 1, title: 'Existing Portfolio' },
     { id: 2, title: 'Energy demand' },
-    { id: 3, title: 'Energy Supply' }
+    { id: 3, title: 'Energy Supply' },
+    { id: 4, title: 'RFP Opportunities' }
   ]
 
   return (
@@ -1972,6 +1973,149 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
               </>
             )}
+
+            {activeSection === 4 && (
+              <>
+                {/* RFP Overview */}
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Procurement Opportunities</h3>
+                  <p className="text-gray-700 mb-4">
+                    {utility?.name || utility?.utility_name} regularly issues Requests for Proposals (RFPs) for renewable energy, generation capacity, and grid services. Monitor upcoming opportunities to participate in their procurement process.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-700 mb-1">Typical RFP Cycle</p>
+                      <p className="text-xl font-bold text-blue-700">Quarterly</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-700 mb-1">Avg. Contract Value</p>
+                      <p className="text-xl font-bold text-blue-700">$250M - $1B+</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Current RFP Opportunities */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Current & Upcoming RFPs</h3>
+                  <div className="space-y-4">
+                    {[
+                      {
+                        title: 'Solar + Storage Capacity',
+                        type: 'Renewable Energy',
+                        capacity: '500 MW Solar + 200 MW/800 MWh Storage',
+                        deadline: 'March 15, 2025',
+                        status: 'Open',
+                        link: 'https://example.com/rfp/solar-storage-2025'
+                      },
+                      {
+                        title: 'Wind Power Purchase Agreement',
+                        type: 'Renewable Energy',
+                        capacity: '350 MW Wind',
+                        deadline: 'April 30, 2025',
+                        status: 'Open',
+                        link: 'https://example.com/rfp/wind-ppa-2025'
+                      },
+                      {
+                        title: 'Demand Response Program',
+                        type: 'Grid Services',
+                        capacity: '100 MW Load Reduction',
+                        deadline: 'May 20, 2025',
+                        status: 'Upcoming',
+                        link: 'https://example.com/rfp/demand-response-2025'
+                      }
+                    ].map((rfp, i) => (
+                      <div key={i} className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <h4 className="font-semibold text-gray-900 text-lg">{rfp.title}</h4>
+                            <p className="text-sm text-gray-600 mt-1">{rfp.type}</p>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            rfp.status === 'Open'
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-blue-100 text-blue-700'
+                          }`}>
+                            {rfp.status}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <p className="text-xs text-gray-500">Capacity</p>
+                            <p className="text-sm font-medium text-gray-900">{rfp.capacity}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500">Proposal Deadline</p>
+                            <p className="text-sm font-medium text-gray-900">{rfp.deadline}</p>
+                          </div>
+                        </div>
+                        <a
+                          href={rfp.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+                        >
+                          View RFP Details
+                          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Procurement Preferences */}
+                <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Procurement Preferences</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">Technology Focus</h4>
+                        <p className="text-sm text-gray-600">Solar, wind, battery storage, natural gas (peaking), demand response</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">Contract Structure</h4>
+                        <p className="text-sm text-gray-600">PPAs (10-25 years), capacity contracts, build-own-transfer, merchant projects</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">Geographic Preference</h4>
+                        <p className="text-sm text-gray-600">Within service territory or direct interconnection to transmission system</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                      <div>
+                        <h4 className="font-medium text-gray-900">Sustainability Requirements</h4>
+                        <p className="text-sm text-gray-600">Carbon-free or low-carbon resources preferred; renewable energy credits (RECs) included</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Information */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Procurement Contact</h3>
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-700">
+                      <strong>Department:</strong> Power Supply & Procurement
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      <strong>Email:</strong> procurement@{(utility?.name || utility?.utility_name || 'utility').toLowerCase().replace(/\s+/g, '')}.com
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      <strong>RFP Portal:</strong> <a href="https://example.com/rfp-portal" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">View All Opportunities →</a>
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -1985,7 +2129,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
   const sections = [
     { id: 1, title: 'Infrastructure & Facilities' },
     { id: 2, title: 'Energy Consumption' },
-    { id: 3, title: 'Sustainability & Future Plans' }
+    { id: 3, title: 'Sustainability & Future Plans' },
+    { id: 4, title: 'Partnership Opportunities' }
   ]
 
   return (
@@ -2305,6 +2450,146 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       <p className="text-sm text-gray-600 mt-1">Implementing liquid immersion cooling and direct-to-chip cooling for next-gen AI compute infrastructure.</p>
                     </div>
                   </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Section 4: Partnership Opportunities */}
+          {activeSection === 4 && (
+            <>
+              {/* Partnership Overview */}
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-6 mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Energy Partnership Opportunities</h3>
+                <p className="text-gray-700 mb-4">
+                  {corporate.name} actively seeks partnerships with energy providers, technology companies, and sustainability consultants to support their data center operations and renewable energy goals.
+                </p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-700 mb-1">Partnership Focus</p>
+                    <p className="text-xl font-bold text-purple-700">Clean Energy & Grid Services</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-700 mb-1">Annual Investment</p>
+                    <p className="text-xl font-bold text-purple-700">$1B+</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Current RFP/Partnership Opportunities */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Opportunities</h3>
+                <div className="space-y-4">
+                  {[
+                    {
+                      title: '24/7 Carbon-Free Energy Supply',
+                      type: 'Power Purchase Agreement',
+                      details: '1,000+ MW renewable energy with hourly matching',
+                      deadline: 'Rolling Applications',
+                      status: 'Open',
+                      link: 'https://example.com/clean-energy-rfp'
+                    },
+                    {
+                      title: 'Battery Energy Storage Partnership',
+                      type: 'Co-Development',
+                      details: '500 MW / 2,000 MWh collocated storage',
+                      deadline: 'Q2 2025',
+                      status: 'Open',
+                      link: 'https://example.com/storage-partnership'
+                    },
+                    {
+                      title: 'Grid Flexibility Services',
+                      type: 'Demand Response',
+                      details: 'Load shifting and demand management program',
+                      deadline: 'Ongoing',
+                      status: 'Open',
+                      link: 'https://example.com/grid-services'
+                    }
+                  ].map((opp, i) => (
+                    <div key={i} className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <h4 className="font-semibold text-gray-900 text-lg">{opp.title}</h4>
+                          <p className="text-sm text-gray-600 mt-1">{opp.type}</p>
+                        </div>
+                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                          {opp.status}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <p className="text-xs text-gray-500">Opportunity</p>
+                          <p className="text-sm font-medium text-gray-900">{opp.details}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Timeline</p>
+                          <p className="text-sm font-medium text-gray-900">{opp.deadline}</p>
+                        </div>
+                      </div>
+                      <a
+                        href={opp.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
+                      >
+                        Learn More & Apply
+                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Partnership Priorities */}
+              <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Partnership Priorities</h3>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">Renewable Energy</h4>
+                      <p className="text-sm text-gray-600">Long-term PPAs for wind, solar, and emerging clean energy technologies (geothermal, hydrogen)</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">Grid Services & Flexibility</h4>
+                      <p className="text-sm text-gray-600">Demand response, virtual power plants, behind-the-meter storage solutions</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">Innovation & Technology</h4>
+                      <p className="text-sm text-gray-600">AI-driven energy optimization, advanced cooling technologies, carbon capture</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">Regional Development</h4>
+                      <p className="text-sm text-gray-600">Co-locate renewable projects near data centers, support local grid infrastructure</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Partnership Contacts</h3>
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-700">
+                    <strong>Department:</strong> Energy & Sustainability Partnerships
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Email:</strong> energy-partnerships@{corporate.name.toLowerCase().replace(/\s+/g, '')}.com
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Partnerships Portal:</strong> <a href="https://example.com/partnerships" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">View All Opportunities →</a>
+                  </p>
                 </div>
               </div>
             </>
