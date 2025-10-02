@@ -1449,8 +1449,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Profile Content */}
-              <div className="grid grid-cols-12 gap-8">
-                <div className="col-span-12">
+              <div className="w-full">
                   {/* Key Stats */}
                   <div className="grid grid-cols-4 gap-6 mb-8">
                     <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
@@ -1550,7 +1549,6 @@ export default function DashboardPage() {
                       <strong>Note:</strong> This is placeholder data for demonstration purposes. Production version will connect to real-time data center databases and APIs.
                     </p>
                   </div>
-                </div>
               </div>
             </div>
           </section>
@@ -1724,35 +1722,34 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   ]
 
   return (
-    <div className="grid grid-cols-12 gap-8">
-      {/* Left Side - Timeline and Content */}
-      <div className="col-span-12">
-        <div className="flex">
-          {/* Timeline Navigation */}
-          <div className="mr-8">
-            <div className="relative">
-              {sections.map((section, index) => (
-                <div key={section.id} className="flex items-center mb-8">
-                  <button
-                    onClick={() => setActiveSection(section.id)}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-colors ${
-                      activeSection === section.id
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
-                    }`}
-                  >
-                    {String(section.id).padStart(2, '0')}
-                  </button>
-                  {index < sections.length - 1 && (
-                    <div className="absolute left-6 top-12 w-0.5 h-8 bg-gray-300" />
-                  )}
-                </div>
-              ))}
-            </div>
+    <div className="w-full">
+      {/* Main Content Container */}
+      <div className="flex gap-8">
+        {/* Timeline Navigation */}
+        <div className="flex-shrink-0">
+          <div className="relative">
+            {sections.map((section, index) => (
+              <div key={section.id} className="flex items-center mb-8">
+                <button
+                  onClick={() => setActiveSection(section.id)}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-colors ${
+                    activeSection === section.id
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                  }`}
+                >
+                  {String(section.id).padStart(2, '0')}
+                </button>
+                {index < sections.length - 1 && (
+                  <div className="absolute left-6 top-12 w-0.5 h-8 bg-gray-300" />
+                )}
+              </div>
+            ))}
           </div>
+        </div>
 
-          {/* Section Content */}
-          <div className="flex-1">
+        {/* Section Content */}
+        <div className="flex-1 min-w-0">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               {sections[activeSection - 1].title}
             </h2>
@@ -1876,6 +1873,5 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
           </div>
         </div>
       </div>
-    </div>
   )
 }
