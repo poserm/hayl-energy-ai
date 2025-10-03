@@ -1315,7 +1315,7 @@ export default function DashboardPage() {
 
                             localStorage.setItem('allEnergyBuyerCompanies', JSON.stringify(companies))
                           }}
-                          className={`absolute top-3 right-3 p-2 rounded-full transition-colors z-10 ${
+                          className={`absolute top-2 right-2 p-1.5 rounded-full transition-colors z-10 ${
                             isFavorited
                               ? 'text-yellow-500 hover:text-yellow-600 bg-yellow-50'
                               : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50'
@@ -1512,7 +1512,7 @@ export default function DashboardPage() {
 
                               localStorage.setItem('allEnergyBuyerCompanies', JSON.stringify(companies))
                             }}
-                            className={`absolute top-3 right-3 p-2 rounded-full transition-colors z-10 ${
+                            className={`absolute top-2 right-2 p-1.5 rounded-full transition-colors z-10 ${
                               isFavorited
                                 ? 'text-yellow-500 hover:text-yellow-600 bg-yellow-50'
                                 : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50'

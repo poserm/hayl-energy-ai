@@ -9,6 +9,8 @@ export default function ExplorePage() {
   const router = useRouter()
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [allCompanies, setAllCompanies] = useState<any[]>([])
+  const [selectedCompany, setSelectedCompany] = useState<any | null>(null)
+  const [activeTab, setActiveTab] = useState<'all' | 'utilities' | 'corporates'>('all')
 
   // Load favorites and all companies from localStorage on mount
   useEffect(() => {
@@ -22,7 +24,7 @@ export default function ExplorePage() {
       }
     }
 
-    // Load all companies from localStorage (we'll save them from dashboard)
+    // Load all companies from localStorage
     const savedCompanies = localStorage.getItem('allEnergyBuyerCompanies')
     if (savedCompanies) {
       try {
@@ -42,12 +44,32 @@ export default function ExplorePage() {
   const utilities = favoritedCompanies.filter(c => c.type === 'utility')
   const corporates = favoritedCompanies.filter(c => c.type === 'corporate')
 
+  const getDisplayedCompanies = () => {
+    if (activeTab === 'utilities') return utilities
+    if (activeTab === 'corporates') return corporates
+    return favoritedCompanies
+  }
+
+  const displayedCompanies = getDisplayedCompanies()
+
   const handleLogout = async () => {
     try {
       await logout()
       router.push('/login')
     } catch (error) {
       console.error('Logout error:', error)
+    }
+  }
+
+  const handleRemoveFavorite = (companyId: string) => {
+    const newFavorites = new Set(favorites)
+    newFavorites.delete(companyId)
+    setFavorites(newFavorites)
+    localStorage.setItem('energyBuyerFavorites', JSON.stringify(Array.from(newFavorites)))
+
+    // If the removed company was selected, clear selection
+    if (selectedCompany?.id === companyId) {
+      setSelectedCompany(null)
     }
   }
 
@@ -105,13 +127,58 @@ export default function ExplorePage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header Section */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Your Favorited Companies
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            View and manage your favorited energy buyers and corporates across all regions
+            View detailed information and drill into your favorited energy buyers and corporates
           </p>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex rounded-full bg-gray-200 p-1">
+            <button
+              onClick={() => {
+                setActiveTab('all')
+                setSelectedCompany(null)
+              }}
+              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+                activeTab === 'all'
+                  ? 'bg-gray-900 text-white'
+                  : 'text-gray-700 hover:text-gray-900'
+              }`}
+            >
+              All ({favoritedCompanies.length})
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('utilities')
+                setSelectedCompany(null)
+              }}
+              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+                activeTab === 'utilities'
+                  ? 'bg-gray-900 text-white'
+                  : 'text-gray-700 hover:text-gray-900'
+              }`}
+            >
+              Utilities ({utilities.length})
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('corporates')
+                setSelectedCompany(null)
+              }}
+              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+                activeTab === 'corporates'
+                  ? 'bg-gray-900 text-white'
+                  : 'text-gray-700 hover:text-gray-900'
+              }`}
+            >
+              Corporates ({corporates.length})
+            </button>
+          </div>
         </div>
 
         {/* Empty State */}
@@ -131,158 +198,205 @@ export default function ExplorePage() {
           </div>
         )}
 
-        {/* Utilities Section */}
-        {utilities.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Utilities ({utilities.length})
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {utilities.map((utility) => (
-                <div
-                  key={utility.id}
-                  className="bg-white rounded-lg shadow-md border-2 border-gray-200 p-6 hover:shadow-xl hover:border-blue-300 transition-all duration-300"
-                >
-                  <div className="text-center">
-                    <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
-                      {utility.name}
-                    </h4>
+        {/* Companies Grid and Detail View */}
+        {favoritedCompanies.length > 0 && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Companies List */}
+            <div className={`${selectedCompany ? 'lg:col-span-1' : 'lg:col-span-3'} space-y-4`}>
+              <div className={`grid ${selectedCompany ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'} gap-4`}>
+                {displayedCompanies.map((company) => (
+                  <div
+                    key={company.id}
+                    onClick={() => setSelectedCompany(company)}
+                    className={`bg-white rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl relative ${
+                      selectedCompany?.id === company.id
+                        ? company.type === 'utility'
+                          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                          : 'border-green-500 bg-green-50 ring-2 ring-green-200'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    {/* Remove button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleRemoveFavorite(company.id)
+                      }}
+                      className="absolute top-2 right-2 p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors"
+                      title="Remove from favorites"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
 
-                    {/* Multi-state badge */}
-                    {utility.states && utility.states.length > 1 && (
-                      <div className="mb-2">
-                        <span className="inline-flex items-center px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
-                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                          </svg>
-                          Multi-State ({utility.states.length})
-                        </span>
-                      </div>
-                    )}
-
-                    {/* States */}
-                    {utility.states && utility.states.length > 0 && (
-                      <div className="mb-3">
-                        <div className="flex flex-wrap gap-1 justify-center">
-                          {utility.states.slice(0, 3).map((state: string) => (
-                            <span key={state} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
-                              {state}
-                            </span>
-                          ))}
-                          {utility.states.length > 3 && (
-                            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
-                              +{utility.states.length - 3} more
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {utility.ownershipType && (
-                      <p className="text-sm text-gray-500 uppercase font-medium mb-3">
-                        {utility.ownershipType}
-                      </p>
-                    )}
-
-                    {/* Region */}
-                    {utility.region && (
-                      <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {utility.region}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Corporates Section */}
-        {corporates.length > 0 && (
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Corporates ({corporates.length})
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {corporates.map((corporate) => (
-                <div
-                  key={corporate.id}
-                  className="bg-white rounded-lg shadow-md border-2 border-gray-200 p-6 hover:shadow-xl hover:border-green-300 transition-all duration-300"
-                >
-                  <div className="text-center">
-                    <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
-                      {corporate.name}
-                    </h4>
-
-                    {/* Company Type Badge */}
-                    <div className="mb-3">
-                      <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
-                        corporate.companyType === 'Hyperscale' ? 'bg-blue-100 text-blue-700' :
-                        corporate.companyType === 'Colocation' ? 'bg-green-100 text-green-700' :
-                        corporate.companyType === 'Developer' ? 'bg-purple-100 text-purple-700' :
-                        'bg-gray-100 text-gray-700'
+                    <div className="text-center">
+                      <div className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold mb-2 ${
+                        company.type === 'utility' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
                       }`}>
-                        {corporate.companyType}
-                      </span>
-                    </div>
-
-                    {/* Multi-state badge */}
-                    {corporate.states && corporate.states.length > 1 && (
-                      <div className="mb-2">
-                        <span className="inline-flex items-center px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold">
-                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-                          </svg>
-                          Multi-State ({corporate.states.length})
-                        </span>
+                        {company.type === 'utility' ? 'Utility' : 'Corporate'}
                       </div>
-                    )}
 
-                    {/* States */}
-                    {corporate.states && corporate.states.length > 0 && (
-                      <div className="mb-3">
-                        <div className="flex flex-wrap gap-1 justify-center">
-                          {corporate.states.slice(0, 3).map((state: string) => (
+                      <h4 className="text-base font-bold text-gray-900 leading-tight mb-2">
+                        {company.name}
+                      </h4>
+
+                      {/* Region */}
+                      {company.region && (
+                        <div className="mb-2">
+                          <span className="text-xs text-gray-500">{company.region}</span>
+                        </div>
+                      )}
+
+                      {/* States */}
+                      {company.states && company.states.length > 0 && (
+                        <div className="flex flex-wrap gap-1 justify-center mb-2">
+                          {company.states.slice(0, 2).map((state: string) => (
                             <span key={state} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
                               {state}
                             </span>
                           ))}
-                          {corporate.states.length > 3 && (
+                          {company.states.length > 2 && (
                             <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
-                              +{corporate.states.length - 3} more
+                              +{company.states.length - 2}
                             </span>
                           )}
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Estimated Load */}
-                    {corporate.estimatedLoad && (
-                      <div className="mb-3 px-3 py-2 bg-green-50 rounded-lg">
-                        <p className="text-xs text-gray-600 mb-1">Estimated Load</p>
-                        <p className="text-lg font-bold text-green-600">
-                          {corporate.estimatedLoad}
-                        </p>
+                      <div className="text-xs text-blue-600 font-medium mt-2">
+                        Click for details →
                       </div>
-                    )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-                    {/* Facilities Count */}
-                    {corporate.facilities && (
-                      <div className="text-sm text-gray-500 mb-3">
-                        {corporate.facilities} facilities
-                      </div>
-                    )}
+            {/* Detail Panel */}
+            {selectedCompany && (
+              <div className="lg:col-span-2 bg-white rounded-lg shadow-xl border-2 border-gray-300 p-8 sticky top-24 h-fit">
+                <div className="flex justify-between items-start mb-6">
+                  <div>
+                    <div className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold mb-3 ${
+                      selectedCompany.type === 'utility' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
+                    }`}>
+                      {selectedCompany.type === 'utility' ? 'Utility Company' : 'Corporate Entity'}
+                    </div>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                      {selectedCompany.name}
+                    </h2>
+                  </div>
+                  <button
+                    onClick={() => setSelectedCompany(null)}
+                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
 
-                    {/* Region */}
-                    {corporate.region && (
-                      <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                        {corporate.region}
+                <div className="space-y-6">
+                  {/* Region */}
+                  {selectedCompany.region && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">ISO Region</h3>
+                      <div className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg font-medium">
+                        {selectedCompany.region}
                       </div>
-                    )}
+                    </div>
+                  )}
+
+                  {/* States Coverage */}
+                  {selectedCompany.states && selectedCompany.states.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">
+                        States of Operation ({selectedCompany.states.length})
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedCompany.states.map((state: string) => (
+                          <span key={state} className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">
+                            {state}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Utility-specific details */}
+                  {selectedCompany.type === 'utility' && (
+                    <>
+                      {selectedCompany.ownershipType && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Ownership Type</h3>
+                          <p className="text-lg font-medium text-gray-900">{selectedCompany.ownershipType}</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* Corporate-specific details */}
+                  {selectedCompany.type === 'corporate' && (
+                    <>
+                      {selectedCompany.companyType && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Company Type</h3>
+                          <div className={`inline-flex px-4 py-2 rounded-lg font-medium ${
+                            selectedCompany.companyType === 'Hyperscale' ? 'bg-blue-50 text-blue-700' :
+                            selectedCompany.companyType === 'Colocation' ? 'bg-green-50 text-green-700' :
+                            selectedCompany.companyType === 'Developer' ? 'bg-purple-50 text-purple-700' :
+                            selectedCompany.companyType === 'AI Infrastructure' ? 'bg-orange-50 text-orange-700' :
+                            selectedCompany.companyType === 'AI Cloud' ? 'bg-pink-50 text-pink-700' :
+                            'bg-gray-50 text-gray-700'
+                          }`}>
+                            {selectedCompany.companyType}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedCompany.estimatedLoad && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Estimated Load</h3>
+                          <p className="text-2xl font-bold text-green-600">{selectedCompany.estimatedLoad}</p>
+                        </div>
+                      )}
+
+                      {selectedCompany.facilities && (
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Facilities</h3>
+                          <p className="text-lg font-medium text-gray-900">{selectedCompany.facilities} facilities</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="pt-6 border-t border-gray-200">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => handleRemoveFavorite(selectedCompany.id)}
+                        className="flex-1 px-4 py-2 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100 transition-colors"
+                      >
+                        Remove from Favorites
+                      </button>
+                      <button
+                        onClick={() => {
+                          // Navigate back to dashboard with this company selected
+                          window.opener?.postMessage({
+                            type: 'SELECT_COMPANY',
+                            company: selectedCompany
+                          }, '*')
+                        }}
+                        className="flex-1 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        View on Dashboard
+                      </button>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>
