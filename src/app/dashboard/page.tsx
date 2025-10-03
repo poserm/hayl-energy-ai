@@ -813,9 +813,9 @@ export default function DashboardPage() {
 
             {/* Tabs - Redesigned as Toggle Buttons with Total */}
             <div className="flex items-center justify-between mb-6">
-              {/* Total Capacity */}
+              {/* Total Capacity - Updates based on state filter */}
               <div className="text-3xl font-bold text-blue-600">
-                {Math.round(metrics.totalCapacity / 1000)} GW
+                {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
               </div>
 
               {/* Toggle Buttons */}
