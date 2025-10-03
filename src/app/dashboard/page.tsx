@@ -144,6 +144,35 @@ export default function DashboardPage() {
   const [selectedCorporate, setSelectedCorporate] = useState<any>(null)
   const [selectedStateFilter, setSelectedStateFilter] = useState<string | null>(null)
   const [snapshotTab, setSnapshotTab] = useState<'supply' | 'demand'>('supply')
+  const [favorites, setFavorites] = useState<Set<string>>(new Set())
+
+  // Toggle favorite status
+  const toggleFavorite = (id: string) => {
+    setFavorites(prev => {
+      const newFavorites = new Set(prev)
+      if (newFavorites.has(id)) {
+        newFavorites.delete(id)
+      } else {
+        newFavorites.add(id)
+      }
+      // Save to localStorage
+      localStorage.setItem('energyBuyerFavorites', JSON.stringify(Array.from(newFavorites)))
+      return newFavorites
+    })
+  }
+
+  // Load favorites from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('energyBuyerFavorites')
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        setFavorites(new Set(parsed))
+      } catch (e) {
+        console.error('Failed to load favorites', e)
+      }
+    }
+  }, [])
 
   // Fetch portfolio data when utility is selected
   useEffect(() => {
@@ -576,7 +605,12 @@ export default function DashboardPage() {
             <div className="flex items-center space-x-6">
               <nav className="flex items-center space-x-6 text-sm">
                 <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Home</a>
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Explore</a>
+                <button
+                  onClick={() => window.open('/explore', '_blank')}
+                  className="font-medium text-gray-700 hover:text-gray-900"
+                >
+                  Explore
+                </button>
                 <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Connections</a>
                 <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Settings</a>
               </nav>
@@ -1238,20 +1272,68 @@ export default function DashboardPage() {
                 <div className="relative">
                   {/* Horizontal Scrollable Tiles */}
                   <div className="flex overflow-x-auto space-x-4 pb-4 scroll-smooth">
-                    {stateUtilities.map((utility, index) => (
+                    {stateUtilities.map((utility, index) => {
+                      const utilityId = `utility-${utility.id || utility.utility_number || utility.utilityNumber || index}`
+                      const isFavorited = favorites.has(utilityId)
+
+                      return (
                       <div
                         key={utility.id || index}
-                        onClick={() => {
-                          setSelectedUtilityForAnalysis(utility)
-                          setSelectedCorporate(null) // Clear corporate selection
-                        }}
-                        className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+                        className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 relative ${
                           selectedUtilityForAnalysis?.id === utility.id
                             ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
                             : 'border-gray-200 hover:border-gray-300'
                         }`}
                       >
-                        <div className="text-center">
+                        {/* Favorite Star Button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            toggleFavorite(utilityId)
+
+                            // Save company data to localStorage for explore page
+                            const savedCompanies = localStorage.getItem('allEnergyBuyerCompanies')
+                            const companies = savedCompanies ? JSON.parse(savedCompanies) : []
+
+                            // Create company object
+                            const companyData = {
+                              id: utilityId,
+                              name: utility.name || utility.utility_name || `Utility ${index + 1}`,
+                              type: 'utility',
+                              states: utility.states || [],
+                              ownershipType: utility.ownershipType || utility.ownership_type,
+                              region: region
+                            }
+
+                            // Add or update company in the list
+                            const existingIndex = companies.findIndex((c: any) => c.id === utilityId)
+                            if (existingIndex >= 0) {
+                              companies[existingIndex] = companyData
+                            } else {
+                              companies.push(companyData)
+                            }
+
+                            localStorage.setItem('allEnergyBuyerCompanies', JSON.stringify(companies))
+                          }}
+                          className={`absolute top-3 right-3 p-2 rounded-full transition-colors z-10 ${
+                            isFavorited
+                              ? 'text-yellow-500 hover:text-yellow-600 bg-yellow-50'
+                              : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50'
+                          }`}
+                          title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                        >
+                          <svg className="w-5 h-5" fill={isFavorited ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                          </svg>
+                        </button>
+
+                        <div
+                          className="text-center cursor-pointer"
+                          onClick={() => {
+                            setSelectedUtilityForAnalysis(utility)
+                            setSelectedCorporate(null) // Clear corporate selection
+                          }}
+                        >
                           <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
                             {utility.name || utility.utility_name || `Utility ${index + 1}`}
                           </h4>
@@ -1305,7 +1387,8 @@ export default function DashboardPage() {
                           </div>
                         </div>
                       </div>
-                    ))}
+                      )
+                    })}
                   </div>
                   
                   {/* Scroll Indicators */}
@@ -1384,20 +1467,70 @@ export default function DashboardPage() {
                   <div className="relative">
                     {/* Horizontal Scrollable Tiles */}
                     <div className="flex overflow-x-auto space-x-4 pb-4 scroll-smooth">
-                      {corporatesByRegion[region]?.map((corporate, index) => (
+                      {corporatesByRegion[region]?.map((corporate, index) => {
+                        const corporateId = `corporate-${corporate.id || index}`
+                        const isFavorited = favorites.has(corporateId)
+
+                        return (
                         <div
                           key={corporate.id || index}
-                          onClick={() => {
-                            setSelectedCorporate(corporate)
-                            setSelectedUtilityForAnalysis(null) // Clear utility selection
-                          }}
-                          className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+                          className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 relative ${
                             selectedCorporate?.id === corporate.id
                               ? 'border-green-500 bg-green-50 ring-2 ring-green-200'
                               : 'border-gray-200 hover:border-gray-300'
                           }`}
                         >
-                          <div className="text-center">
+                          {/* Favorite Star Button */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleFavorite(corporateId)
+
+                              // Save company data to localStorage for explore page
+                              const savedCompanies = localStorage.getItem('allEnergyBuyerCompanies')
+                              const companies = savedCompanies ? JSON.parse(savedCompanies) : []
+
+                              // Create company object
+                              const companyData = {
+                                id: corporateId,
+                                name: corporate.name,
+                                type: 'corporate',
+                                companyType: corporate.type,
+                                states: corporate.states || [],
+                                estimatedLoad: corporate.estimatedLoad,
+                                facilities: corporate.facilities,
+                                region: region
+                              }
+
+                              // Add or update company in the list
+                              const existingIndex = companies.findIndex((c: any) => c.id === corporateId)
+                              if (existingIndex >= 0) {
+                                companies[existingIndex] = companyData
+                              } else {
+                                companies.push(companyData)
+                              }
+
+                              localStorage.setItem('allEnergyBuyerCompanies', JSON.stringify(companies))
+                            }}
+                            className={`absolute top-3 right-3 p-2 rounded-full transition-colors z-10 ${
+                              isFavorited
+                                ? 'text-yellow-500 hover:text-yellow-600 bg-yellow-50'
+                                : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50'
+                            }`}
+                            title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                          >
+                            <svg className="w-5 h-5" fill={isFavorited ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            </svg>
+                          </button>
+
+                          <div
+                            className="text-center cursor-pointer"
+                            onClick={() => {
+                              setSelectedCorporate(corporate)
+                              setSelectedUtilityForAnalysis(null) // Clear utility selection
+                            }}
+                          >
                             <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
                               {corporate.name}
                             </h4>
@@ -1467,7 +1600,8 @@ export default function DashboardPage() {
                             </div>
                           </div>
                         </div>
-                      ))}
+                        )
+                      })}
                     </div>
 
                     {/* Scroll Indicators */}
