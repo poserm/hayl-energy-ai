@@ -85,19 +85,19 @@ function PlantsTableRows({ utility }: { utility: any }) {
   return (
     <>
       {plants.map((plant, index) => (
-        <tr key={index} className="hover:bg-gray-50">
-          <td className="px-4 py-3 text-sm font-medium text-gray-900">
+        <tr key={index} className="hover:bg-gray-900">
+          <td className="px-4 py-3 text-sm font-medium text-white">
             {plant.plant_name || 'Unknown Plant'}
           </td>
-          <td className="px-4 py-3 text-sm text-gray-600">
+          <td className="px-4 py-3 text-sm text-gray-400">
             <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
               plant.technology === 'Natural Gas' ? 'bg-blue-100 text-blue-800' :
-              plant.technology === 'Coal' ? 'bg-gray-100 text-gray-800' :
+              plant.technology === 'Coal' ? 'bg-gray-700 text-gray-800' :
               plant.technology === 'Nuclear' ? 'bg-purple-100 text-purple-800' :
               plant.technology === 'Solar' ? 'bg-yellow-100 text-yellow-800' :
               plant.technology === 'Wind' ? 'bg-green-100 text-green-800' :
               plant.technology === 'Hydro' ? 'bg-cyan-100 text-cyan-800' :
-              'bg-gray-100 text-gray-800'
+              'bg-gray-700 text-gray-800'
             }`}>
               {plant.technology || 'Unknown'}
             </span>
@@ -105,10 +105,10 @@ function PlantsTableRows({ utility }: { utility: any }) {
           <td className="px-4 py-3 text-sm font-semibold text-right text-blue-600">
             {plant.nameplate_capacity_mw ? parseFloat(plant.nameplate_capacity_mw).toLocaleString() : '0'}
           </td>
-          <td className="px-4 py-3 text-sm text-center text-gray-600">
+          <td className="px-4 py-3 text-sm text-center text-gray-400">
             {plant.operating_year || 'N/A'}
           </td>
-          <td className="px-4 py-3 text-sm text-gray-600">
+          <td className="px-4 py-3 text-sm text-gray-400">
             {plant.county && plant.plant_state ? `${plant.county}, ${plant.plant_state}` : plant.plant_state || 'Unknown'}
           </td>
         </tr>
@@ -541,13 +541,13 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
         <div className="flex items-center space-x-3">
           <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
-          <span className="text-lg font-medium text-gray-700">Loading dashboard...</span>
+          <span className="text-lg font-medium text-gray-300">Loading dashboard...</span>
         </div>
       </div>
     )
@@ -563,17 +563,17 @@ export default function DashboardPage() {
   const technologyData = getTechnologyChartData()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-[#0f172a]">
       {/* Modern Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-[#1e293b] shadow-sm border-b border-gray-700 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-6">
               <div className="flex flex-col">
                 <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: 'system-ui, -apple-system, sans-serif', letterSpacing: '-0.02em', fontWeight: '600' }}>
-                  <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">HAYL ENERGY AI</span>
+                  <span className="text-white">HAYL ENERGY AI</span>
                 </h1>
-                <div className="flex items-center space-x-2 text-xs text-gray-500 mt-1">
+                <div className="flex items-center space-x-2 text-xs text-gray-400 mt-1">
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="2" y="5" width="20" height="14" rx="1" fill="#B91C1C"/>
                     <rect x="2" y="5" width="20" height="1.5" fill="#DC2626"/>
@@ -599,18 +599,18 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center space-x-6">
               <nav className="flex items-center space-x-2 text-sm">
-                <a href="#" className="px-3 py-2 font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all">Home</a>
+                <a href="#" className="px-3 py-2 font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-all">Home</a>
                 <button
                   onClick={() => window.open('/explore', '_blank')}
-                  className="px-3 py-2 font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
+                  className="px-3 py-2 font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-all"
                 >
                   Explore
                 </button>
-                <a href="#" className="px-3 py-2 font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all">Connections</a>
-                <a href="#" className="px-3 py-2 font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all">Settings</a>
+                <a href="#" className="px-3 py-2 font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-all">Connections</a>
+                <a href="#" className="px-3 py-2 font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-all">Settings</a>
               </nav>
               <div className="flex items-center space-x-2">
-                <button className="p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100">
+                <button className="p-2 text-gray-300 hover:text-white rounded-full hover:bg-gray-700">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -637,7 +637,7 @@ export default function DashboardPage() {
 
         {/* Header Section - Minimalist Design */}
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-900">Welcome, {user.name || user.email.split('@')[0]}</h2>
+          <h2 className="text-2xl font-bold text-white">Welcome, {user.name || user.email.split('@')[0]}</h2>
         </div>
 
         {/* Auto-loading indicator with better styling */}
@@ -659,7 +659,7 @@ export default function DashboardPage() {
         )}
 
         {/* Region Selection Pills */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
+        <div className="bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-700 mb-6">
           <div className="flex flex-wrap gap-3">
             {Object.keys(regionStatesMap).map((regionName) => (
               <button
@@ -672,7 +672,7 @@ export default function DashboardPage() {
                 className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                   region === regionName
                     ? 'bg-blue-600 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
                 }`}
               >
                 {regionName}
@@ -683,7 +683,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Latest News Ticker - State Tailored */}
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-6 overflow-hidden">
+        <div className="bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-700 mb-6 overflow-hidden">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 bg-blue-600 px-3 py-1.5 rounded-md flex-shrink-0">
               <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -742,10 +742,10 @@ export default function DashboardPage() {
                     key={index}
                     className="flex items-center space-x-3 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
                   >
-                    <span className="text-gray-900 font-medium text-sm whitespace-nowrap">
+                    <span className="text-white font-medium text-sm whitespace-nowrap">
                       {news.title}
                     </span>
-                    <span className="text-gray-600 text-xs whitespace-nowrap">
+                    <span className="text-gray-400 text-xs whitespace-nowrap">
                       {news.source} • {news.date}
                     </span>
                     <span className="text-blue-600 text-xl">•</span>
@@ -757,21 +757,21 @@ export default function DashboardPage() {
         </div>
 
         {/* Energy Snapshot Section - Full Width */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+        <div className="bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-700">
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-2xl font-bold text-white mb-2">
                   {selectedStateFilter || region} {snapshotTab === 'supply' ? 'Power Supply' : 'Power Demand'}
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-gray-400">
                   Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
                 </p>
               </div>
               <div className="flex space-x-2">
-                <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-900">
                   Download
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50">
+                <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-900">
                   Compare
                 </button>
               </div>
@@ -779,9 +779,9 @@ export default function DashboardPage() {
 
             {/* States in Selected Region - Selectable Pills */}
             {region && regionStatesMap[region] && (
-              <div className="mb-6 pb-4 border-b border-gray-200">
+              <div className="mb-6 pb-4 border-b border-gray-700">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-medium text-gray-700">
+                  <h4 className="text-sm font-medium text-gray-300">
                     Filter by State ({regionStatesMap[region].length} states in {region})
                   </h4>
                   {selectedStateFilter && (
@@ -819,13 +819,13 @@ export default function DashboardPage() {
               </div>
 
               {/* Toggle Buttons */}
-              <div className="inline-flex rounded-lg bg-gray-100 p-1">
+              <div className="inline-flex rounded-lg bg-gray-700 p-1">
                 <button
                   onClick={() => setSnapshotTab('supply')}
                   className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
                     snapshotTab === 'supply'
                       ? 'bg-white text-blue-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                      : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   Power Supply
@@ -835,7 +835,7 @@ export default function DashboardPage() {
                   className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
                     snapshotTab === 'demand'
                       ? 'bg-white text-blue-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                      : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   Power Demand
@@ -851,13 +851,13 @@ export default function DashboardPage() {
               <>
                 {/* Capacity/Generation Toggle */}
                 <div className="flex justify-end mb-4">
-                  <div className="inline-flex rounded-lg bg-gray-100 p-0.5">
+                  <div className="inline-flex rounded-lg bg-gray-700 p-0.5">
                     <button
                       onClick={() => setSupplyMetric('capacity')}
                       className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
                         supplyMetric === 'capacity'
                           ? 'bg-blue-600 text-white shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900'
+                          : 'text-gray-400 hover:text-white'
                       }`}
                     >
                       Capacity (MW)
@@ -867,7 +867,7 @@ export default function DashboardPage() {
                       className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
                         supplyMetric === 'generation'
                           ? 'bg-blue-600 text-white shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900'
+                          : 'text-gray-400 hover:text-white'
                       }`}
                     >
                       Generation (MWh)
@@ -893,8 +893,8 @@ export default function DashboardPage() {
                   return (
                     <div key={tech.technology} className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${colors[tech.technology] || colors.Other}`} />
-                      <span className="text-sm text-gray-700">{tech.technology}:</span>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm text-gray-300">{tech.technology}:</span>
+                      <span className="text-sm font-semibold text-white">
                         {tech.capacity.toLocaleString()} MW
                       </span>
                     </div>
@@ -928,8 +928,8 @@ export default function DashboardPage() {
                   return (
                     <div key={tech} className="flex items-center space-x-2">
                       <div className={`w-3 h-3 rounded-full ${colors[tech] || colors.Other}`} />
-                      <span className="text-sm text-gray-700">{tech}:</span>
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-sm text-gray-300">{tech}:</span>
+                      <span className="text-sm font-semibold text-white">
                         {Math.round(capacity as number).toLocaleString()} MW
                       </span>
                     </div>
@@ -969,17 +969,17 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Load by Customer Class */}
-                <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Load by Customer Class</h4>
+                <div className="bg-gray-900 rounded-lg p-6 mb-6">
+                  <h4 className="text-lg font-semibold text-white mb-4">Load by Customer Class</h4>
                   <div className="space-y-4">
                     {/* Residential */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center space-x-2">
                           <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                          <span className="text-sm font-medium text-gray-700">Residential</span>
+                          <span className="text-sm font-medium text-gray-300">Residential</span>
                         </div>
-                        <span className="text-sm font-semibold text-gray-900">24.1 GW (35%)</span>
+                        <span className="text-sm font-semibold text-white">24.1 GW (35%)</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div className="bg-blue-500 h-2 rounded-full" style={{ width: '35%' }}></div>
@@ -992,9 +992,9 @@ export default function DashboardPage() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center space-x-2">
                           <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                          <span className="text-sm font-medium text-gray-700">Commercial</span>
+                          <span className="text-sm font-medium text-gray-300">Commercial</span>
                         </div>
-                        <span className="text-sm font-semibold text-gray-900">20.6 GW (30%)</span>
+                        <span className="text-sm font-semibold text-white">20.6 GW (30%)</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div className="bg-green-500 h-2 rounded-full" style={{ width: '30%' }}></div>
@@ -1007,9 +1007,9 @@ export default function DashboardPage() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center space-x-2">
                           <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                          <span className="text-sm font-medium text-gray-700">Industrial</span>
+                          <span className="text-sm font-medium text-gray-300">Industrial</span>
                         </div>
-                        <span className="text-sm font-semibold text-gray-900">24.1 GW (35%)</span>
+                        <span className="text-sm font-semibold text-white">24.1 GW (35%)</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div className="bg-purple-500 h-2 rounded-full" style={{ width: '35%' }}></div>
@@ -1021,25 +1021,25 @@ export default function DashboardPage() {
 
                 {/* Demand Trends */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <p className="text-xs text-gray-600">Data Centers</p>
-                    <p className="text-lg font-bold text-gray-900">12.8 GW</p>
+                  <div className="bg-white border border-gray-700 rounded-lg p-3">
+                    <p className="text-xs text-gray-400">Data Centers</p>
+                    <p className="text-lg font-bold text-white">12.8 GW</p>
                     <p className="text-xs text-green-600">↑ 18% YoY</p>
                   </div>
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <p className="text-xs text-gray-600">EV Charging</p>
-                    <p className="text-lg font-bold text-gray-900">2.4 GW</p>
+                  <div className="bg-white border border-gray-700 rounded-lg p-3">
+                    <p className="text-xs text-gray-400">EV Charging</p>
+                    <p className="text-lg font-bold text-white">2.4 GW</p>
                     <p className="text-xs text-green-600">↑ 45% YoY</p>
                   </div>
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <p className="text-xs text-gray-600">Manufacturing</p>
-                    <p className="text-lg font-bold text-gray-900">15.2 GW</p>
-                    <p className="text-xs text-gray-600">↑ 2% YoY</p>
+                  <div className="bg-white border border-gray-700 rounded-lg p-3">
+                    <p className="text-xs text-gray-400">Manufacturing</p>
+                    <p className="text-lg font-bold text-white">15.2 GW</p>
+                    <p className="text-xs text-gray-400">↑ 2% YoY</p>
                   </div>
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <p className="text-xs text-gray-600">Other</p>
-                    <p className="text-lg font-bold text-gray-900">13.5 GW</p>
-                    <p className="text-xs text-gray-600">→ Flat</p>
+                  <div className="bg-white border border-gray-700 rounded-lg p-3">
+                    <p className="text-xs text-gray-400">Other</p>
+                    <p className="text-lg font-bold text-white">13.5 GW</p>
+                    <p className="text-xs text-gray-400">→ Flat</p>
                   </div>
                 </div>
               </div>
@@ -1047,15 +1047,15 @@ export default function DashboardPage() {
 
             {/* Total capacity (for supply tab only) */}
             {snapshotTab === 'supply' && (
-              <div className="text-xl font-semibold text-gray-900 mb-4">
+              <div className="text-xl font-semibold text-white mb-4">
                 Total: {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
               </div>
             )}
 
             {/* Stacked Bar Chart - Only show for Power Supply */}
             {snapshotTab === 'supply' && (
-            <div className="bg-gray-50 rounded-lg p-4 mb-4">
-              <h4 className="text-sm font-semibold text-gray-700 mb-3">Capacity Trends</h4>
+            <div className="bg-gray-900 rounded-lg p-4 mb-4">
+              <h4 className="text-sm font-semibold text-gray-300 mb-3">Capacity Trends</h4>
               {capacityTrendsLoading ? (
                 <div className="flex items-center justify-center h-48">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -1091,7 +1091,7 @@ export default function DashboardPage() {
                             {/* Y-Axis Scale */}
                             <div className="w-8 flex flex-col justify-between text-right pr-2" style={{ height: `${chartHeight}px` }}>
                               {[0, 1, 2, 3, 4, 5].reverse().map(i => (
-                                <div key={i} className="text-xs text-gray-600">
+                                <div key={i} className="text-xs text-gray-400">
                                   {Math.round((maxCapacity * i / 5) / 1000)}k
                                 </div>
                               ))}
@@ -1130,7 +1130,7 @@ export default function DashboardPage() {
                                   <div key={yearData.year} className="flex flex-col items-center space-y-2 flex-1">
                                     {/* Single Stacked Bar */}
                                     <div
-                                      className="relative w-12 border border-gray-200"
+                                      className="relative w-12 border border-gray-700"
                                       style={{ height: `${chartHeight - 20}px` }}
                                     >
                                       {segments.map((segment, index) => (
@@ -1149,7 +1149,7 @@ export default function DashboardPage() {
                                     </div>
 
                                     {/* Year Label */}
-                                    <span className="text-sm font-medium text-gray-700">{yearData.year}</span>
+                                    <span className="text-sm font-medium text-gray-300">{yearData.year}</span>
                                   </div>
                                 )
                               })}
@@ -1174,7 +1174,7 @@ export default function DashboardPage() {
             )}
 
             {/* Sources */}
-            <div className="text-sm text-gray-600 mb-4">
+            <div className="text-sm text-gray-400 mb-4">
               Sources: EIA.gov, State Energy Data System
             </div>
 
@@ -1185,13 +1185,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Energy Buyers Section */}
-        <div className="bg-gray-50 -mx-6 px-6 py-12">
+        <div className="bg-gray-900 -mx-6 px-6 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-3">
+              <h2 className="text-3xl font-bold text-white mb-3">
                 {region} Energy Buyers
               </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-gray-400 max-w-2xl mx-auto">
                 Discover the largest energy consumers in the {region} region across {selectedStates.length} states, ranked by peak load demand from highest to lowest capacity requirements.
               </p>
             </div>
@@ -1204,7 +1204,7 @@ export default function DashboardPage() {
                   className={`px-6 py-2 rounded-full font-medium transition-colors ${
                     energyBuyersTab === 'utilities'
                       ? 'bg-gray-900 text-white'
-                      : 'text-gray-700 hover:text-gray-900'
+                      : 'text-gray-300 hover:text-white'
                   }`}
                 >
                   Utilities
@@ -1214,7 +1214,7 @@ export default function DashboardPage() {
                   className={`px-6 py-2 rounded-full font-medium transition-colors ${
                     energyBuyersTab === 'corporates'
                       ? 'bg-gray-900 text-white'
-                      : 'text-gray-700 hover:text-gray-900'
+                      : 'text-gray-300 hover:text-white'
                   }`}
                 >
                   Corporates
@@ -1231,7 +1231,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === null
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
                     }`}
                   >
                     ALL
@@ -1241,7 +1241,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === 'Investor Owned'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
                     }`}
                   >
                     INVESTOR OWNED
@@ -1251,7 +1251,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === 'Cooperative'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
                     }`}
                   >
                     COOPERATIVE
@@ -1261,7 +1261,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === 'Municipal'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
                     }`}
                   >
                     MUNICIPAL
@@ -1271,7 +1271,7 @@ export default function DashboardPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       selectedOwnershipType === 'Retail Power Marketer'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
                     }`}
                   >
                     RETAIL POWER MARKETER
@@ -1286,7 +1286,7 @@ export default function DashboardPage() {
                 {/* Utilities Count */}
                 {selectedStates.length > 0 && (
                   <div className="text-center mb-6">
-                    <p className="text-gray-600">
+                    <p className="text-gray-400">
                       {stateUtilitiesLoading ? 'Loading utilities...' : `Found ${stateUtilities.length} utilities across ${region} region`}
                     </p>
                   </div>
@@ -1298,7 +1298,7 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-center h-64">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading utility companies...</p>
+                    <p className="text-gray-400">Loading utility companies...</p>
                   </div>
                 </div>
               ) : stateUtilities && stateUtilities.length > 0 ? (
@@ -1312,10 +1312,10 @@ export default function DashboardPage() {
                       return (
                       <div
                         key={utility.id || index}
-                        className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 relative ${
+                        className={`flex-shrink-0 w-72 bg-gray-800 rounded-lg shadow-md border-2 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 relative ${
                           selectedUtilityForAnalysis?.id === utility.id
                             ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                            : 'border-gray-200 hover:border-gray-300'
+                            : 'border-gray-700 hover:border-gray-300'
                         }`}
                       >
                         {/* Favorite Star Button */}
@@ -1367,7 +1367,7 @@ export default function DashboardPage() {
                             setSelectedCorporate(null) // Clear corporate selection
                           }}
                         >
-                          <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
+                          <h4 className="text-lg font-bold text-white leading-tight mb-2">
                             {utility.name || utility.utility_name || `Utility ${index + 1}`}
                           </h4>
 
@@ -1388,12 +1388,12 @@ export default function DashboardPage() {
                             <div className="mb-3">
                               <div className="flex flex-wrap gap-1 justify-center">
                                 {utility.states.slice(0, 3).map((state: string) => (
-                                  <span key={state} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                                  <span key={state} className="px-2 py-0.5 bg-gray-700 text-gray-400 rounded text-xs">
                                     {state}
                                   </span>
                                 ))}
                                 {utility.states.length > 3 && (
-                                  <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                                  <span className="px-2 py-0.5 bg-gray-700 text-gray-400 rounded text-xs">
                                     +{utility.states.length - 3} more
                                   </span>
                                 )}
@@ -1414,7 +1414,7 @@ export default function DashboardPage() {
                           <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                             selectedUtilityForAnalysis?.id === utility.id
                               ? 'bg-blue-100 text-blue-800'
-                              : 'bg-gray-100 text-gray-600'
+                              : 'bg-gray-700 text-gray-400'
                           }`}>
                             {selectedUtilityForAnalysis?.id === utility.id ? '✓ Selected' : 'Click to Select'}
                           </div>
@@ -1440,8 +1440,8 @@ export default function DashboardPage() {
                     <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No States Selected</h3>
-                    <p className="text-gray-600">Select states above to view energy buyers</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">No States Selected</h3>
+                    <p className="text-gray-400">Select states above to view energy buyers</p>
                   </div>
                 </div>
               ) : (
@@ -1450,8 +1450,8 @@ export default function DashboardPage() {
                     <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Utilities Found</h3>
-                    <p className="text-gray-600">No utility companies found for the selected state</p>
+                    <h3 className="text-lg font-semibold text-white mb-2">No Utilities Found</h3>
+                    <p className="text-gray-400">No utility companies found for the selected state</p>
                     <p className="text-sm text-gray-500 mt-2">Try selecting different states or check back later</p>
                   </div>
                 </div>
@@ -1490,7 +1490,7 @@ export default function DashboardPage() {
               <>
                 {/* Corporates Count */}
                 <div className="text-center mb-6">
-                  <p className="text-gray-600">
+                  <p className="text-gray-400">
                     {corporatesByRegion[region]?.length || 0} major tech companies with data center facilities in {region} region
                   </p>
                 </div>
@@ -1507,10 +1507,10 @@ export default function DashboardPage() {
                         return (
                         <div
                           key={corporate.id || index}
-                          className={`flex-shrink-0 w-72 bg-white rounded-lg shadow-md border-2 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 relative ${
+                          className={`flex-shrink-0 w-72 bg-gray-800 rounded-lg shadow-md border-2 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 relative ${
                             selectedCorporate?.id === corporate.id
                               ? 'border-green-500 bg-green-50 ring-2 ring-green-200'
-                              : 'border-gray-200 hover:border-gray-300'
+                              : 'border-gray-700 hover:border-gray-300'
                           }`}
                         >
                           {/* Favorite Star Button */}
@@ -1564,7 +1564,7 @@ export default function DashboardPage() {
                               setSelectedUtilityForAnalysis(null) // Clear utility selection
                             }}
                           >
-                            <h4 className="text-lg font-bold text-gray-900 leading-tight mb-2">
+                            <h4 className="text-lg font-bold text-white leading-tight mb-2">
                               {corporate.name}
                             </h4>
 
@@ -1574,7 +1574,7 @@ export default function DashboardPage() {
                                 corporate.type === 'Hyperscale' ? 'bg-blue-100 text-blue-700' :
                                 corporate.type === 'Colocation' ? 'bg-green-100 text-green-700' :
                                 corporate.type === 'Developer' ? 'bg-purple-100 text-purple-700' :
-                                'bg-gray-100 text-gray-700'
+                                'bg-gray-700 text-gray-300'
                               }`}>
                                 {corporate.type}
                               </span>
@@ -1597,12 +1597,12 @@ export default function DashboardPage() {
                               <div className="mb-3">
                                 <div className="flex flex-wrap gap-1 justify-center">
                                   {corporate.states.slice(0, 3).map((state: string) => (
-                                    <span key={state} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                                    <span key={state} className="px-2 py-0.5 bg-gray-700 text-gray-400 rounded text-xs">
                                       {state}
                                     </span>
                                   ))}
                                   {corporate.states.length > 3 && (
-                                    <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                                    <span className="px-2 py-0.5 bg-gray-700 text-gray-400 rounded text-xs">
                                       +{corporate.states.length - 3} more
                                     </span>
                                   )}
@@ -1612,7 +1612,7 @@ export default function DashboardPage() {
 
                             {/* Estimated Load */}
                             <div className="mb-3 px-3 py-2 bg-green-50 rounded-lg">
-                              <p className="text-xs text-gray-600 mb-1">Estimated Load</p>
+                              <p className="text-xs text-gray-400 mb-1">Estimated Load</p>
                               <p className="text-lg font-bold text-green-600">
                                 {corporate.estimatedLoad}
                               </p>
@@ -1627,7 +1627,7 @@ export default function DashboardPage() {
                             <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                               selectedCorporate?.id === corporate.id
                                 ? 'bg-green-100 text-green-800'
-                                : 'bg-gray-100 text-gray-600'
+                                : 'bg-gray-700 text-gray-400'
                             }`}>
                               {selectedCorporate?.id === corporate.id ? '✓ Selected' : 'Click to Select'}
                             </div>
@@ -1695,8 +1695,8 @@ export default function DashboardPage() {
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-6">
                       <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                          <span className="text-gray-900 font-bold text-lg">
+                        <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+                          <span className="text-white font-bold text-lg">
                             {(selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name || 'UN').substring(0, 2).toUpperCase()}
                           </span>
                         </div>
@@ -1778,11 +1778,11 @@ export default function DashboardPage() {
               </div>
 
               {/* Company Overview */}
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8">
+              <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 mb-8">
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Company Description</h3>
-                    <p className="text-gray-700 leading-relaxed">
+                    <p className="text-gray-300 leading-relaxed">
                       {selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name} is a major electric utility serving customers across {selectedUtilityForAnalysis.state}.
                       The company is engaged in the generation, transmission, and distribution of electricity, providing reliable power to residential, commercial, and industrial customers.
                     </p>
@@ -1829,8 +1829,8 @@ export default function DashboardPage() {
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-6">
                       <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                          <span className="text-gray-900 font-bold text-lg">
+                        <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+                          <span className="text-white font-bold text-lg">
                             {selectedCorporate.name.substring(0, 2).toUpperCase()}
                           </span>
                         </div>
@@ -1996,24 +1996,24 @@ function GeneratorsList({ states }: { states: string[] }) {
       <div className="overflow-x-auto">
         <table className="min-w-full">
           <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Plant Name</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Utility</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Technology</th>
-              <th className="text-right py-3 px-4 font-medium text-gray-700">Capacity (MW)</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">State</th>
+            <tr className="border-b border-gray-700">
+              <th className="text-left py-3 px-4 font-medium text-gray-300">Plant Name</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-300">Utility</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-300">Technology</th>
+              <th className="text-right py-3 px-4 font-medium text-gray-300">Capacity (MW)</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-300">State</th>
             </tr>
           </thead>
           <tbody>
             {generators.slice(0, tableShowMore.visibleCount).map((generator, index) => (
-              <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                <td className="py-3 px-4 font-medium text-gray-900">
+              <tr key={index} className="border-b border-gray-100 hover:bg-gray-900 transition-colors">
+                <td className="py-3 px-4 font-medium text-white">
                   {generator.plantName}
                 </td>
-                <td className="py-3 px-4 text-gray-600">
+                <td className="py-3 px-4 text-gray-400">
                   {generator.utilityName}
                 </td>
-                <td className="py-3 px-4 text-gray-600">
+                <td className="py-3 px-4 text-gray-400">
                   {generator.technology}
                 </td>
                 <td className="py-3 px-4 text-right font-semibold text-blue-600">
@@ -2101,13 +2101,13 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                   className={`w-full flex items-center space-x-4 p-3 rounded-lg transition-all ${
                     activeSection === section.id
                       ? 'bg-gray-900 text-white'
-                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                      : 'bg-gray-900 text-gray-300 hover:bg-gray-700'
                   }`}
                 >
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
                     activeSection === section.id
-                      ? 'bg-white text-gray-900'
-                      : 'bg-gray-200 text-gray-600'
+                      ? 'bg-white text-white'
+                      : 'bg-gray-200 text-gray-400'
                   }`}>
                     {String(section.id).padStart(2, '0')}
                   </div>
@@ -2123,10 +2123,10 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
         {/* Section Content */}
         <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl font-bold text-white mb-2">
               {sections[activeSection - 1].title}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-400 mb-6">
               {activeSection === 1 && `Comprehensive overview of ${utility?.name || utility?.utility_name}'s generation portfolio, capacity mix, and supply infrastructure.`}
               {activeSection === 2 && `Detailed analysis of ${utility?.name || utility?.utility_name}'s energy demand patterns, customer segments, and load profiles.`}
               {activeSection === 3 && `Current and upcoming procurement opportunities, RFPs, and partnership initiatives from ${utility?.name || utility?.utility_name}.`}
@@ -2139,8 +2139,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {/* Capacity by Technology Chart */}
                 {utility && (
                   <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Capacity by Technology</h3>
-                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">Capacity by Technology</h3>
+                    <div className="bg-white border border-gray-700 rounded-lg p-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Bar Chart Visualization */}
                         <div>
@@ -2155,8 +2155,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                             ].map((item) => (
                               <div key={item.tech}>
                                 <div className="flex items-center justify-between mb-1">
-                                  <span className="text-sm font-medium text-gray-700">{item.tech}</span>
-                                  <span className="text-sm text-gray-600">{item.capacity} MW ({item.percent}%)</span>
+                                  <span className="text-sm font-medium text-gray-300">{item.tech}</span>
+                                  <span className="text-sm text-gray-400">{item.capacity} MW ({item.percent}%)</span>
                                 </div>
                                 <div className="w-full bg-gray-200 rounded-full h-3">
                                   <div
@@ -2176,9 +2176,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                             <p className="text-3xl font-bold text-blue-900">7,150 MW</p>
                           </div>
                           <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-gray-50 rounded-lg p-3">
-                              <p className="text-xs text-gray-600">Fossil Fuels</p>
-                              <p className="text-lg font-bold text-gray-900">74%</p>
+                            <div className="bg-gray-900 rounded-lg p-3">
+                              <p className="text-xs text-gray-400">Fossil Fuels</p>
+                              <p className="text-lg font-bold text-white">74%</p>
                             </div>
                             <div className="bg-green-50 rounded-lg p-3">
                               <p className="text-xs text-green-600">Renewables</p>
@@ -2202,8 +2202,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {/* Facilities Map */}
                 {utility && (
                   <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Facility Locations</h3>
-                    <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+                    <h3 className="text-lg font-semibold text-white mb-4">Facility Locations</h3>
+                    <div className="bg-gray-700 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
                       <div className="h-96 flex items-center justify-center">
                         <div className="text-center">
                           <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2220,11 +2220,11 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {/* Power Plants Table */}
                 {utility && (
                   <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Power Plant Portfolio</h3>
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <h3 className="text-lg font-semibold text-white mb-4">Power Plant Portfolio</h3>
+                    <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
                       <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-50">
+                          <thead className="bg-gray-900">
                             <tr>
                               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plant Name</th>
                               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
@@ -2244,15 +2244,15 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
                 {/* Generation Sources */}
                 <div className="space-y-4 mb-6">
-                  <div className="bg-white border border-gray-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Generation Sources</h4>
+                  <div className="bg-white border border-gray-700 rounded-lg p-4">
+                    <h4 className="font-semibold text-white mb-2">Generation Sources</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-sm text-gray-600">Primary Source:</span>
+                        <span className="text-sm text-gray-400">Primary Source:</span>
                         <span className="ml-2 font-medium">Natural Gas</span>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-600">Renewable %:</span>
+                        <span className="text-sm text-gray-400">Renewable %:</span>
                         <span className="ml-2 font-medium">15%</span>
                       </div>
                     </div>
@@ -2261,24 +2261,24 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
                 {/* Future Projects Table */}
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Future Supply Projects</h3>
-                  <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <h3 className="text-lg font-semibold text-white mb-4">Future Supply Projects</h3>
+                  <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
                     <table className="w-full">
-                      <thead className="bg-gray-50">
+                      <thead className="bg-gray-900">
                         <tr>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Project</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Type</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Status</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Timeline</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Project</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Type</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Status</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Timeline</th>
                         </tr>
                       </thead>
                       <tbody>
                         {[...Array(4)].map((_, i) => (
-                          <tr key={i} className="border-t border-gray-200">
-                            <td className="px-4 py-2 text-sm text-gray-900">Project {i + 1}</td>
-                            <td className="px-4 py-2 text-sm text-gray-900">Solar</td>
+                          <tr key={i} className="border-t border-gray-700">
+                            <td className="px-4 py-2 text-sm text-white">Project {i + 1}</td>
+                            <td className="px-4 py-2 text-sm text-white">Solar</td>
                             <td className="px-4 py-2 text-sm text-green-600">Planned</td>
-                            <td className="px-4 py-2 text-sm text-gray-900">2025</td>
+                            <td className="px-4 py-2 text-sm text-white">2025</td>
                           </tr>
                         ))}
                       </tbody>
@@ -2287,7 +2287,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
 
                 <div className="mt-6">
-                  <p className="text-sm text-gray-600 text-center">
+                  <p className="text-sm text-gray-400 text-center">
                     The data above displays comprehensive power plant information including technology types, operational capacity, and geographic location.
                     Data sourced from EIA.gov and state regulatory filings.
                   </p>
@@ -2298,33 +2298,33 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             {activeSection === 2 && (
               <>
                 {/* Demand Overview */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+                <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 mb-6">
                   <div className="grid grid-cols-4 gap-4">
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Total Customers</p>
-                      <p className="text-xl font-bold text-gray-900">2.4M</p>
+                      <p className="text-sm text-gray-400">Total Customers</p>
+                      <p className="text-xl font-bold text-white">2.4M</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Annual Sales</p>
-                      <p className="text-xl font-bold text-gray-900">45,600 GWh</p>
+                      <p className="text-sm text-gray-400">Annual Sales</p>
+                      <p className="text-xl font-bold text-white">45,600 GWh</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Peak Demand</p>
-                      <p className="text-xl font-bold text-gray-900">8.5 GW</p>
+                      <p className="text-sm text-gray-400">Peak Demand</p>
+                      <p className="text-xl font-bold text-white">8.5 GW</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-gray-600">Load Factor</p>
-                      <p className="text-xl font-bold text-gray-900">61%</p>
+                      <p className="text-sm text-gray-400">Load Factor</p>
+                      <p className="text-xl font-bold text-white">61%</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Customer Class Breakdown */}
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Load by Customer Class</h3>
-                  <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <h3 className="text-lg font-semibold text-white mb-4">Load by Customer Class</h3>
+                  <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                      <thead className="bg-gray-900">
                         <tr>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Class</th>
                           <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Customers</th>
@@ -2335,34 +2335,34 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
                         <tr>
-                          <td className="px-4 py-3 text-sm font-medium text-gray-900">Residential</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 text-right">2,150,000</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 text-right">15,960</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 text-right">35%</td>
-                          <td className="px-4 py-3 text-sm text-gray-600 text-right">7,420 kWh/yr</td>
+                          <td className="px-4 py-3 text-sm font-medium text-white">Residential</td>
+                          <td className="px-4 py-3 text-sm text-white text-right">2,150,000</td>
+                          <td className="px-4 py-3 text-sm text-white text-right">15,960</td>
+                          <td className="px-4 py-3 text-sm text-white text-right">35%</td>
+                          <td className="px-4 py-3 text-sm text-gray-400 text-right">7,420 kWh/yr</td>
                         </tr>
-                        <tr className="bg-gray-50">
-                          <td className="px-4 py-3 text-sm font-medium text-gray-900">Commercial</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 text-right">245,000</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 text-right">13,680</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 text-right">30%</td>
-                          <td className="px-4 py-3 text-sm text-gray-600 text-right">55,840 kWh/yr</td>
+                        <tr className="bg-gray-900">
+                          <td className="px-4 py-3 text-sm font-medium text-white">Commercial</td>
+                          <td className="px-4 py-3 text-sm text-white text-right">245,000</td>
+                          <td className="px-4 py-3 text-sm text-white text-right">13,680</td>
+                          <td className="px-4 py-3 text-sm text-white text-right">30%</td>
+                          <td className="px-4 py-3 text-sm text-gray-400 text-right">55,840 kWh/yr</td>
                         </tr>
                         <tr>
-                          <td className="px-4 py-3 text-sm font-medium text-gray-900">Industrial</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 text-right">5,200</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 text-right">15,960</td>
-                          <td className="px-4 py-3 text-sm text-gray-900 text-right">35%</td>
-                          <td className="px-4 py-3 text-sm text-gray-600 text-right">3.07 GWh/yr</td>
+                          <td className="px-4 py-3 text-sm font-medium text-white">Industrial</td>
+                          <td className="px-4 py-3 text-sm text-white text-right">5,200</td>
+                          <td className="px-4 py-3 text-sm text-white text-right">15,960</td>
+                          <td className="px-4 py-3 text-sm text-white text-right">35%</td>
+                          <td className="px-4 py-3 text-sm text-gray-400 text-right">3.07 GWh/yr</td>
                         </tr>
                       </tbody>
-                      <tfoot className="bg-gray-100">
+                      <tfoot className="bg-gray-700">
                         <tr>
-                          <td className="px-4 py-3 text-sm font-bold text-gray-900">Total</td>
-                          <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">2,400,200</td>
-                          <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">45,600</td>
-                          <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">100%</td>
-                          <td className="px-4 py-3 text-sm text-gray-600 text-right">-</td>
+                          <td className="px-4 py-3 text-sm font-bold text-white">Total</td>
+                          <td className="px-4 py-3 text-sm font-bold text-white text-right">2,400,200</td>
+                          <td className="px-4 py-3 text-sm font-bold text-white text-right">45,600</td>
+                          <td className="px-4 py-3 text-sm font-bold text-white text-right">100%</td>
+                          <td className="px-4 py-3 text-sm text-gray-400 text-right">-</td>
                         </tr>
                       </tfoot>
                     </table>
@@ -2371,52 +2371,52 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
                 {/* Load Profile by Customer Class */}
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Customer Class Contribution</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">Customer Class Contribution</h3>
                   <div className="space-y-3">
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="bg-white border border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center space-x-2">
                           <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                          <span className="font-medium text-gray-900">Residential</span>
+                          <span className="font-medium text-white">Residential</span>
                         </div>
-                        <span className="font-bold text-gray-900">35%</span>
+                        <span className="font-bold text-white">35%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-3">
                         <div className="bg-blue-500 h-3 rounded-full" style={{width: '35%'}}></div>
                       </div>
-                      <div className="mt-2 text-sm text-gray-600">
+                      <div className="mt-2 text-sm text-gray-400">
                         2.15M customers | 15,960 GWh annual sales
                       </div>
                     </div>
 
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="bg-white border border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center space-x-2">
                           <div className="w-4 h-4 bg-green-500 rounded"></div>
-                          <span className="font-medium text-gray-900">Commercial</span>
+                          <span className="font-medium text-white">Commercial</span>
                         </div>
-                        <span className="font-bold text-gray-900">30%</span>
+                        <span className="font-bold text-white">30%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-3">
                         <div className="bg-green-500 h-3 rounded-full" style={{width: '30%'}}></div>
                       </div>
-                      <div className="mt-2 text-sm text-gray-600">
+                      <div className="mt-2 text-sm text-gray-400">
                         245K customers | 13,680 GWh annual sales
                       </div>
                     </div>
 
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="bg-white border border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center space-x-2">
                           <div className="w-4 h-4 bg-purple-500 rounded"></div>
-                          <span className="font-medium text-gray-900">Industrial</span>
+                          <span className="font-medium text-white">Industrial</span>
                         </div>
-                        <span className="font-bold text-gray-900">35%</span>
+                        <span className="font-bold text-white">35%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-3">
                         <div className="bg-purple-500 h-3 rounded-full" style={{width: '35%'}}></div>
                       </div>
-                      <div className="mt-2 text-sm text-gray-600">
+                      <div className="mt-2 text-sm text-gray-400">
                         5.2K customers | 15,960 GWh annual sales
                       </div>
                     </div>
@@ -2424,9 +2424,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
 
                 {/* Demand Trends */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Historical Demand Growth by Class</h3>
-                  <div className="h-64 bg-white rounded-lg p-4 flex items-end justify-between border border-gray-200">
+                <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-white mb-4">Historical Demand Growth by Class</h3>
+                  <div className="h-64 bg-gray-800 rounded-lg p-4 flex items-end justify-between border border-gray-700">
                     {[2020, 2021, 2022, 2023, 2024].map((year) => (
                       <div key={year} className="flex flex-col items-center space-y-2 flex-1">
                         <div className="w-full max-w-[60px] space-y-0.5">
@@ -2446,22 +2446,22 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                             title="Industrial"
                           />
                         </div>
-                        <span className="text-xs text-gray-600 font-medium">{year}</span>
+                        <span className="text-xs text-gray-400 font-medium">{year}</span>
                       </div>
                     ))}
                   </div>
                   <div className="flex justify-center space-x-6 mt-4">
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                      <span className="text-xs text-gray-600">Residential</span>
+                      <span className="text-xs text-gray-400">Residential</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-green-500 rounded"></div>
-                      <span className="text-xs text-gray-600">Commercial</span>
+                      <span className="text-xs text-gray-400">Commercial</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-purple-500 rounded"></div>
-                      <span className="text-xs text-gray-600">Industrial</span>
+                      <span className="text-xs text-gray-400">Industrial</span>
                     </div>
                   </div>
                 </div>
@@ -2472,17 +2472,17 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               <>
                 {/* RFP Overview */}
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Procurement Opportunities</h3>
-                  <p className="text-gray-700 mb-4">
+                  <h3 className="text-lg font-semibold text-white mb-4">Active Procurement Opportunities</h3>
+                  <p className="text-gray-300 mb-4">
                     {utility?.name || utility?.utility_name} regularly issues Requests for Proposals (RFPs) for renewable energy, generation capacity, and grid services. Monitor upcoming opportunities to participate in their procurement process.
                   </p>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-700 mb-1">Typical RFP Cycle</p>
+                      <p className="text-sm text-gray-300 mb-1">Typical RFP Cycle</p>
                       <p className="text-xl font-bold text-blue-700">Quarterly</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-700 mb-1">Avg. Contract Value</p>
+                      <p className="text-sm text-gray-300 mb-1">Avg. Contract Value</p>
                       <p className="text-xl font-bold text-blue-700">$250M - $1B+</p>
                     </div>
                   </div>
@@ -2490,7 +2490,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
                 {/* Current RFP Opportunities */}
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Current & Upcoming RFPs</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">Current & Upcoming RFPs</h3>
                   <div className="space-y-4">
                     {[
                       {
@@ -2520,11 +2520,11 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         link: 'https://example.com/rfp/demand-response-2025'
                       }
                     ].map((rfp, i) => (
-                      <div key={i} className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+                      <div key={i} className="bg-white border border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start mb-3">
                           <div>
-                            <h4 className="font-semibold text-gray-900 text-lg">{rfp.title}</h4>
-                            <p className="text-sm text-gray-600 mt-1">{rfp.type}</p>
+                            <h4 className="font-semibold text-white text-lg">{rfp.title}</h4>
+                            <p className="text-sm text-gray-400 mt-1">{rfp.type}</p>
                           </div>
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                             rfp.status === 'Open'
@@ -2537,11 +2537,11 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         <div className="grid grid-cols-2 gap-4 mb-4">
                           <div>
                             <p className="text-xs text-gray-500">Capacity</p>
-                            <p className="text-sm font-medium text-gray-900">{rfp.capacity}</p>
+                            <p className="text-sm font-medium text-white">{rfp.capacity}</p>
                           </div>
                           <div>
                             <p className="text-xs text-gray-500">Proposal Deadline</p>
-                            <p className="text-sm font-medium text-gray-900">{rfp.deadline}</p>
+                            <p className="text-sm font-medium text-white">{rfp.deadline}</p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-3">
@@ -2583,51 +2583,51 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
 
                 {/* Procurement Preferences */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Procurement Preferences</h3>
+                <div className="bg-white border border-gray-700 rounded-lg p-6 mb-6">
+                  <h3 className="text-lg font-semibold text-white mb-4">Procurement Preferences</h3>
                   <div className="space-y-3">
                     <div className="flex items-start space-x-3">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                       <div>
-                        <h4 className="font-medium text-gray-900">Technology Focus</h4>
-                        <p className="text-sm text-gray-600">Solar, wind, battery storage, natural gas (peaking), demand response</p>
+                        <h4 className="font-medium text-white">Technology Focus</h4>
+                        <p className="text-sm text-gray-400">Solar, wind, battery storage, natural gas (peaking), demand response</p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                       <div>
-                        <h4 className="font-medium text-gray-900">Contract Structure</h4>
-                        <p className="text-sm text-gray-600">PPAs (10-25 years), capacity contracts, build-own-transfer, merchant projects</p>
+                        <h4 className="font-medium text-white">Contract Structure</h4>
+                        <p className="text-sm text-gray-400">PPAs (10-25 years), capacity contracts, build-own-transfer, merchant projects</p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                       <div>
-                        <h4 className="font-medium text-gray-900">Geographic Preference</h4>
-                        <p className="text-sm text-gray-600">Within service territory or direct interconnection to transmission system</p>
+                        <h4 className="font-medium text-white">Geographic Preference</h4>
+                        <p className="text-sm text-gray-400">Within service territory or direct interconnection to transmission system</p>
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                       <div>
-                        <h4 className="font-medium text-gray-900">Sustainability Requirements</h4>
-                        <p className="text-sm text-gray-600">Carbon-free or low-carbon resources preferred; renewable energy credits (RECs) included</p>
+                        <h4 className="font-medium text-white">Sustainability Requirements</h4>
+                        <p className="text-sm text-gray-400">Carbon-free or low-carbon resources preferred; renewable energy credits (RECs) included</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Contact Information */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Procurement Contact</h3>
+                <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-white mb-4">Procurement Contact</h3>
                   <div className="space-y-2">
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-gray-300">
                       <strong>Department:</strong> Power Supply & Procurement
                     </p>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-gray-300">
                       <strong>Email:</strong> procurement@{(utility?.name || utility?.utility_name || 'utility').toLowerCase().replace(/\s+/g, '')}.com
                     </p>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-gray-300">
                       <strong>RFP Portal:</strong> <a href="https://example.com/rfp-portal" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">View All Opportunities →</a>
                     </p>
                   </div>
@@ -2638,9 +2638,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             {/* Section 4: Key Documents */}
             {activeSection === 4 && (
               <>
-                <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-lg p-6 mb-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Regulatory & Planning Documents</h3>
-                  <p className="text-gray-600">
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-700 rounded-lg p-6 mb-6">
+                  <h3 className="text-xl font-bold text-white mb-2">Regulatory & Planning Documents</h3>
+                  <p className="text-gray-400">
                     Access key regulatory filings, integrated resource plans, and financial documents for {utility?.name || utility?.utility_name}.
                   </p>
                 </div>
@@ -2648,7 +2648,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {/* Document Categories */}
                 <div className="space-y-6">
                   {/* Integrated Resource Plan */}
-                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <div className="bg-white border border-gray-700 rounded-lg p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-start space-x-3">
                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -2657,8 +2657,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                           </svg>
                         </div>
                         <div>
-                          <h4 className="text-lg font-semibold text-gray-900">Integrated Resource Plan (IRP)</h4>
-                          <p className="text-sm text-gray-600 mt-1">Long-term resource planning and generation strategy</p>
+                          <h4 className="text-lg font-semibold text-white">Integrated Resource Plan (IRP)</h4>
+                          <p className="text-sm text-gray-400 mt-1">Long-term resource planning and generation strategy</p>
                         </div>
                       </div>
                       <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">2024</span>
@@ -2683,7 +2683,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                   </div>
 
                   {/* FERC Form 1 */}
-                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                  <div className="bg-white border border-gray-700 rounded-lg p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-start space-x-3">
                         <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -2692,8 +2692,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                           </svg>
                         </div>
                         <div>
-                          <h4 className="text-lg font-semibold text-gray-900">FERC Form 1</h4>
-                          <p className="text-sm text-gray-600 mt-1">Annual electric utility financial report</p>
+                          <h4 className="text-lg font-semibold text-white">FERC Form 1</h4>
+                          <p className="text-sm text-gray-400 mt-1">Annual electric utility financial report</p>
                         </div>
                       </div>
                       <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">2023</span>
@@ -2718,22 +2718,22 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                   </div>
 
                   {/* Additional Documents */}
-                  <div className="bg-white border border-gray-200 rounded-lg p-6">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Additional Resources</h4>
+                  <div className="bg-white border border-gray-700 rounded-lg p-6">
+                    <h4 className="text-lg font-semibold text-white mb-4">Additional Resources</h4>
                     <div className="space-y-3">
                       <a
                         href="https://example.com/rate-case-2024.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                        className="flex items-center justify-between p-3 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors group"
                       >
                         <div className="flex items-center space-x-3">
-                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
-                          <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Rate Case Filing (2024)</span>
+                          <span className="text-sm font-medium text-gray-300 group-hover:text-white">Rate Case Filing (2024)</span>
                         </div>
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                       </a>
@@ -2741,15 +2741,15 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         href="https://example.com/sustainability-report-2023.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                        className="flex items-center justify-between p-3 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors group"
                       >
                         <div className="flex items-center space-x-3">
-                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
-                          <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Sustainability Report (2023)</span>
+                          <span className="text-sm font-medium text-gray-300 group-hover:text-white">Sustainability Report (2023)</span>
                         </div>
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                       </a>
@@ -2757,15 +2757,15 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         href="https://example.com/grid-modernization-plan.pdf"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                        className="flex items-center justify-between p-3 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors group"
                       >
                         <div className="flex items-center space-x-3">
-                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
-                          <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Grid Modernization Plan</span>
+                          <span className="text-sm font-medium text-gray-300 group-hover:text-white">Grid Modernization Plan</span>
                         </div>
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                       </a>
@@ -2806,13 +2806,13 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                   className={`w-full flex items-center space-x-4 p-3 rounded-lg transition-all ${
                     activeSection === section.id
                       ? 'bg-gray-900 text-white'
-                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                      : 'bg-gray-900 text-gray-300 hover:bg-gray-700'
                   }`}
                 >
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
                     activeSection === section.id
-                      ? 'bg-white text-gray-900'
-                      : 'bg-gray-200 text-gray-600'
+                      ? 'bg-white text-white'
+                      : 'bg-gray-200 text-gray-400'
                   }`}>
                     {String(section.id).padStart(2, '0')}
                   </div>
@@ -2828,10 +2828,10 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
 
         {/* Section Content */}
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl font-bold text-white mb-2">
             {sections[activeSection - 1].title}
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-400 mb-6">
             {activeSection === 1 && `Overview of ${corporate.name}'s data center infrastructure, facilities, and operational footprint in the ${region} region.`}
             {activeSection === 2 && `Analysis of ${corporate.name}'s energy consumption patterns, load requirements, and power purchase agreements.`}
             {activeSection === 3 && `${corporate.name}'s sustainability commitments, carbon-free energy goals, and future expansion plans.`}
@@ -2844,8 +2844,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
             <>
               {/* Data Center Locations Map */}
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Center Locations</h3>
-                <div className="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
+                <h3 className="text-lg font-semibold text-white mb-4">Data Center Locations</h3>
+                <div className="bg-gray-700 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
                   <div className="h-96 flex items-center justify-center">
                     <div className="text-center">
                       <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2861,11 +2861,11 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
 
               {/* Facilities by State */}
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Facilities by State</h3>
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                <h3 className="text-lg font-semibold text-white mb-4">Facilities by State</h3>
+                <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                      <thead className="bg-gray-900">
                         <tr>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
                           <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Facilities</th>
@@ -2876,10 +2876,10 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       <tbody className="bg-white divide-y divide-gray-200">
                         {corporate.states?.map((state: string, idx: number) => (
                           <tr key={state}>
-                            <td className="px-4 py-3 text-sm font-medium text-gray-900">{state}</td>
-                            <td className="px-4 py-3 text-sm text-gray-900 text-right">{Math.floor(corporate.facilities / corporate.states.length)}</td>
-                            <td className="px-4 py-3 text-sm text-gray-900 text-right">{Math.round(parseInt(corporate.estimatedLoad) / corporate.states.length)} MW</td>
-                            <td className="px-4 py-3 text-sm text-gray-600">Cloud Computing, AI/ML</td>
+                            <td className="px-4 py-3 text-sm font-medium text-white">{state}</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">{Math.floor(corporate.facilities / corporate.states.length)}</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">{Math.round(parseInt(corporate.estimatedLoad) / corporate.states.length)} MW</td>
+                            <td className="px-4 py-3 text-sm text-gray-400">Cloud Computing, AI/ML</td>
                           </tr>
                         ))}
                       </tbody>
@@ -2889,48 +2889,48 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Infrastructure Specifications */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Infrastructure Specifications</h3>
+              <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Infrastructure Specifications</h3>
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Data Center Specs</h4>
+                    <h4 className="text-sm font-semibold text-gray-300 mb-3">Data Center Specs</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between py-2 border-b border-gray-300">
-                        <span className="text-gray-600">Tier Classification</span>
-                        <span className="font-semibold text-gray-900">Tier III/IV</span>
+                        <span className="text-gray-400">Tier Classification</span>
+                        <span className="font-semibold text-white">Tier III/IV</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-300">
-                        <span className="text-gray-600">Cooling Technology</span>
-                        <span className="font-semibold text-gray-900">Advanced Liquid Cooling</span>
+                        <span className="text-gray-400">Cooling Technology</span>
+                        <span className="font-semibold text-white">Advanced Liquid Cooling</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-300">
-                        <span className="text-gray-600">Power Redundancy</span>
-                        <span className="font-semibold text-gray-900">N+1 / 2N</span>
+                        <span className="text-gray-400">Power Redundancy</span>
+                        <span className="font-semibold text-white">N+1 / 2N</span>
                       </div>
                       <div className="flex justify-between py-2">
-                        <span className="text-gray-600">Total IT Capacity</span>
-                        <span className="font-semibold text-gray-900">{corporate.estimatedLoad}</span>
+                        <span className="text-gray-400">Total IT Capacity</span>
+                        <span className="font-semibold text-white">{corporate.estimatedLoad}</span>
                       </div>
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Connectivity & Network</h4>
+                    <h4 className="text-sm font-semibold text-gray-300 mb-3">Connectivity & Network</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between py-2 border-b border-gray-300">
-                        <span className="text-gray-600">Network Providers</span>
-                        <span className="font-semibold text-gray-900">10+ carriers</span>
+                        <span className="text-gray-400">Network Providers</span>
+                        <span className="font-semibold text-white">10+ carriers</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-300">
-                        <span className="text-gray-600">Bandwidth Capacity</span>
-                        <span className="font-semibold text-gray-900">400G+</span>
+                        <span className="text-gray-400">Bandwidth Capacity</span>
+                        <span className="font-semibold text-white">400G+</span>
                       </div>
                       <div className="flex justify-between py-2 border-b border-gray-300">
-                        <span className="text-gray-600">Cloud Interconnect</span>
-                        <span className="font-semibold text-gray-900">Direct Connect</span>
+                        <span className="text-gray-400">Cloud Interconnect</span>
+                        <span className="font-semibold text-white">Direct Connect</span>
                       </div>
                       <div className="flex justify-between py-2">
-                        <span className="text-gray-600">Edge Computing</span>
-                        <span className="font-semibold text-gray-900">Enabled</span>
+                        <span className="text-gray-400">Edge Computing</span>
+                        <span className="font-semibold text-white">Enabled</span>
                       </div>
                     </div>
                   </div>
@@ -2943,53 +2943,53 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
           {activeSection === 2 && (
             <>
               {/* Energy Usage Overview */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+              <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 mb-6">
                 <div className="grid grid-cols-4 gap-4">
                   <div className="text-center">
-                    <p className="text-sm text-gray-600">Total Load</p>
-                    <p className="text-xl font-bold text-gray-900">{corporate.estimatedLoad}</p>
+                    <p className="text-sm text-gray-400">Total Load</p>
+                    <p className="text-xl font-bold text-white">{corporate.estimatedLoad}</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm text-gray-600">PUE Rating</p>
-                    <p className="text-xl font-bold text-gray-900">1.15 - 1.25</p>
+                    <p className="text-sm text-gray-400">PUE Rating</p>
+                    <p className="text-xl font-bold text-white">1.15 - 1.25</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm text-gray-600">Annual Growth</p>
-                    <p className="text-xl font-bold text-gray-900">12-18%</p>
+                    <p className="text-sm text-gray-400">Annual Growth</p>
+                    <p className="text-xl font-bold text-white">12-18%</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm text-gray-600">Peak Demand</p>
-                    <p className="text-xl font-bold text-gray-900">{Math.round(parseInt(corporate.estimatedLoad) * 1.3)} MW</p>
+                    <p className="text-sm text-gray-400">Peak Demand</p>
+                    <p className="text-xl font-bold text-white">{Math.round(parseInt(corporate.estimatedLoad) * 1.3)} MW</p>
                   </div>
                 </div>
               </div>
 
               {/* Energy Source Breakdown */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Energy Source Mix</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">Energy Source Mix</h3>
                 <div className="space-y-3">
-                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                  <div className="bg-white border border-gray-700 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-gray-900">Grid Power (Mixed Source)</span>
-                      <span className="font-bold text-gray-900">35%</span>
+                      <span className="font-medium text-white">Grid Power (Mixed Source)</span>
+                      <span className="font-bold text-white">35%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div className="bg-blue-500 h-2 rounded-full" style={{width: '35%'}}></div>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                  <div className="bg-white border border-gray-700 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-gray-900">Renewable PPAs (Solar/Wind)</span>
+                      <span className="font-medium text-white">Renewable PPAs (Solar/Wind)</span>
                       <span className="font-bold text-green-600">45%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div className="bg-green-500 h-2 rounded-full" style={{width: '45%'}}></div>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                  <div className="bg-white border border-gray-700 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-gray-900">On-site Generation</span>
-                      <span className="font-bold text-gray-900">20%</span>
+                      <span className="font-medium text-white">On-site Generation</span>
+                      <span className="font-bold text-white">20%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div className="bg-yellow-500 h-2 rounded-full" style={{width: '20%'}}></div>
@@ -2999,17 +2999,17 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Power Purchase Agreements */}
-              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900">Active Power Purchase Agreements</h3>
+              <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
+                <div className="px-4 py-3 bg-gray-900 border-b border-gray-700">
+                  <h3 className="text-lg font-semibold text-white">Active Power Purchase Agreements</h3>
                 </div>
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gray-900">
                     <tr>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Project Name</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Type</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Capacity</th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Term</th>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Project Name</th>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Type</th>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Capacity</th>
+                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Term</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -3018,11 +3018,11 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       { name: 'Prairie Wind Project', type: 'Wind', capacity: '350 MW', term: '20 years' },
                       { name: 'Mountain Ridge Solar', type: 'Solar', capacity: '150 MW', term: '12 years' },
                     ].map((ppa, i) => (
-                      <tr key={i} className="border-t border-gray-200">
-                        <td className="px-4 py-2 text-sm text-gray-900">{ppa.name}</td>
-                        <td className="px-4 py-2 text-sm text-gray-900">{ppa.type}</td>
-                        <td className="px-4 py-2 text-sm text-gray-900">{ppa.capacity}</td>
-                        <td className="px-4 py-2 text-sm text-gray-600">{ppa.term}</td>
+                      <tr key={i} className="border-t border-gray-700">
+                        <td className="px-4 py-2 text-sm text-white">{ppa.name}</td>
+                        <td className="px-4 py-2 text-sm text-white">{ppa.type}</td>
+                        <td className="px-4 py-2 text-sm text-white">{ppa.capacity}</td>
+                        <td className="px-4 py-2 text-sm text-gray-400">{ppa.term}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -3036,22 +3036,22 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
             <>
               {/* Sustainability Goals */}
               <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-lg p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Sustainability Commitments</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">Sustainability Commitments</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-700 mb-1">100% Renewable Energy Target</p>
+                    <p className="text-sm text-gray-300 mb-1">100% Renewable Energy Target</p>
                     <p className="text-2xl font-bold text-green-700">2030</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-700 mb-1">Carbon Neutral Operations</p>
+                    <p className="text-sm text-gray-300 mb-1">Carbon Neutral Operations</p>
                     <p className="text-2xl font-bold text-green-700">2025</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-700 mb-1">Water Usage Efficiency</p>
+                    <p className="text-sm text-gray-300 mb-1">Water Usage Efficiency</p>
                     <p className="text-2xl font-bold text-green-700">30% reduction</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-700 mb-1">Renewable Investment</p>
+                    <p className="text-sm text-gray-300 mb-1">Renewable Investment</p>
                     <p className="text-2xl font-bold text-green-700">$5B+ committed</p>
                   </div>
                 </div>
@@ -3059,20 +3059,20 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
 
               {/* Planned Expansions */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Planned Facility Expansions (2024-2026)</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">Planned Facility Expansions (2024-2026)</h3>
                 <div className="space-y-3">
                   {[
                     { location: 'Northern Virginia', capacity: '500 MW', timeline: 'Q2 2025', investment: '$2.5B' },
                     { location: 'Central Ohio', capacity: '350 MW', timeline: 'Q4 2025', investment: '$1.8B' },
                     { location: 'Western Pennsylvania', capacity: '250 MW', timeline: 'Q1 2026', investment: '$1.2B' },
                   ].map((project, i) => (
-                    <div key={i} className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div key={i} className="bg-white border border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="font-semibold text-gray-900">{project.location} Expansion</h4>
+                          <h4 className="font-semibold text-white">{project.location} Expansion</h4>
                           <div className="mt-2 space-y-1">
-                            <p className="text-sm text-gray-600">Capacity: <span className="font-medium text-gray-900">{project.capacity}</span></p>
-                            <p className="text-sm text-gray-600">Investment: <span className="font-medium text-gray-900">{project.investment}</span></p>
+                            <p className="text-sm text-gray-400">Capacity: <span className="font-medium text-white">{project.capacity}</span></p>
+                            <p className="text-sm text-gray-400">Investment: <span className="font-medium text-white">{project.investment}</span></p>
                           </div>
                         </div>
                         <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">{project.timeline}</span>
@@ -3083,8 +3083,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Technology Initiatives */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Emerging Technology Initiatives</h3>
+              <div className="bg-white border border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Emerging Technology Initiatives</h3>
                 <div className="space-y-4">
                   <div className="flex items-start space-x-3">
                     <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -3093,8 +3093,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900">AI-Driven Energy Optimization</h4>
-                      <p className="text-sm text-gray-600 mt-1">Machine learning algorithms to reduce energy consumption by up to 15% through predictive cooling and workload management.</p>
+                      <h4 className="font-medium text-white">AI-Driven Energy Optimization</h4>
+                      <p className="text-sm text-gray-400 mt-1">Machine learning algorithms to reduce energy consumption by up to 15% through predictive cooling and workload management.</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
@@ -3105,8 +3105,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900">Battery Energy Storage Systems</h4>
-                      <p className="text-sm text-gray-600 mt-1">Deploying 500+ MWh of battery storage across facilities to provide grid services and backup power with renewable integration.</p>
+                      <h4 className="font-medium text-white">Battery Energy Storage Systems</h4>
+                      <p className="text-sm text-gray-400 mt-1">Deploying 500+ MWh of battery storage across facilities to provide grid services and backup power with renewable integration.</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
@@ -3116,8 +3116,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       </svg>
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900">Advanced Cooling Technologies</h4>
-                      <p className="text-sm text-gray-600 mt-1">Implementing liquid immersion cooling and direct-to-chip cooling for next-gen AI compute infrastructure.</p>
+                      <h4 className="font-medium text-white">Advanced Cooling Technologies</h4>
+                      <p className="text-sm text-gray-400 mt-1">Implementing liquid immersion cooling and direct-to-chip cooling for next-gen AI compute infrastructure.</p>
                     </div>
                   </div>
                 </div>
@@ -3130,17 +3130,17 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
             <>
               {/* Partnership Overview */}
               <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-lg p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Energy Partnership Opportunities</h3>
-                <p className="text-gray-700 mb-4">
+                <h3 className="text-lg font-semibold text-white mb-4">Energy Partnership Opportunities</h3>
+                <p className="text-gray-300 mb-4">
                   {corporate.name} actively seeks partnerships with energy providers, technology companies, and sustainability consultants to support their data center operations and renewable energy goals.
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-700 mb-1">Partnership Focus</p>
+                    <p className="text-sm text-gray-300 mb-1">Partnership Focus</p>
                     <p className="text-xl font-bold text-purple-700">Clean Energy & Grid Services</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-700 mb-1">Annual Investment</p>
+                    <p className="text-sm text-gray-300 mb-1">Annual Investment</p>
                     <p className="text-xl font-bold text-purple-700">$1B+</p>
                   </div>
                 </div>
@@ -3148,7 +3148,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
 
               {/* Current RFP/Partnership Opportunities */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Active Opportunities</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">Active Opportunities</h3>
                 <div className="space-y-4">
                   {[
                     {
@@ -3176,11 +3176,11 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       link: 'https://example.com/grid-services'
                     }
                   ].map((opp, i) => (
-                    <div key={i} className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+                    <div key={i} className="bg-white border border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow">
                       <div className="flex justify-between items-start mb-3">
                         <div>
-                          <h4 className="font-semibold text-gray-900 text-lg">{opp.title}</h4>
-                          <p className="text-sm text-gray-600 mt-1">{opp.type}</p>
+                          <h4 className="font-semibold text-white text-lg">{opp.title}</h4>
+                          <p className="text-sm text-gray-400 mt-1">{opp.type}</p>
                         </div>
                         <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
                           {opp.status}
@@ -3189,11 +3189,11 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
                           <p className="text-xs text-gray-500">Opportunity</p>
-                          <p className="text-sm font-medium text-gray-900">{opp.details}</p>
+                          <p className="text-sm font-medium text-white">{opp.details}</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Timeline</p>
-                          <p className="text-sm font-medium text-gray-900">{opp.deadline}</p>
+                          <p className="text-sm font-medium text-white">{opp.deadline}</p>
                         </div>
                       </div>
                       <a
@@ -3213,51 +3213,51 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Partnership Priorities */}
-              <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Partnership Priorities</h3>
+              <div className="bg-white border border-gray-700 rounded-lg p-6 mb-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Partnership Priorities</h3>
                 <div className="space-y-3">
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
                     <div>
-                      <h4 className="font-medium text-gray-900">Renewable Energy</h4>
-                      <p className="text-sm text-gray-600">Long-term PPAs for wind, solar, and emerging clean energy technologies (geothermal, hydrogen)</p>
+                      <h4 className="font-medium text-white">Renewable Energy</h4>
+                      <p className="text-sm text-gray-400">Long-term PPAs for wind, solar, and emerging clean energy technologies (geothermal, hydrogen)</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
                     <div>
-                      <h4 className="font-medium text-gray-900">Grid Services & Flexibility</h4>
-                      <p className="text-sm text-gray-600">Demand response, virtual power plants, behind-the-meter storage solutions</p>
+                      <h4 className="font-medium text-white">Grid Services & Flexibility</h4>
+                      <p className="text-sm text-gray-400">Demand response, virtual power plants, behind-the-meter storage solutions</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
                     <div>
-                      <h4 className="font-medium text-gray-900">Innovation & Technology</h4>
-                      <p className="text-sm text-gray-600">AI-driven energy optimization, advanced cooling technologies, carbon capture</p>
+                      <h4 className="font-medium text-white">Innovation & Technology</h4>
+                      <p className="text-sm text-gray-400">AI-driven energy optimization, advanced cooling technologies, carbon capture</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
                     <div>
-                      <h4 className="font-medium text-gray-900">Regional Development</h4>
-                      <p className="text-sm text-gray-600">Co-locate renewable projects near data centers, support local grid infrastructure</p>
+                      <h4 className="font-medium text-white">Regional Development</h4>
+                      <p className="text-sm text-gray-400">Co-locate renewable projects near data centers, support local grid infrastructure</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Contact Information */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Partnership Contacts</h3>
+              <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-white mb-4">Partnership Contacts</h3>
                 <div className="space-y-2">
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-gray-300">
                     <strong>Department:</strong> Energy & Sustainability Partnerships
                   </p>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-gray-300">
                     <strong>Email:</strong> energy-partnerships@{corporate.name.toLowerCase().replace(/\s+/g, '')}.com
                   </p>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-gray-300">
                     <strong>Partnerships Portal:</strong> <a href="https://example.com/partnerships" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">View All Opportunities →</a>
                   </p>
                 </div>
@@ -3268,9 +3268,9 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
           {/* Section 5: Key Documents */}
           {activeSection === 5 && (
             <>
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-lg p-6 mb-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Corporate & Financial Documents</h3>
-                <p className="text-gray-600">
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-700 rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold text-white mb-2">Corporate & Financial Documents</h3>
+                <p className="text-gray-400">
                   Access key financial reports, sustainability disclosures, and corporate documents for {corporate.name}.
                 </p>
               </div>
@@ -3278,7 +3278,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               {/* Document Categories */}
               <div className="space-y-6">
                 {/* Annual Report */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="bg-white border border-gray-700 rounded-lg p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start space-x-3">
                       <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -3287,8 +3287,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                         </svg>
                       </div>
                       <div>
-                        <h4 className="text-lg font-semibold text-gray-900">Annual Report</h4>
-                        <p className="text-sm text-gray-600 mt-1">Comprehensive overview of business operations and financial performance</p>
+                        <h4 className="text-lg font-semibold text-white">Annual Report</h4>
+                        <p className="text-sm text-gray-400 mt-1">Comprehensive overview of business operations and financial performance</p>
                       </div>
                     </div>
                     <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">2023</span>
@@ -3313,7 +3313,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                 </div>
 
                 {/* 10-K Filing */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="bg-white border border-gray-700 rounded-lg p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start space-x-3">
                       <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -3322,8 +3322,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                         </svg>
                       </div>
                       <div>
-                        <h4 className="text-lg font-semibold text-gray-900">10-K Annual Filing</h4>
-                        <p className="text-sm text-gray-600 mt-1">SEC annual report with comprehensive financial statements</p>
+                        <h4 className="text-lg font-semibold text-white">10-K Annual Filing</h4>
+                        <p className="text-sm text-gray-400 mt-1">SEC annual report with comprehensive financial statements</p>
                       </div>
                     </div>
                     <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">FY2023</span>
@@ -3348,7 +3348,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                 </div>
 
                 {/* ESG & Sustainability */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
+                <div className="bg-white border border-gray-700 rounded-lg p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start space-x-3">
                       <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -3357,8 +3357,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                         </svg>
                       </div>
                       <div>
-                        <h4 className="text-lg font-semibold text-gray-900">ESG & Sustainability Report</h4>
-                        <p className="text-sm text-gray-600 mt-1">Environmental, social, and governance initiatives and metrics</p>
+                        <h4 className="text-lg font-semibold text-white">ESG & Sustainability Report</h4>
+                        <p className="text-sm text-gray-400 mt-1">Environmental, social, and governance initiatives and metrics</p>
                       </div>
                     </div>
                     <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">2023</span>
@@ -3383,22 +3383,22 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                 </div>
 
                 {/* Additional Documents */}
-                <div className="bg-white border border-gray-200 rounded-lg p-6">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">Additional Resources</h4>
+                <div className="bg-white border border-gray-700 rounded-lg p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4">Additional Resources</h4>
                   <div className="space-y-3">
                     <a
                       href="https://example.com/q4-2023-earnings.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                      className="flex items-center justify-between p-3 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors group"
                     >
                       <div className="flex items-center space-x-3">
-                        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Q4 2023 Earnings Report</span>
+                        <span className="text-sm font-medium text-gray-300 group-hover:text-white">Q4 2023 Earnings Report</span>
                       </div>
-                      <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
@@ -3406,15 +3406,15 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       href="https://example.com/investor-presentation-2024.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                      className="flex items-center justify-between p-3 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors group"
                     >
                       <div className="flex items-center space-x-3">
-                        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Investor Presentation 2024</span>
+                        <span className="text-sm font-medium text-gray-300 group-hover:text-white">Investor Presentation 2024</span>
                       </div>
-                      <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
@@ -3422,15 +3422,15 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       href="https://example.com/data-center-whitepaper.pdf"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                      className="flex items-center justify-between p-3 bg-gray-900 rounded-lg hover:bg-gray-700 transition-colors group"
                     >
                       <div className="flex items-center space-x-3">
-                        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Data Center Energy Efficiency Whitepaper</span>
+                        <span className="text-sm font-medium text-gray-300 group-hover:text-white">Data Center Energy Efficiency Whitepaper</span>
                       </div>
-                      <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
