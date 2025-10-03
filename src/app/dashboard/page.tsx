@@ -2763,23 +2763,30 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
     <div className="w-full">
       {/* Main Content Container */}
       <div className="flex gap-8">
-        {/* Timeline Navigation */}
-        <div className="flex-shrink-0">
-          <div className="relative">
+        {/* Timeline Navigation with Section Titles */}
+        <div className="flex-shrink-0 w-64">
+          <div className="sticky top-24">
             {sections.map((section, index) => (
-              <div key={section.id} className="flex items-center mb-8">
+              <div key={section.id} className="mb-6">
                 <button
                   onClick={() => setActiveSection(section.id)}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-colors ${
+                  className={`w-full flex items-center space-x-4 p-3 rounded-lg transition-all ${
                     activeSection === section.id
                       ? 'bg-gray-900 text-white'
-                      : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  {String(section.id).padStart(2, '0')}
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
+                    activeSection === section.id
+                      ? 'bg-white text-gray-900'
+                      : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {String(section.id).padStart(2, '0')}
+                  </div>
+                  <span className="text-left font-medium">{section.title}</span>
                 </button>
                 {index < sections.length - 1 && (
-                  <div className="absolute left-6 top-12 w-0.5 h-8 bg-gray-300" />
+                  <div className="ml-5 mt-2 mb-2 w-0.5 h-6 bg-gray-200" />
                 )}
               </div>
             ))}
