@@ -144,6 +144,7 @@ export default function DashboardPage() {
   const [selectedCorporate, setSelectedCorporate] = useState<any>(null)
   const [selectedStateFilter, setSelectedStateFilter] = useState<string | null>(null)
   const [snapshotTab, setSnapshotTab] = useState<'supply' | 'demand'>('supply')
+  const [supplyMetric, setSupplyMetric] = useState<'capacity' | 'generation'>('capacity')
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
 
   // Toggle favorite status
@@ -603,16 +604,16 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="flex items-center space-x-6">
-              <nav className="flex items-center space-x-6 text-sm">
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Home</a>
+              <nav className="flex items-center space-x-2 text-sm">
+                <a href="#" className="px-3 py-2 font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all">Home</a>
                 <button
                   onClick={() => window.open('/explore', '_blank')}
-                  className="font-medium text-gray-700 hover:text-gray-900"
+                  className="px-3 py-2 font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
                 >
                   Explore
                 </button>
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Connections</a>
-                <a href="#" className="font-medium text-gray-700 hover:text-gray-900">Settings</a>
+                <a href="#" className="px-3 py-2 font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all">Connections</a>
+                <a href="#" className="px-3 py-2 font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all">Settings</a>
               </nav>
               <div className="flex items-center space-x-2">
                 <button className="p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100">
@@ -766,7 +767,7 @@ export default function DashboardPage() {
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  {region} Energy Snapshot {selectedStateFilter && `- ${selectedStateFilter}`}
+                  {selectedStateFilter || region} {snapshotTab === 'supply' ? 'Power Supply' : 'Power Demand'}
                 </h3>
                 <p className="text-gray-600">
                   Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
@@ -819,32 +820,61 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Tabs */}
-            <div className="flex space-x-1 border-b border-gray-200 mb-6">
-              <button
-                onClick={() => setSnapshotTab('supply')}
-                className={`px-4 py-2 text-sm font-medium ${
-                  snapshotTab === 'supply'
-                    ? 'text-gray-900 border-b-2 border-blue-500'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Power supply
-              </button>
-              <button
-                onClick={() => setSnapshotTab('demand')}
-                className={`px-4 py-2 text-sm font-medium ${
-                  snapshotTab === 'demand'
-                    ? 'text-gray-900 border-b-2 border-blue-500'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                Power demand
-              </button>
+            {/* Tabs - Redesigned as Toggle Buttons */}
+            <div className="flex justify-center mb-6">
+              <div className="inline-flex rounded-lg bg-gray-100 p-1">
+                <button
+                  onClick={() => setSnapshotTab('supply')}
+                  className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
+                    snapshotTab === 'supply'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Power Supply
+                </button>
+                <button
+                  onClick={() => setSnapshotTab('demand')}
+                  className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
+                    snapshotTab === 'demand'
+                      ? 'bg-white text-blue-600 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Power Demand
+                </button>
+              </div>
             </div>
 
             {/* Power Supply Content */}
             {snapshotTab === 'supply' && (
+              <>
+                {/* Capacity/Generation Toggle */}
+                <div className="flex justify-end mb-4">
+                  <div className="inline-flex rounded-lg bg-gray-100 p-0.5">
+                    <button
+                      onClick={() => setSupplyMetric('capacity')}
+                      className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
+                        supplyMetric === 'capacity'
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Capacity (MW)
+                    </button>
+                    <button
+                      onClick={() => setSupplyMetric('generation')}
+                      className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
+                        supplyMetric === 'generation'
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      Generation (MWh)
+                    </button>
+                  </div>
+                </div>
+
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
               {capacityTrends?.technologyBreakdown ? capacityTrends.technologyBreakdown
                 .slice(0, 6)
@@ -913,6 +943,7 @@ export default function DashboardPage() {
                 </div>
               )}
               </div>
+              </>
             )}
 
             {/* Power Demand Content */}
@@ -1021,7 +1052,8 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Stacked Bar Chart */}
+            {/* Stacked Bar Chart - Only show for Power Supply */}
+            {snapshotTab === 'supply' && (
             <div className="bg-gray-50 rounded-lg p-4 mb-4">
               <h4 className="text-sm font-semibold text-gray-700 mb-3">Capacity Trends</h4>
               {capacityTrendsLoading ? (
@@ -1139,6 +1171,7 @@ export default function DashboardPage() {
               </div>
             )}
             </div>
+            )}
 
             {/* Sources */}
             <div className="text-sm text-gray-600 mb-4">
