@@ -12,7 +12,6 @@ import DetailPanel from '@/components/ui/DetailPanel'
 import ShowMoreControls, { useShowMore } from '@/components/ui/ShowMoreControls'
 import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
 import ISORegionMap from '@/components/ISORegionMap'
-import Image from 'next/image'
 
 // Plants Table Rows Component
 function PlantsTableRows({ utility }: { utility: any }) {
@@ -570,37 +569,32 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-4">
-                <Image
-                  src="/hayl-logo-new.svg"
-                  alt="Hayl Energy AI"
-                  width={40}
-                  height={40}
-                  className="rounded-lg"
-                />
-                <h1 className="text-2xl font-bold text-gray-900">HAYL ENERGY AI</h1>
-              </div>
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="5" width="20" height="14" rx="1" fill="#B91C1C"/>
-                  <rect x="2" y="5" width="20" height="1.5" fill="#DC2626"/>
-                  <rect x="2" y="7.5" width="20" height="1.5" fill="#DC2626"/>
-                  <rect x="2" y="10.5" width="20" height="1.5" fill="#DC2626"/>
-                  <rect x="2" y="13.5" width="20" height="1.5" fill="#DC2626"/>
-                  <rect x="2" y="16.5" width="20" height="1.5" fill="#DC2626"/>
-                  <rect x="2" y="5" width="9" height="8" fill="#1E40AF"/>
-                  {[...Array(50)].map((_, i) => {
-                    const row = Math.floor(i / 6);
-                    const col = i % 6;
-                    const x = 3 + col * 1.2;
-                    const y = 6 + row * 0.8;
-                    if (x > 10 || y > 12) return null;
-                    return (
-                      <circle key={i} cx={x} cy={y} r="0.15" fill="white"/>
-                    );
-                  })}
-                </svg>
-                <span>United States</span>
+              <div className="flex flex-col">
+                <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: 'system-ui, -apple-system, sans-serif', letterSpacing: '-0.02em', fontWeight: '600' }}>
+                  <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">HAYL ENERGY AI</span>
+                </h1>
+                <div className="flex items-center space-x-2 text-xs text-gray-500 mt-1">
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="5" width="20" height="14" rx="1" fill="#B91C1C"/>
+                    <rect x="2" y="5" width="20" height="1.5" fill="#DC2626"/>
+                    <rect x="2" y="7.5" width="20" height="1.5" fill="#DC2626"/>
+                    <rect x="2" y="10.5" width="20" height="1.5" fill="#DC2626"/>
+                    <rect x="2" y="13.5" width="20" height="1.5" fill="#DC2626"/>
+                    <rect x="2" y="16.5" width="20" height="1.5" fill="#DC2626"/>
+                    <rect x="2" y="5" width="9" height="8" fill="#1E40AF"/>
+                    {[...Array(50)].map((_, i) => {
+                      const row = Math.floor(i / 6);
+                      const col = i % 6;
+                      const x = 3 + col * 1.2;
+                      const y = 6 + row * 0.8;
+                      if (x > 10 || y > 12) return null;
+                      return (
+                        <circle key={i} cx={x} cy={y} r="0.15" fill="white"/>
+                      );
+                    })}
+                  </svg>
+                  <span>United States</span>
+                </div>
               </div>
             </div>
             <div className="flex items-center space-x-6">
@@ -772,9 +766,6 @@ export default function DashboardPage() {
                 <p className="text-gray-600">
                   Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
                 </p>
-                <div className="text-3xl font-bold text-blue-600 mt-4">
-                  {Math.round(metrics.totalCapacity / 1000)} GW
-                </div>
               </div>
               <div className="flex space-x-2">
                 <button className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-50">
@@ -820,8 +811,14 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Tabs - Redesigned as Toggle Buttons */}
-            <div className="flex justify-center mb-6">
+            {/* Tabs - Redesigned as Toggle Buttons with Total */}
+            <div className="flex items-center justify-between mb-6">
+              {/* Total Capacity */}
+              <div className="text-3xl font-bold text-blue-600">
+                {Math.round(metrics.totalCapacity / 1000)} GW
+              </div>
+
+              {/* Toggle Buttons */}
               <div className="inline-flex rounded-lg bg-gray-100 p-1">
                 <button
                   onClick={() => setSnapshotTab('supply')}
@@ -844,6 +841,9 @@ export default function DashboardPage() {
                   Power Demand
                 </button>
               </div>
+
+              {/* Spacer for balance */}
+              <div className="w-32"></div>
             </div>
 
             {/* Power Supply Content */}
