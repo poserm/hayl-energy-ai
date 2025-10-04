@@ -767,14 +767,6 @@ export default function DashboardPage() {
                   Real-time supply and demand analytics with the latest market intelligence and regulatory updates for informed energy decision-making.
                 </p>
               </div>
-              <div className="flex space-x-2">
-                <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-900">
-                  Download
-                </button>
-                <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-900">
-                  Compare
-                </button>
-              </div>
             </div>
 
             {/* States in Selected Region - Selectable Pills */}
@@ -849,32 +841,6 @@ export default function DashboardPage() {
             {/* Power Supply Content */}
             {snapshotTab === 'supply' && (
               <>
-                {/* Capacity/Generation Toggle */}
-                <div className="flex justify-end mb-4">
-                  <div className="inline-flex rounded-lg bg-gray-700 p-0.5">
-                    <button
-                      onClick={() => setSupplyMetric('capacity')}
-                      className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
-                        supplyMetric === 'capacity'
-                          ? 'bg-blue-600 text-white shadow-sm'
-                          : 'text-gray-400 hover:text-white'
-                      }`}
-                    >
-                      Capacity (MW)
-                    </button>
-                    <button
-                      onClick={() => setSupplyMetric('generation')}
-                      className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
-                        supplyMetric === 'generation'
-                          ? 'bg-blue-600 text-white shadow-sm'
-                          : 'text-gray-400 hover:text-white'
-                      }`}
-                    >
-                      Generation (MWh)
-                    </button>
-                  </div>
-                </div>
-
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
               {capacityTrends?.technologyBreakdown ? capacityTrends.technologyBreakdown
                 .slice(0, 6)
@@ -1055,7 +1021,20 @@ export default function DashboardPage() {
             {/* Stacked Bar Chart - Only show for Power Supply */}
             {snapshotTab === 'supply' && (
             <div className="bg-gray-900 rounded-lg p-4 mb-4">
-              <h4 className="text-sm font-semibold text-gray-300 mb-3">Capacity Trends</h4>
+              <div className="flex justify-end mb-4">
+                <div className="inline-flex rounded-lg bg-gray-700 p-0.5">
+                  <button onClick={() => setSupplyMetric('capacity')} className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    supplyMetric === 'capacity' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'
+                  }`}>
+                    Capacity (MW)
+                  </button>
+                  <button onClick={() => setSupplyMetric('generation')} className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    supplyMetric === 'generation' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'
+                  }`}>
+                    Generation (MWh)
+                  </button>
+                </div>
+              </div>
               {capacityTrendsLoading ? (
                 <div className="flex items-center justify-center h-48">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -1178,10 +1157,15 @@ export default function DashboardPage() {
               Sources: EIA.gov, State Energy Data System
             </div>
 
-            {/* Explore more button */}
-            <button className="w-full py-3 text-center text-blue-600 font-medium border border-blue-600 rounded-lg hover:bg-blue-50">
-              Explore more
-            </button>
+            {/* Download and Compare buttons */}
+            <div className="flex justify-center space-x-3">
+              <button className="px-6 py-2.5 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
+                Download
+              </button>
+              <button className="px-6 py-2.5 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
+                Compare
+              </button>
+            </div>
         </div>
 
         {/* Energy Buyers Section */}
@@ -1225,53 +1209,53 @@ export default function DashboardPage() {
             {/* Ownership Type Filter - Only show for Utilities tab */}
             {energyBuyersTab === 'utilities' && selectedStates.length > 0 && (
               <div className="flex justify-center mb-6">
-                <div className="flex flex-wrap gap-3">
+                <div className="inline-flex rounded-lg bg-gray-700 p-1">
                   <button
                     onClick={() => setSelectedOwnershipType(null)}
-                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                       selectedOwnershipType === null
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                        ? 'bg-gray-800 text-blue-600 shadow-sm'
+                        : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     ALL
                   </button>
                   <button
                     onClick={() => setSelectedOwnershipType('Investor Owned')}
-                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                       selectedOwnershipType === 'Investor Owned'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                        ? 'bg-gray-800 text-blue-600 shadow-sm'
+                        : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     INVESTOR OWNED
                   </button>
                   <button
                     onClick={() => setSelectedOwnershipType('Cooperative')}
-                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                       selectedOwnershipType === 'Cooperative'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                        ? 'bg-gray-800 text-blue-600 shadow-sm'
+                        : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     COOPERATIVE
                   </button>
                   <button
                     onClick={() => setSelectedOwnershipType('Municipal')}
-                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                       selectedOwnershipType === 'Municipal'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                        ? 'bg-gray-800 text-blue-600 shadow-sm'
+                        : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     MUNICIPAL
                   </button>
                   <button
                     onClick={() => setSelectedOwnershipType('Retail Power Marketer')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                       selectedOwnershipType === 'Retail Power Marketer'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
+                        ? 'bg-gray-800 text-blue-600 shadow-sm'
+                        : 'text-gray-400 hover:text-white'
                     }`}
                   >
                     RETAIL POWER MARKETER
@@ -1464,31 +1448,6 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-
-            {/* CTA Button */}
-            <div className="text-center">
-              <button
-                className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg"
-                disabled={!selectedUtilityForAnalysis}
-                onClick={() => {
-                  if (selectedUtilityForAnalysis) {
-                    console.log('Analyzing selected utility:', selectedUtilityForAnalysis)
-                    // Scroll to analysis section
-                    const analysisSection = document.getElementById('utility-analysis-section')
-                    if (analysisSection) {
-                      analysisSection.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                      })
-                    }
-                  } else {
-                    alert('Please select a utility first by clicking on one of the tiles above.')
-                  }
-                }}
-              >
-                {selectedUtilityForAnalysis ? `ANALYZE ${(selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name || 'UTILITY').toUpperCase()}` : 'SELECT A UTILITY FIRST'}
-              </button>
-            </div>
               </>
             )}
 
@@ -1504,43 +1463,43 @@ export default function DashboardPage() {
 
                 {/* Corporate Type Filter */}
                 <div className="flex justify-center mb-6">
-                  <div className="flex flex-wrap gap-3">
+                  <div className="inline-flex rounded-lg bg-gray-700 p-1">
                     <button
                       onClick={() => setSelectedOwnershipType(null)}
-                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                      className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                         selectedOwnershipType === null
-                          ? 'bg-blue-600 text-white shadow-lg'
-                          : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                          ? 'bg-gray-800 text-blue-600 shadow-sm'
+                          : 'text-gray-400 hover:text-white'
                       }`}
                     >
                       ALL
                     </button>
                     <button
                       onClick={() => setSelectedOwnershipType('Hyperscale')}
-                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                      className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                         selectedOwnershipType === 'Hyperscale'
-                          ? 'bg-blue-600 text-white shadow-lg'
-                          : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                          ? 'bg-gray-800 text-blue-600 shadow-sm'
+                          : 'text-gray-400 hover:text-white'
                       }`}
                     >
                       HYPERSCALE
                     </button>
                     <button
                       onClick={() => setSelectedOwnershipType('Colocation')}
-                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                      className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                         selectedOwnershipType === 'Colocation'
-                          ? 'bg-blue-600 text-white shadow-lg'
-                          : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                          ? 'bg-gray-800 text-blue-600 shadow-sm'
+                          : 'text-gray-400 hover:text-white'
                       }`}
                     >
                       COLOCATION
                     </button>
                     <button
                       onClick={() => setSelectedOwnershipType('Developer')}
-                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                      className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                         selectedOwnershipType === 'Developer'
-                          ? 'bg-blue-600 text-white shadow-lg'
-                          : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                          ? 'bg-gray-800 text-blue-600 shadow-sm'
+                          : 'text-gray-400 hover:text-white'
                       }`}
                     >
                       DEVELOPER
