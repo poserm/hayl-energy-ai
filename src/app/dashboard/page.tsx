@@ -142,6 +142,7 @@ export default function DashboardPage() {
   const [energyBuyersTab, setEnergyBuyersTab] = useState<'utilities' | 'corporates'>('utilities')
   const [selectedCorporate, setSelectedCorporate] = useState<any>(null)
   const [selectedStateFilter, setSelectedStateFilter] = useState<string | null>(null)
+  const [showMapModal, setShowMapModal] = useState(false)
   const [snapshotTab, setSnapshotTab] = useState<'supply' | 'demand'>('supply')
   const [supplyMetric, setSupplyMetric] = useState<'capacity' | 'generation'>('capacity')
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
@@ -815,27 +816,40 @@ export default function DashboardPage() {
                 {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
               </div>
 
-              {/* Toggle Buttons */}
-              <div className="inline-flex rounded-lg bg-gray-700 p-1">
+              {/* Toggle Buttons with Map Icon */}
+              <div className="flex items-center space-x-3">
+                <div className="inline-flex rounded-lg bg-gray-700 p-1">
+                  <button
+                    onClick={() => setSnapshotTab('supply')}
+                    className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
+                      snapshotTab === 'supply'
+                        ? 'bg-gray-800 text-blue-600 shadow-sm'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    Power Supply
+                  </button>
+                  <button
+                    onClick={() => setSnapshotTab('demand')}
+                    className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
+                      snapshotTab === 'demand'
+                        ? 'bg-gray-800 text-blue-600 shadow-sm'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    Power Demand
+                  </button>
+                </div>
+
+                {/* Map View Button */}
                 <button
-                  onClick={() => setSnapshotTab('supply')}
-                  className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
-                    snapshotTab === 'supply'
-                      ? 'bg-gray-800 text-blue-600 shadow-sm'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
+                  onClick={() => setShowMapModal(true)}
+                  className="p-2.5 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white rounded-lg transition-all"
+                  title="View Map"
                 >
-                  Power Supply
-                </button>
-                <button
-                  onClick={() => setSnapshotTab('demand')}
-                  className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
-                    snapshotTab === 'demand'
-                      ? 'bg-gray-800 text-blue-600 shadow-sm'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Power Demand
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                  </svg>
                 </button>
               </div>
 
@@ -1922,13 +1936,61 @@ export default function DashboardPage() {
       />
 
       {activeView === 'utility-analysis' && selectedUtilityAnalysis && (
-        <UtilityAnalysisView 
+        <UtilityAnalysisView
           utility={selectedUtilityAnalysis}
           onBack={() => {
             setActiveView('dashboard')
             setSelectedUtilityAnalysis(null)
           }}
         />
+      )}
+
+      {/* Map Modal */}
+      {showMapModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg max-w-6xl w-full h-[80vh] p-8 border border-gray-700">
+            <div className="flex justify-between items-start mb-6">
+              <h2 className="text-2xl font-bold text-white">Power Infrastructure Map</h2>
+              <button
+                onClick={() => setShowMapModal(false)}
+                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Map Placeholder */}
+            <div className="bg-gray-700 rounded-lg h-[calc(100%-80px)] flex items-center justify-center border-2 border-dashed border-gray-600">
+              <div className="text-center">
+                <svg className="mx-auto h-20 w-20 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                <p className="text-gray-400 font-medium text-lg mb-2">Interactive Map Placeholder</p>
+                <p className="text-sm text-gray-500">
+                  {selectedStateFilter
+                    ? `Showing power infrastructure for ${selectedStateFilter}`
+                    : 'Showing power infrastructure across selected region'}
+                </p>
+                <div className="mt-6 flex items-center justify-center space-x-6">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                    <span className="text-sm text-gray-400">Power Plants</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span className="text-sm text-gray-400">Substations</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                    <span className="text-sm text-gray-400">Transmission Lines</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
