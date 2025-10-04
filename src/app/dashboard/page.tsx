@@ -1669,31 +1669,6 @@ export default function DashboardPage() {
                     Data center load estimates based on public announcements and industry reports. Actual loads may vary.
                   </p>
                 </div>
-
-                {/* CTA Button */}
-                <div className="text-center">
-                  <button
-                    className="px-8 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed shadow-lg"
-                    disabled={!selectedCorporate}
-                    onClick={() => {
-                      if (selectedCorporate) {
-                        console.log('Analyzing selected corporate:', selectedCorporate)
-                        // Scroll to analysis section
-                        const analysisSection = document.getElementById('corporate-analysis-section')
-                        if (analysisSection) {
-                          analysisSection.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                          })
-                        }
-                      } else {
-                        alert('Please select a company first by clicking on one of the tiles above.')
-                      }
-                    }}
-                  >
-                    {selectedCorporate ? `VIEW ${selectedCorporate.name.toUpperCase()} PROFILE` : 'SELECT A COMPANY FIRST'}
-                  </button>
-                </div>
               </>
             )}
           </div>
