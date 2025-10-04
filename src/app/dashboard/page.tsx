@@ -1948,7 +1948,7 @@ export default function DashboardPage() {
       {/* Map Modal */}
       {showMapModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-lg max-w-6xl w-full h-[80vh] p-8 border border-gray-700">
+          <div className="bg-gray-800 rounded-lg max-w-4xl w-full h-[90vh] p-8 border border-gray-700">
             <div className="flex justify-between items-start mb-6">
               <h2 className="text-2xl font-bold text-white">Power Infrastructure Map</h2>
               <button
@@ -1961,32 +1961,83 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            {/* Map Placeholder */}
-            <div className="bg-gray-700 rounded-lg h-[calc(100%-80px)] flex items-center justify-center border-2 border-dashed border-gray-600">
-              <div className="text-center">
-                <svg className="mx-auto h-20 w-20 text-gray-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                </svg>
-                <p className="text-gray-400 font-medium text-lg mb-2">Interactive Map Placeholder</p>
-                <p className="text-sm text-gray-500">
-                  {selectedStateFilter
-                    ? `Showing power infrastructure for ${selectedStateFilter}`
-                    : 'Showing power infrastructure across selected region'}
-                </p>
-                <div className="mt-6 flex items-center justify-center space-x-6">
+            {/* Map Placeholder with Visual Map */}
+            <div className="bg-gray-900 rounded-lg h-[calc(100%-80px)] overflow-hidden border border-gray-600 relative">
+              {/* Placeholder Map Visual */}
+              <svg className="w-full h-full" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+                {/* Background */}
+                <rect width="800" height="600" fill="#1a1a1a"/>
+
+                {/* Grid lines */}
+                <defs>
+                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#374151" strokeWidth="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="800" height="600" fill="url(#grid)" opacity="0.3"/>
+
+                {/* Mock state boundaries */}
+                <path d="M 150 100 L 300 120 L 320 200 L 280 280 L 200 300 L 140 250 Z"
+                      fill="#1e293b" stroke="#3b82f6" strokeWidth="2" opacity="0.6"/>
+                <path d="M 320 200 L 450 180 L 500 250 L 480 320 L 400 340 L 320 300 Z"
+                      fill="#1e293b" stroke="#3b82f6" strokeWidth="2" opacity="0.6"/>
+                <path d="M 500 250 L 650 240 L 680 320 L 620 400 L 520 380 L 480 320 Z"
+                      fill="#1e293b" stroke="#3b82f6" strokeWidth="2" opacity="0.6"/>
+
+                {/* Power Plants (blue circles) */}
+                <circle cx="200" cy="180" r="8" fill="#3b82f6" stroke="#60a5fa" strokeWidth="2"/>
+                <circle cx="280" cy="220" r="8" fill="#3b82f6" stroke="#60a5fa" strokeWidth="2"/>
+                <circle cx="380" cy="250" r="8" fill="#3b82f6" stroke="#60a5fa" strokeWidth="2"/>
+                <circle cx="520" cy="280" r="8" fill="#3b82f6" stroke="#60a5fa" strokeWidth="2"/>
+                <circle cx="600" cy="310" r="8" fill="#3b82f6" stroke="#60a5fa" strokeWidth="2"/>
+
+                {/* Substations (green squares) */}
+                <rect x="236" y="196" width="12" height="12" fill="#10b981" stroke="#34d399" strokeWidth="2"/>
+                <rect x="336" y="236" width="12" height="12" fill="#10b981" stroke="#34d399" strokeWidth="2"/>
+                <rect x="456" y="276" width="12" height="12" fill="#10b981" stroke="#34d399" strokeWidth="2"/>
+                <rect x="556" y="296" width="12" height="12" fill="#10b981" stroke="#34d399" strokeWidth="2"/>
+
+                {/* Transmission Lines (purple) */}
+                <line x1="200" y1="180" x2="242" y2="202" stroke="#a855f7" strokeWidth="2" strokeDasharray="5,5"/>
+                <line x1="248" y1="202" x2="280" y2="220" stroke="#a855f7" strokeWidth="2" strokeDasharray="5,5"/>
+                <line x1="280" y1="220" x2="342" y2="242" stroke="#a855f7" strokeWidth="2" strokeDasharray="5,5"/>
+                <line x1="348" y1="242" x2="380" y2="250" stroke="#a855f7" strokeWidth="2" strokeDasharray="5,5"/>
+                <line x1="380" y1="250" x2="462" y2="282" stroke="#a855f7" strokeWidth="2" strokeDasharray="5,5"/>
+                <line x1="468" y1="282" x2="520" y2="280" stroke="#a855f7" strokeWidth="2" strokeDasharray="5,5"/>
+                <line x1="520" y1="280" x2="562" y2="302" stroke="#a855f7" strokeWidth="2" strokeDasharray="5,5"/>
+                <line x1="568" y1="302" x2="600" y2="310" stroke="#a855f7" strokeWidth="2" strokeDasharray="5,5"/>
+
+                {/* State labels */}
+                <text x="220" y="200" fill="#94a3b8" fontSize="14" fontWeight="bold">Virginia</text>
+                <text x="400" y="260" fill="#94a3b8" fontSize="14" fontWeight="bold">Maryland</text>
+                <text x="580" y="320" fill="#94a3b8" fontSize="14" fontWeight="bold">Delaware</text>
+              </svg>
+
+              {/* Legend */}
+              <div className="absolute bottom-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 border border-gray-600">
+                <div className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                    <span className="text-sm text-gray-400">Power Plants</span>
+                    <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-blue-400"></div>
+                    <span className="text-sm text-gray-300">Power Plants</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span className="text-sm text-gray-400">Substations</span>
+                    <div className="w-3 h-3 bg-green-500 border-2 border-green-400"></div>
+                    <span className="text-sm text-gray-300">Substations</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                    <span className="text-sm text-gray-400">Transmission Lines</span>
+                    <div className="w-3 h-3 bg-purple-500"></div>
+                    <span className="text-sm text-gray-300">Transmission Lines</span>
                   </div>
                 </div>
+              </div>
+
+              {/* Info overlay */}
+              <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 border border-gray-600">
+                <p className="text-sm text-gray-300">
+                  {selectedStateFilter
+                    ? `Viewing: ${selectedStateFilter}`
+                    : 'Viewing: PJM Region'}
+                </p>
               </div>
             </div>
           </div>
