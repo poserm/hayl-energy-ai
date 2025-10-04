@@ -85,19 +85,19 @@ function PlantsTableRows({ utility }: { utility: any }) {
   return (
     <>
       {plants.map((plant, index) => (
-        <tr key={index} className="hover:bg-gray-900">
+        <tr key={index} className="hover:bg-gray-600">
           <td className="px-4 py-3 text-sm font-medium text-white">
             {plant.plant_name || 'Unknown Plant'}
           </td>
           <td className="px-4 py-3 text-sm text-gray-400">
             <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-              plant.technology === 'Natural Gas' ? 'bg-blue-100 text-blue-800' :
-              plant.technology === 'Coal' ? 'bg-gray-700 text-gray-800' :
-              plant.technology === 'Nuclear' ? 'bg-purple-100 text-purple-800' :
-              plant.technology === 'Solar' ? 'bg-yellow-100 text-yellow-800' :
-              plant.technology === 'Wind' ? 'bg-green-100 text-green-800' :
-              plant.technology === 'Hydro' ? 'bg-cyan-100 text-cyan-800' :
-              'bg-gray-700 text-gray-800'
+              plant.technology === 'Natural Gas' ? 'bg-blue-600 text-white' :
+              plant.technology === 'Coal' ? 'bg-gray-600 text-white' :
+              plant.technology === 'Nuclear' ? 'bg-purple-600 text-white' :
+              plant.technology === 'Solar' ? 'bg-yellow-600 text-white' :
+              plant.technology === 'Wind' ? 'bg-green-600 text-white' :
+              plant.technology === 'Hydro' ? 'bg-cyan-600 text-white' :
+              'bg-gray-600 text-white'
             }`}>
               {plant.technology || 'Unknown'}
             </span>
@@ -1349,13 +1349,19 @@ export default function DashboardPage() {
                           onClick={() => {
                             setSelectedUtilityForAnalysis(utility)
                             setSelectedCorporate(null) // Clear corporate selection
-                            // Scroll to profile section
+                            // Scroll to profile section with slower animation
                             setTimeout(() => {
-                              document.getElementById('utility-analysis-section')?.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                              })
-                            }, 100)
+                              const element = document.getElementById('utility-analysis-section')
+                              if (element) {
+                                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+                                const offsetPosition = elementPosition - 100 // 100px offset from top to show header
+
+                                window.scrollTo({
+                                  top: offsetPosition,
+                                  behavior: 'smooth'
+                                })
+                              }
+                            }, 200)
                           }}
                         >
                           <h4 className="text-lg font-bold text-white leading-tight mb-2">
@@ -1576,13 +1582,19 @@ export default function DashboardPage() {
                             onClick={() => {
                               setSelectedCorporate(corporate)
                               setSelectedUtilityForAnalysis(null) // Clear utility selection
-                              // Scroll to profile section
+                              // Scroll to profile section with slower animation
                               setTimeout(() => {
-                                document.getElementById('corporate-analysis-section')?.scrollIntoView({
-                                  behavior: 'smooth',
-                                  block: 'start'
-                                })
-                              }, 100)
+                                const element = document.getElementById('corporate-analysis-section')
+                                if (element) {
+                                  const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+                                  const offsetPosition = elementPosition - 100 // 100px offset from top to show header
+
+                                  window.scrollTo({
+                                    top: offsetPosition,
+                                    behavior: 'smooth'
+                                  })
+                                }
+                              }, 200)
                             }}
                           >
                             <h4 className="text-lg font-bold text-white leading-tight mb-3">
@@ -1766,19 +1778,19 @@ export default function DashboardPage() {
                   <div>
                     <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wide mb-2">Line of Business</h3>
                     <div className="flex flex-wrap gap-2">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-600 text-white shadow-md">
                         <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                         Generation
                       </span>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-500/20 text-green-300 border border-green-500/30">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-600 text-white shadow-md">
                         <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                         </svg>
                         Transmission
                       </span>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-600 text-white shadow-md">
                         <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                         </svg>
@@ -2116,60 +2128,29 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {utility && (
                   <div className="mb-8">
                     <h3 className="text-lg font-semibold text-white mb-4">Capacity by Technology</h3>
-                    <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Bar Chart Visualization */}
-                        <div>
-                          <div className="space-y-3">
-                            {[
-                              { tech: 'Natural Gas', capacity: 3200, color: 'bg-blue-500', percent: 45 },
-                              { tech: 'Coal', capacity: 2100, color: 'bg-gray-600', percent: 29 },
-                              { tech: 'Nuclear', capacity: 900, color: 'bg-purple-500', percent: 13 },
-                              { tech: 'Solar', capacity: 450, color: 'bg-yellow-500', percent: 6 },
-                              { tech: 'Wind', capacity: 350, color: 'bg-green-500', percent: 5 },
-                              { tech: 'Hydro', capacity: 150, color: 'bg-cyan-500', percent: 2 }
-                            ].map((item) => (
-                              <div key={item.tech}>
-                                <div className="flex items-center justify-between mb-1">
-                                  <span className="text-sm font-medium text-gray-300">{item.tech}</span>
-                                  <span className="text-sm text-gray-400">{item.capacity} MW ({item.percent}%)</span>
-                                </div>
-                                <div className="w-full bg-gray-200 rounded-full h-3">
-                                  <div
-                                    className={`${item.color} h-3 rounded-full transition-all duration-500`}
-                                    style={{ width: `${item.percent}%` }}
-                                  ></div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Summary Statistics */}
-                        <div className="space-y-4">
-                          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4">
-                            <p className="text-sm text-blue-600 font-medium">Total Capacity</p>
-                            <p className="text-3xl font-bold text-blue-900">7,150 MW</p>
-                          </div>
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-gray-900 rounded-lg p-3">
-                              <p className="text-xs text-gray-400">Fossil Fuels</p>
-                              <p className="text-lg font-bold text-white">74%</p>
+                    <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
+                      <div className="space-y-3">
+                        {[
+                          { tech: 'Natural Gas', capacity: 3200, color: 'bg-blue-500', percent: 45 },
+                          { tech: 'Coal', capacity: 2100, color: 'bg-gray-600', percent: 29 },
+                          { tech: 'Nuclear', capacity: 900, color: 'bg-purple-500', percent: 13 },
+                          { tech: 'Solar', capacity: 450, color: 'bg-yellow-500', percent: 6 },
+                          { tech: 'Wind', capacity: 350, color: 'bg-green-500', percent: 5 },
+                          { tech: 'Hydro', capacity: 150, color: 'bg-cyan-500', percent: 2 }
+                        ].map((item) => (
+                          <div key={item.tech}>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-medium text-gray-300">{item.tech}</span>
+                              <span className="text-sm text-gray-400">{item.capacity} MW ({item.percent}%)</span>
                             </div>
-                            <div className="bg-green-50 rounded-lg p-3">
-                              <p className="text-xs text-green-600">Renewables</p>
-                              <p className="text-lg font-bold text-green-900">13%</p>
-                            </div>
-                            <div className="bg-purple-50 rounded-lg p-3">
-                              <p className="text-xs text-purple-600">Nuclear</p>
-                              <p className="text-lg font-bold text-purple-900">13%</p>
-                            </div>
-                            <div className="bg-blue-50 rounded-lg p-3">
-                              <p className="text-xs text-blue-600">Avg. Age</p>
-                              <p className="text-lg font-bold text-blue-900">28 yrs</p>
+                            <div className="w-full bg-gray-600 rounded-full h-3">
+                              <div
+                                className={`${item.color} h-3 rounded-full transition-all duration-500`}
+                                style={{ width: `${item.percent}%` }}
+                              ></div>
                             </div>
                           </div>
-                        </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -2197,19 +2178,19 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {utility && (
                   <div className="mb-8">
                     <h3 className="text-lg font-semibold text-white mb-4">Power Plant Portfolio</h3>
-                    <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+                    <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
                       <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                          <thead className="bg-gray-900">
+                        <table className="min-w-full divide-y divide-gray-600">
+                          <thead className="bg-gray-600">
                             <tr>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plant Name</th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technology</th>
-                              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity (MW)</th>
-                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Operating Year</th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Plant Name</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Technology</th>
+                              <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Capacity (MW)</th>
+                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">Operating Year</th>
+                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Location</th>
                             </tr>
                           </thead>
-                          <tbody className="bg-gray-800 divide-y divide-gray-200">
+                          <tbody className="bg-gray-700 divide-y divide-gray-600">
                             <PlantsTableRows utility={utility} />
                           </tbody>
                         </table>
@@ -2220,16 +2201,16 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
                 {/* Generation Sources */}
                 <div className="space-y-4 mb-6">
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
+                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
                     <h4 className="font-semibold text-white mb-2">Generation Sources</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <span className="text-sm text-gray-400">Primary Source:</span>
-                        <span className="ml-2 font-medium">Natural Gas</span>
+                        <span className="text-sm text-gray-300">Primary Source:</span>
+                        <span className="ml-2 font-medium text-white">Natural Gas</span>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-400">Renewable %:</span>
-                        <span className="ml-2 font-medium">15%</span>
+                        <span className="text-sm text-gray-300">Renewable %:</span>
+                        <span className="ml-2 font-medium text-white">15%</span>
                       </div>
                     </div>
                   </div>
@@ -2238,9 +2219,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {/* Future Projects Table */}
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Future Supply Projects</h3>
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+                  <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
                     <table className="w-full">
-                      <thead className="bg-gray-900">
+                      <thead className="bg-gray-600">
                         <tr>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Project</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Type</th>
@@ -2250,10 +2231,10 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                       </thead>
                       <tbody>
                         {[...Array(4)].map((_, i) => (
-                          <tr key={i} className="border-t border-gray-700">
+                          <tr key={i} className="border-t border-gray-600">
                             <td className="px-4 py-2 text-sm text-white">Project {i + 1}</td>
                             <td className="px-4 py-2 text-sm text-white">Solar</td>
-                            <td className="px-4 py-2 text-sm text-green-600">Planned</td>
+                            <td className="px-4 py-2 text-sm text-green-400">Planned</td>
                             <td className="px-4 py-2 text-sm text-white">2025</td>
                           </tr>
                         ))}
