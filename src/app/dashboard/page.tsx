@@ -1502,12 +1502,60 @@ export default function DashboardPage() {
                   </p>
                 </div>
 
+                {/* Corporate Type Filter */}
+                <div className="flex justify-center mb-6">
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      onClick={() => setSelectedOwnershipType(null)}
+                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                        selectedOwnershipType === null
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                      }`}
+                    >
+                      ALL
+                    </button>
+                    <button
+                      onClick={() => setSelectedOwnershipType('Hyperscale')}
+                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                        selectedOwnershipType === 'Hyperscale'
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                      }`}
+                    >
+                      HYPERSCALE
+                    </button>
+                    <button
+                      onClick={() => setSelectedOwnershipType('Colocation')}
+                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                        selectedOwnershipType === 'Colocation'
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                      }`}
+                    >
+                      COLOCATION
+                    </button>
+                    <button
+                      onClick={() => setSelectedOwnershipType('Developer')}
+                      className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
+                        selectedOwnershipType === 'Developer'
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
+                      }`}
+                    >
+                      DEVELOPER
+                    </button>
+                  </div>
+                </div>
+
                 {/* Corporates Grid */}
                 <div className="mb-10">
                   <div className="relative">
                     {/* Horizontal Scrollable Tiles */}
                     <div className="flex overflow-x-auto space-x-4 pb-4 scroll-smooth">
-                      {corporatesByRegion[region]?.map((corporate, index) => {
+                      {corporatesByRegion[region]?.filter((corporate) =>
+                        !selectedOwnershipType || corporate.type === selectedOwnershipType
+                      ).map((corporate, index) => {
                         const corporateId = `corporate-${corporate.id || index}`
                         const isFavorited = favorites.has(corporateId)
 
@@ -1578,21 +1626,9 @@ export default function DashboardPage() {
                               }, 100)
                             }}
                           >
-                            <h4 className="text-lg font-bold text-white leading-tight mb-2">
+                            <h4 className="text-lg font-bold text-white leading-tight mb-3">
                               {corporate.name}
                             </h4>
-
-                            {/* Company Type Badge */}
-                            <div className="mb-3">
-                              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
-                                corporate.type === 'Hyperscale' ? 'bg-blue-100 text-blue-700' :
-                                corporate.type === 'Colocation' ? 'bg-green-100 text-green-700' :
-                                corporate.type === 'Developer' ? 'bg-purple-100 text-purple-700' :
-                                'bg-gray-700 text-gray-300'
-                              }`}>
-                                {corporate.type}
-                              </span>
-                            </div>
 
                             {/* Multi-state badge */}
                             {corporate.states && corporate.states.length > 1 && (
@@ -1623,14 +1659,6 @@ export default function DashboardPage() {
                                 </div>
                               </div>
                             )}
-
-                            {/* Estimated Load */}
-                            <div className="mb-3 px-3 py-2 bg-green-50 rounded-lg">
-                              <p className="text-xs text-gray-400 mb-1">Estimated Load</p>
-                              <p className="text-lg font-bold text-green-600">
-                                {corporate.estimatedLoad}
-                              </p>
-                            </div>
 
                             {/* Facilities Count */}
                             <div className="text-sm text-gray-500 mb-3">
