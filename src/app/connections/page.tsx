@@ -168,7 +168,7 @@ export default function ConnectionsPage() {
       <div className="max-w-7xl mx-auto px-6 py-12 min-h-screen">
         {/* Header Section */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Your Connections
           </h1>
           <p className="text-lg text-gray-400 max-w-2xl">

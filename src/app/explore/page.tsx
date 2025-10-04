@@ -214,7 +214,7 @@ export default function ExplorePage() {
       <div className="max-w-7xl mx-auto px-6 py-12 min-h-screen">
         {/* Header Section */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Deep Dive Intelligence
           </h1>
           <p className="text-lg text-gray-400 max-w-2xl">
@@ -377,7 +377,7 @@ export default function ExplorePage() {
             </button>
 
             {/* Company Header */}
-            <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-xl p-8">
+            <div className="bg-gray-800 border border-gray-700 rounded-xl p-8">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center space-x-3 mb-3">

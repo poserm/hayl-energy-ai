@@ -2082,49 +2082,42 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
   return (
     <div className="w-full">
-      {/* Main Content Container */}
-      <div className="flex gap-8">
-        {/* Timeline Navigation with Section Titles */}
-        <div className="flex-shrink-0 w-64">
-          <div className="sticky top-24">
-            {sections.map((section, index) => (
-              <div key={section.id} className="mb-6">
-                <button
-                  onClick={() => setActiveSection(section.id)}
-                  className={`w-full flex items-center space-x-4 p-3 rounded-lg transition-all ${
-                    activeSection === section.id
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-gray-900 text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
-                    activeSection === section.id
-                      ? 'bg-gray-800 text-white'
-                      : 'bg-gray-200 text-gray-400'
-                  }`}>
-                    {String(section.id).padStart(2, '0')}
-                  </div>
-                  <span className="text-left font-medium">{section.title}</span>
-                </button>
-                {index < sections.length - 1 && (
-                  <div className="ml-5 mt-2 mb-2 w-0.5 h-6 bg-gray-200" />
-                )}
-              </div>
+      {/* Section Navigation - Horizontal at Top */}
+      <div className="mb-8">
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex rounded-lg bg-gray-700 p-1">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => setActiveSection(section.id)}
+                className={`px-6 py-2.5 rounded-md font-semibold transition-all ${
+                  activeSection === section.id
+                    ? 'bg-gray-800 text-blue-600 shadow-sm'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {section.title}
+              </button>
             ))}
           </div>
         </div>
 
-        {/* Section Content */}
-        <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-bold text-white mb-2">
-              {sections[activeSection - 1].title}
-            </h2>
-            <p className="text-gray-400 mb-6">
-              {activeSection === 1 && `Comprehensive overview of ${utility?.name || utility?.utility_name}'s generation portfolio, capacity mix, and supply infrastructure.`}
-              {activeSection === 2 && `Detailed analysis of ${utility?.name || utility?.utility_name}'s energy demand patterns, customer segments, and load profiles.`}
-              {activeSection === 3 && `Current and upcoming procurement opportunities, RFPs, and partnership initiatives from ${utility?.name || utility?.utility_name}.`}
-              {activeSection === 4 && `Access regulatory filings, integrated resource plans, and key documents from ${utility?.name || utility?.utility_name}.`}
-            </p>
+        {/* Section Description */}
+        <div className="text-center max-w-3xl mx-auto">
+          <h2 className="text-2xl font-bold text-white mb-2">
+            {sections[activeSection - 1].title}
+          </h2>
+          <p className="text-gray-400">
+            {activeSection === 1 && `Comprehensive overview of ${utility?.name || utility?.utility_name}'s generation portfolio, capacity mix, and supply infrastructure.`}
+            {activeSection === 2 && `Detailed analysis of ${utility?.name || utility?.utility_name}'s energy demand patterns, customer segments, and load profiles.`}
+            {activeSection === 3 && `Current and upcoming procurement opportunities, RFPs, and partnership initiatives from ${utility?.name || utility?.utility_name}.`}
+            {activeSection === 4 && `Access regulatory filings, integrated resource plans, and key documents from ${utility?.name || utility?.utility_name}.`}
+          </p>
+        </div>
+      </div>
+
+      {/* Section Content */}
+      <div className="w-full">
 
             {/* Section 1: Energy Supply */}
             {activeSection === 1 && (
@@ -2736,9 +2729,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
               </>
             )}
-          </div>
-        </div>
       </div>
+    </div>
   )
 }
 
@@ -2756,50 +2748,43 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
 
   return (
     <div className="w-full">
-      {/* Main Content Container */}
-      <div className="flex gap-8">
-        {/* Timeline Navigation with Section Titles */}
-        <div className="flex-shrink-0 w-64">
-          <div className="sticky top-24">
-            {sections.map((section, index) => (
-              <div key={section.id} className="mb-6">
-                <button
-                  onClick={() => setActiveSection(section.id)}
-                  className={`w-full flex items-center space-x-4 p-3 rounded-lg transition-all ${
-                    activeSection === section.id
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-gray-900 text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
-                    activeSection === section.id
-                      ? 'bg-gray-800 text-white'
-                      : 'bg-gray-200 text-gray-400'
-                  }`}>
-                    {String(section.id).padStart(2, '0')}
-                  </div>
-                  <span className="text-left font-medium">{section.title}</span>
-                </button>
-                {index < sections.length - 1 && (
-                  <div className="ml-5 mt-2 mb-2 w-0.5 h-6 bg-gray-200" />
-                )}
-              </div>
+      {/* Section Navigation - Horizontal at Top */}
+      <div className="mb-8">
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex rounded-lg bg-gray-700 p-1 flex-wrap">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => setActiveSection(section.id)}
+                className={`px-6 py-2.5 rounded-md font-semibold transition-all ${
+                  activeSection === section.id
+                    ? 'bg-gray-800 text-blue-600 shadow-sm'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {section.title}
+              </button>
             ))}
           </div>
         </div>
 
-        {/* Section Content */}
-        <div className="flex-1 min-w-0">
+        {/* Section Description */}
+        <div className="text-center max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold text-white mb-2">
             {sections[activeSection - 1].title}
           </h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-400">
             {activeSection === 1 && `Overview of ${corporate.name}'s data center infrastructure, facilities, and operational footprint in the ${region} region.`}
             {activeSection === 2 && `Analysis of ${corporate.name}'s energy consumption patterns, load requirements, and power purchase agreements.`}
             {activeSection === 3 && `${corporate.name}'s sustainability commitments, carbon-free energy goals, and future expansion plans.`}
             {activeSection === 4 && `Partnership opportunities and energy procurement initiatives with ${corporate.name}.`}
             {activeSection === 5 && `Access financial reports, sustainability disclosures, and corporate documents from ${corporate.name}.`}
           </p>
+        </div>
+      </div>
+
+      {/* Section Content */}
+      <div className="w-full">
 
           {/* Section 1: Infrastructure & Facilities */}
           {activeSection === 1 && (
@@ -3401,7 +3386,6 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
             </>
           )}
-        </div>
       </div>
     </div>
   )
