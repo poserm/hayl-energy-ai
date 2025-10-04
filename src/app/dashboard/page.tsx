@@ -824,7 +824,7 @@ export default function DashboardPage() {
                   onClick={() => setSnapshotTab('supply')}
                   className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
                     snapshotTab === 'supply'
-                      ? 'bg-white text-blue-600 shadow-sm'
+                      ? 'bg-gray-800 text-blue-600 shadow-sm'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -834,7 +834,7 @@ export default function DashboardPage() {
                   onClick={() => setSnapshotTab('demand')}
                   className={`px-6 py-2.5 rounded-md text-sm font-semibold transition-all ${
                     snapshotTab === 'demand'
-                      ? 'bg-white text-blue-600 shadow-sm'
+                      ? 'bg-gray-800 text-blue-600 shadow-sm'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -1021,22 +1021,22 @@ export default function DashboardPage() {
 
                 {/* Demand Trends */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="bg-white border border-gray-700 rounded-lg p-3">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
                     <p className="text-xs text-gray-400">Data Centers</p>
                     <p className="text-lg font-bold text-white">12.8 GW</p>
                     <p className="text-xs text-green-600">↑ 18% YoY</p>
                   </div>
-                  <div className="bg-white border border-gray-700 rounded-lg p-3">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
                     <p className="text-xs text-gray-400">EV Charging</p>
                     <p className="text-lg font-bold text-white">2.4 GW</p>
                     <p className="text-xs text-green-600">↑ 45% YoY</p>
                   </div>
-                  <div className="bg-white border border-gray-700 rounded-lg p-3">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
                     <p className="text-xs text-gray-400">Manufacturing</p>
                     <p className="text-lg font-bold text-white">15.2 GW</p>
                     <p className="text-xs text-gray-400">↑ 2% YoY</p>
                   </div>
-                  <div className="bg-white border border-gray-700 rounded-lg p-3">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
                     <p className="text-xs text-gray-400">Other</p>
                     <p className="text-lg font-bold text-white">13.5 GW</p>
                     <p className="text-xs text-gray-400">→ Flat</p>
@@ -1687,7 +1687,7 @@ export default function DashboardPage() {
 
         {/* Utility Analysis Section - Wireframe Format */}
         {selectedUtilityForAnalysis && (
-          <section id="utility-analysis-section" className="bg-white py-16">
+          <section id="utility-analysis-section" className="bg-gray-900 py-16">
             <div className="max-w-7xl mx-auto px-6">
               {/* Header */}
               <div className="bg-gray-900 text-white rounded-2xl mb-8">
@@ -1821,7 +1821,7 @@ export default function DashboardPage() {
 
         {/* Corporate Analysis Section */}
         {selectedCorporate && (
-          <section id="corporate-analysis-section" className="bg-white py-16">
+          <section id="corporate-analysis-section" className="bg-gray-900 py-16">
             <div className="max-w-7xl mx-auto px-6">
               {/* Header */}
               <div className="bg-gray-900 text-white rounded-2xl mb-8">
@@ -2106,7 +2106,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 >
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
                     activeSection === section.id
-                      ? 'bg-white text-white'
+                      ? 'bg-gray-800 text-white'
                       : 'bg-gray-200 text-gray-400'
                   }`}>
                     {String(section.id).padStart(2, '0')}
@@ -2140,7 +2140,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {utility && (
                   <div className="mb-8">
                     <h3 className="text-lg font-semibold text-white mb-4">Capacity by Technology</h3>
-                    <div className="bg-white border border-gray-700 rounded-lg p-6">
+                    <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Bar Chart Visualization */}
                         <div>
@@ -2221,7 +2221,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {utility && (
                   <div className="mb-8">
                     <h3 className="text-lg font-semibold text-white mb-4">Power Plant Portfolio</h3>
-                    <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
+                    <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
                       <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">
                           <thead className="bg-gray-900">
@@ -2233,7 +2233,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
                             </tr>
                           </thead>
-                          <tbody className="bg-white divide-y divide-gray-200">
+                          <tbody className="bg-gray-800 divide-y divide-gray-200">
                             <PlantsTableRows utility={utility} />
                           </tbody>
                         </table>
@@ -2244,7 +2244,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
                 {/* Generation Sources */}
                 <div className="space-y-4 mb-6">
-                  <div className="bg-white border border-gray-700 rounded-lg p-4">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                     <h4 className="font-semibold text-white mb-2">Generation Sources</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -2262,7 +2262,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {/* Future Projects Table */}
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Future Supply Projects</h3>
-                  <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
                     <table className="w-full">
                       <thead className="bg-gray-900">
                         <tr>
@@ -2322,7 +2322,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {/* Customer Class Breakdown */}
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Load by Customer Class</h3>
-                  <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-900">
                         <tr>
@@ -2333,7 +2333,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                           <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Avg. Usage per Customer</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-gray-800 divide-y divide-gray-200">
                         <tr>
                           <td className="px-4 py-3 text-sm font-medium text-white">Residential</td>
                           <td className="px-4 py-3 text-sm text-white text-right">2,150,000</td>
@@ -2373,7 +2373,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Customer Class Contribution</h3>
                   <div className="space-y-3">
-                    <div className="bg-white border border-gray-700 rounded-lg p-4">
+                    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center space-x-2">
                           <div className="w-4 h-4 bg-blue-500 rounded"></div>
@@ -2389,7 +2389,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                       </div>
                     </div>
 
-                    <div className="bg-white border border-gray-700 rounded-lg p-4">
+                    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center space-x-2">
                           <div className="w-4 h-4 bg-green-500 rounded"></div>
@@ -2405,7 +2405,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                       </div>
                     </div>
 
-                    <div className="bg-white border border-gray-700 rounded-lg p-4">
+                    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center space-x-2">
                           <div className="w-4 h-4 bg-purple-500 rounded"></div>
@@ -2520,7 +2520,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         link: 'https://example.com/rfp/demand-response-2025'
                       }
                     ].map((rfp, i) => (
-                      <div key={i} className="bg-white border border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow">
+                      <div key={i} className="bg-gray-800 border border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow">
                         <div className="flex justify-between items-start mb-3">
                           <div>
                             <h4 className="font-semibold text-white text-lg">{rfp.title}</h4>
@@ -2583,7 +2583,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
 
                 {/* Procurement Preferences */}
-                <div className="bg-white border border-gray-700 rounded-lg p-6 mb-6">
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Procurement Preferences</h3>
                   <div className="space-y-3">
                     <div className="flex items-start space-x-3">
@@ -2648,7 +2648,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {/* Document Categories */}
                 <div className="space-y-6">
                   {/* Integrated Resource Plan */}
-                  <div className="bg-white border border-gray-700 rounded-lg p-6">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-start space-x-3">
                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -2683,7 +2683,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                   </div>
 
                   {/* FERC Form 1 */}
-                  <div className="bg-white border border-gray-700 rounded-lg p-6">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-start space-x-3">
                         <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -2718,7 +2718,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                   </div>
 
                   {/* Additional Documents */}
-                  <div className="bg-white border border-gray-700 rounded-lg p-6">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                     <h4 className="text-lg font-semibold text-white mb-4">Additional Resources</h4>
                     <div className="space-y-3">
                       <a
@@ -2811,7 +2811,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                 >
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
                     activeSection === section.id
-                      ? 'bg-white text-white'
+                      ? 'bg-gray-800 text-white'
                       : 'bg-gray-200 text-gray-400'
                   }`}>
                     {String(section.id).padStart(2, '0')}
@@ -2862,7 +2862,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               {/* Facilities by State */}
               <div className="mb-8">
                 <h3 className="text-lg font-semibold text-white mb-4">Facilities by State</h3>
-                <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
+                <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-900">
@@ -2873,7 +2873,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Primary Use</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-gray-800 divide-y divide-gray-200">
                         {corporate.states?.map((state: string, idx: number) => (
                           <tr key={state}>
                             <td className="px-4 py-3 text-sm font-medium text-white">{state}</td>
@@ -2968,7 +2968,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               <div className="mb-6">
                 <h3 className="text-lg font-semibold text-white mb-4">Energy Source Mix</h3>
                 <div className="space-y-3">
-                  <div className="bg-white border border-gray-700 rounded-lg p-4">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-medium text-white">Grid Power (Mixed Source)</span>
                       <span className="font-bold text-white">35%</span>
@@ -2977,7 +2977,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       <div className="bg-blue-500 h-2 rounded-full" style={{width: '35%'}}></div>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-700 rounded-lg p-4">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-medium text-white">Renewable PPAs (Solar/Wind)</span>
                       <span className="font-bold text-green-600">45%</span>
@@ -2986,7 +2986,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       <div className="bg-green-500 h-2 rounded-full" style={{width: '45%'}}></div>
                     </div>
                   </div>
-                  <div className="bg-white border border-gray-700 rounded-lg p-4">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-medium text-white">On-site Generation</span>
                       <span className="font-bold text-white">20%</span>
@@ -2999,7 +2999,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Power Purchase Agreements */}
-              <div className="bg-white border border-gray-700 rounded-lg overflow-hidden">
+              <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
                 <div className="px-4 py-3 bg-gray-900 border-b border-gray-700">
                   <h3 className="text-lg font-semibold text-white">Active Power Purchase Agreements</h3>
                 </div>
@@ -3066,7 +3066,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                     { location: 'Central Ohio', capacity: '350 MW', timeline: 'Q4 2025', investment: '$1.8B' },
                     { location: 'Western Pennsylvania', capacity: '250 MW', timeline: 'Q1 2026', investment: '$1.2B' },
                   ].map((project, i) => (
-                    <div key={i} className="bg-white border border-gray-700 rounded-lg p-4">
+                    <div key={i} className="bg-gray-800 border border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-start">
                         <div>
                           <h4 className="font-semibold text-white">{project.location} Expansion</h4>
@@ -3083,7 +3083,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Technology Initiatives */}
-              <div className="bg-white border border-gray-700 rounded-lg p-6">
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-white mb-4">Emerging Technology Initiatives</h3>
                 <div className="space-y-4">
                   <div className="flex items-start space-x-3">
@@ -3176,7 +3176,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       link: 'https://example.com/grid-services'
                     }
                   ].map((opp, i) => (
-                    <div key={i} className="bg-white border border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow">
+                    <div key={i} className="bg-gray-800 border border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow">
                       <div className="flex justify-between items-start mb-3">
                         <div>
                           <h4 className="font-semibold text-white text-lg">{opp.title}</h4>
@@ -3213,7 +3213,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Partnership Priorities */}
-              <div className="bg-white border border-gray-700 rounded-lg p-6 mb-6">
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
                 <h3 className="text-lg font-semibold text-white mb-4">Partnership Priorities</h3>
                 <div className="space-y-3">
                   <div className="flex items-start space-x-3">
@@ -3278,7 +3278,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               {/* Document Categories */}
               <div className="space-y-6">
                 {/* Annual Report */}
-                <div className="bg-white border border-gray-700 rounded-lg p-6">
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start space-x-3">
                       <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -3313,7 +3313,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                 </div>
 
                 {/* 10-K Filing */}
-                <div className="bg-white border border-gray-700 rounded-lg p-6">
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start space-x-3">
                       <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -3348,7 +3348,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                 </div>
 
                 {/* ESG & Sustainability */}
-                <div className="bg-white border border-gray-700 rounded-lg p-6">
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start space-x-3">
                       <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -3383,7 +3383,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                 </div>
 
                 {/* Additional Documents */}
-                <div className="bg-white border border-gray-700 rounded-lg p-6">
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
                   <h4 className="text-lg font-semibold text-white mb-4">Additional Resources</h4>
                   <div className="space-y-3">
                     <a
