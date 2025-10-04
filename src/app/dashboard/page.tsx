@@ -565,7 +565,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#1a1a1a]">
       {/* Modern Header */}
-      <header className="bg-[#1a1a1a] shadow-sm border-b border-gray-800 sticky top-0 z-40">
+      <header className="bg-black shadow-sm border-b border-gray-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-6">
