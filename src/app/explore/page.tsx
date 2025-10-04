@@ -74,9 +74,9 @@ export default function ExplorePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-[#1a1a1a]">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      <div className="bg-gray-900 shadow-sm border-b border-gray-800 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -84,7 +84,7 @@ export default function ExplorePage() {
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-sm">HE</span>
                 </div>
-                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                <span className="text-xl font-bold text-white">
                   Hayl Energy AI
                 </span>
               </div>
@@ -93,25 +93,25 @@ export default function ExplorePage() {
               <nav className="flex items-center space-x-6 text-sm">
                 <button
                   onClick={() => window.close()}
-                  className="font-medium text-gray-700 hover:text-gray-900"
+                  className="font-medium text-gray-300 hover:text-white transition-colors"
                 >
                   Close
                 </button>
-                <a href="/dashboard" className="font-medium text-gray-700 hover:text-gray-900">Dashboard</a>
+                <a href="/dashboard" className="font-medium text-gray-300 hover:text-white transition-colors">Dashboard</a>
               </nav>
               <div className="flex items-center space-x-2">
-                <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-2 px-3 py-2 bg-gray-800 rounded-lg">
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                     {user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
                   </div>
                   <div className="text-left">
-                    <p className="text-sm font-medium text-gray-900">{user?.name || 'User'}</p>
-                    <p className="text-xs text-gray-500">{user?.email}</p>
+                    <p className="text-sm font-medium text-white">{user?.name || 'User'}</p>
+                    <p className="text-xs text-gray-400">{user?.email}</p>
                   </div>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="p-2 text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-100"
+                  className="p-2 text-gray-400 hover:text-white rounded-full hover:bg-gray-800 transition-colors"
                   title="Logout"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,26 +128,26 @@ export default function ExplorePage() {
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header Section */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-white mb-4">
             Your Favorited Companies
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
             View detailed information and drill into your favorited energy buyers and corporates
           </p>
         </div>
 
         {/* Tab Navigation */}
         <div className="flex justify-center mb-8">
-          <div className="inline-flex rounded-full bg-gray-200 p-1">
+          <div className="inline-flex rounded-lg bg-gray-700 p-1">
             <button
               onClick={() => {
                 setActiveTab('all')
                 setSelectedCompany(null)
               }}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-6 py-2.5 rounded-md font-semibold transition-all ${
                 activeTab === 'all'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-700 hover:text-gray-900'
+                  ? 'bg-gray-800 text-blue-600 shadow-sm'
+                  : 'text-gray-400 hover:text-white'
               }`}
             >
               All ({favoritedCompanies.length})
@@ -157,10 +157,10 @@ export default function ExplorePage() {
                 setActiveTab('utilities')
                 setSelectedCompany(null)
               }}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-6 py-2.5 rounded-md font-semibold transition-all ${
                 activeTab === 'utilities'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-700 hover:text-gray-900'
+                  ? 'bg-gray-800 text-blue-600 shadow-sm'
+                  : 'text-gray-400 hover:text-white'
               }`}
             >
               Utilities ({utilities.length})
@@ -170,10 +170,10 @@ export default function ExplorePage() {
                 setActiveTab('corporates')
                 setSelectedCompany(null)
               }}
-              className={`px-6 py-2 rounded-full font-medium transition-colors ${
+              className={`px-6 py-2.5 rounded-md font-semibold transition-all ${
                 activeTab === 'corporates'
-                  ? 'bg-gray-900 text-white'
-                  : 'text-gray-700 hover:text-gray-900'
+                  ? 'bg-gray-800 text-blue-600 shadow-sm'
+                  : 'text-gray-400 hover:text-white'
               }`}
             >
               Corporates ({corporates.length})
@@ -184,11 +184,11 @@ export default function ExplorePage() {
         {/* Empty State */}
         {favoritedCompanies.length === 0 && (
           <div className="text-center py-20">
-            <svg className="w-24 h-24 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-24 h-24 text-gray-600 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
             </svg>
-            <h3 className="text-2xl font-semibold text-gray-900 mb-3">No Favorites Yet</h3>
-            <p className="text-gray-600 mb-6">Start favoriting companies from the dashboard to see them here</p>
+            <h3 className="text-2xl font-semibold text-white mb-3">No Favorites Yet</h3>
+            <p className="text-gray-400 mb-6">Start favoriting companies from the dashboard to see them here</p>
             <a
               href="/dashboard"
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
@@ -208,12 +208,12 @@ export default function ExplorePage() {
                   <div
                     key={company.id}
                     onClick={() => setSelectedCompany(company)}
-                    className={`bg-white rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl relative ${
+                    className={`bg-gray-800 rounded-lg shadow-md border-2 p-6 cursor-pointer transition-all duration-300 hover:shadow-xl hover:bg-gray-750 relative ${
                       selectedCompany?.id === company.id
                         ? company.type === 'utility'
-                          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                          : 'border-green-500 bg-green-50 ring-2 ring-green-200'
-                        : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-blue-500 ring-2 ring-blue-500/30'
+                          : 'border-green-500 ring-2 ring-green-500/30'
+                        : 'border-gray-700 hover:border-gray-600'
                     }`}
                   >
                     {/* Remove button */}
@@ -222,7 +222,7 @@ export default function ExplorePage() {
                         e.stopPropagation()
                         handleRemoveFavorite(company.id)
                       }}
-                      className="absolute top-2 right-2 p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors"
+                      className="absolute top-2 right-2 p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-full transition-colors"
                       title="Remove from favorites"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -232,19 +232,19 @@ export default function ExplorePage() {
 
                     <div className="text-center">
                       <div className={`inline-flex px-2 py-1 rounded-full text-xs font-semibold mb-2 ${
-                        company.type === 'utility' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
+                        company.type === 'utility' ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'
                       }`}>
                         {company.type === 'utility' ? 'Utility' : 'Corporate'}
                       </div>
 
-                      <h4 className="text-base font-bold text-gray-900 leading-tight mb-2">
+                      <h4 className="text-base font-bold text-white leading-tight mb-2">
                         {company.name}
                       </h4>
 
                       {/* Region */}
                       {company.region && (
                         <div className="mb-2">
-                          <span className="text-xs text-gray-500">{company.region}</span>
+                          <span className="text-xs text-gray-400">{company.region}</span>
                         </div>
                       )}
 
@@ -252,19 +252,19 @@ export default function ExplorePage() {
                       {company.states && company.states.length > 0 && (
                         <div className="flex flex-wrap gap-1 justify-center mb-2">
                           {company.states.slice(0, 2).map((state: string) => (
-                            <span key={state} className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                            <span key={state} className="px-2 py-0.5 bg-gray-700 text-gray-300 rounded text-xs">
                               {state}
                             </span>
                           ))}
                           {company.states.length > 2 && (
-                            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs">
+                            <span className="px-2 py-0.5 bg-gray-700 text-gray-300 rounded text-xs">
                               +{company.states.length - 2}
                             </span>
                           )}
                         </div>
                       )}
 
-                      <div className="text-xs text-blue-600 font-medium mt-2">
+                      <div className="text-xs text-blue-400 font-medium mt-2">
                         Click for details →
                       </div>
                     </div>
@@ -275,21 +275,21 @@ export default function ExplorePage() {
 
             {/* Detail Panel */}
             {selectedCompany && (
-              <div className="lg:col-span-2 bg-white rounded-lg shadow-xl border-2 border-gray-300 p-8 sticky top-24 h-fit">
+              <div className="lg:col-span-2 bg-gray-800 rounded-lg shadow-xl border-2 border-gray-700 p-8 sticky top-24 h-fit">
                 <div className="flex justify-between items-start mb-6">
                   <div>
                     <div className={`inline-flex px-3 py-1 rounded-full text-sm font-semibold mb-3 ${
-                      selectedCompany.type === 'utility' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
+                      selectedCompany.type === 'utility' ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'
                     }`}>
                       {selectedCompany.type === 'utility' ? 'Utility Company' : 'Corporate Entity'}
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                    <h2 className="text-3xl font-bold text-white mb-2">
                       {selectedCompany.name}
                     </h2>
                   </div>
                   <button
                     onClick={() => setSelectedCompany(null)}
-                    className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+                    className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition-colors"
                   >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -301,8 +301,8 @@ export default function ExplorePage() {
                   {/* Region */}
                   {selectedCompany.region && (
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">ISO Region</h3>
-                      <div className="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg font-medium">
+                      <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">ISO Region</h3>
+                      <div className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">
                         {selectedCompany.region}
                       </div>
                     </div>
@@ -311,12 +311,12 @@ export default function ExplorePage() {
                   {/* States Coverage */}
                   {selectedCompany.states && selectedCompany.states.length > 0 && (
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">
+                      <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">
                         States of Operation ({selectedCompany.states.length})
                       </h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedCompany.states.map((state: string) => (
-                          <span key={state} className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">
+                          <span key={state} className="px-3 py-1.5 bg-gray-700 text-gray-200 rounded-lg text-sm font-medium">
                             {state}
                           </span>
                         ))}
@@ -329,8 +329,8 @@ export default function ExplorePage() {
                     <>
                       {selectedCompany.ownershipType && (
                         <div>
-                          <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Ownership Type</h3>
-                          <p className="text-lg font-medium text-gray-900">{selectedCompany.ownershipType}</p>
+                          <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">Ownership Type</h3>
+                          <p className="text-lg font-medium text-white">{selectedCompany.ownershipType}</p>
                         </div>
                       )}
                     </>
@@ -341,14 +341,14 @@ export default function ExplorePage() {
                     <>
                       {selectedCompany.companyType && (
                         <div>
-                          <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Company Type</h3>
+                          <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">Company Type</h3>
                           <div className={`inline-flex px-4 py-2 rounded-lg font-medium ${
-                            selectedCompany.companyType === 'Hyperscale' ? 'bg-blue-50 text-blue-700' :
-                            selectedCompany.companyType === 'Colocation' ? 'bg-green-50 text-green-700' :
-                            selectedCompany.companyType === 'Developer' ? 'bg-purple-50 text-purple-700' :
-                            selectedCompany.companyType === 'AI Infrastructure' ? 'bg-orange-50 text-orange-700' :
-                            selectedCompany.companyType === 'AI Cloud' ? 'bg-pink-50 text-pink-700' :
-                            'bg-gray-50 text-gray-700'
+                            selectedCompany.companyType === 'Hyperscale' ? 'bg-blue-600 text-white' :
+                            selectedCompany.companyType === 'Colocation' ? 'bg-green-600 text-white' :
+                            selectedCompany.companyType === 'Developer' ? 'bg-purple-600 text-white' :
+                            selectedCompany.companyType === 'AI Infrastructure' ? 'bg-orange-600 text-white' :
+                            selectedCompany.companyType === 'AI Cloud' ? 'bg-pink-600 text-white' :
+                            'bg-gray-600 text-white'
                           }`}>
                             {selectedCompany.companyType}
                           </div>
@@ -357,26 +357,26 @@ export default function ExplorePage() {
 
                       {selectedCompany.estimatedLoad && (
                         <div>
-                          <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Estimated Load</h3>
-                          <p className="text-2xl font-bold text-green-600">{selectedCompany.estimatedLoad}</p>
+                          <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">Estimated Load</h3>
+                          <p className="text-2xl font-bold text-green-400">{selectedCompany.estimatedLoad}</p>
                         </div>
                       )}
 
                       {selectedCompany.facilities && (
                         <div>
-                          <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Facilities</h3>
-                          <p className="text-lg font-medium text-gray-900">{selectedCompany.facilities} facilities</p>
+                          <h3 className="text-sm font-semibold text-gray-400 uppercase mb-2">Facilities</h3>
+                          <p className="text-lg font-medium text-white">{selectedCompany.facilities} facilities</p>
                         </div>
                       )}
                     </>
                   )}
 
                   {/* Action Buttons */}
-                  <div className="pt-6 border-t border-gray-200">
+                  <div className="pt-6 border-t border-gray-700">
                     <div className="flex gap-3">
                       <button
                         onClick={() => handleRemoveFavorite(selectedCompany.id)}
-                        className="flex-1 px-4 py-2 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100 transition-colors"
+                        className="flex-1 px-4 py-2 bg-red-600/20 text-red-400 font-medium rounded-lg hover:bg-red-600/30 transition-colors border border-red-600/30"
                       >
                         Remove from Favorites
                       </button>
