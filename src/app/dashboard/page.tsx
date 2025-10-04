@@ -1365,6 +1365,13 @@ export default function DashboardPage() {
                           onClick={() => {
                             setSelectedUtilityForAnalysis(utility)
                             setSelectedCorporate(null) // Clear corporate selection
+                            // Scroll to profile section
+                            setTimeout(() => {
+                              document.getElementById('utility-analysis-section')?.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                              })
+                            }, 100)
                           }}
                         >
                           <h4 className="text-lg font-bold text-white leading-tight mb-2">
@@ -1562,6 +1569,13 @@ export default function DashboardPage() {
                             onClick={() => {
                               setSelectedCorporate(corporate)
                               setSelectedUtilityForAnalysis(null) // Clear utility selection
+                              // Scroll to profile section
+                              setTimeout(() => {
+                                document.getElementById('corporate-analysis-section')?.scrollIntoView({
+                                  behavior: 'smooth',
+                                  block: 'start'
+                                })
+                              }, 100)
                             }}
                           >
                             <h4 className="text-lg font-bold text-white leading-tight mb-2">
@@ -1778,31 +1792,31 @@ export default function DashboardPage() {
               </div>
 
               {/* Company Overview */}
-              <div className="bg-gray-900 border border-gray-700 rounded-xl p-6 mb-8">
+              <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-xl p-6 mb-8">
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Company Description</h3>
+                    <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wide mb-2">Company Description</h3>
                     <p className="text-gray-300 leading-relaxed">
                       {selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name} is a major electric utility serving customers across {selectedUtilityForAnalysis.state}.
                       The company is engaged in the generation, transmission, and distribution of electricity, providing reliable power to residential, commercial, and industrial customers.
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Line of Business</h3>
+                    <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wide mb-2">Line of Business</h3>
                     <div className="flex flex-wrap gap-2">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30">
                         <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                         Generation
                       </span>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-500/20 text-green-300 border border-green-500/30">
                         <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                         </svg>
                         Transmission
                       </span>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
                         <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                         </svg>
