@@ -1225,43 +1225,43 @@ export default function DashboardPage() {
             {/* Ownership Type Filter - Only show for Utilities tab */}
             {energyBuyersTab === 'utilities' && selectedStates.length > 0 && (
               <div className="flex justify-center mb-6">
-                <div className="flex space-x-3">
+                <div className="flex flex-wrap gap-3">
                   <button
                     onClick={() => setSelectedOwnershipType(null)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                       selectedOwnershipType === null
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
                     }`}
                   >
                     ALL
                   </button>
                   <button
                     onClick={() => setSelectedOwnershipType('Investor Owned')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                       selectedOwnershipType === 'Investor Owned'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
                     }`}
                   >
                     INVESTOR OWNED
                   </button>
                   <button
                     onClick={() => setSelectedOwnershipType('Cooperative')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                       selectedOwnershipType === 'Cooperative'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
                     }`}
                   >
                     COOPERATIVE
                   </button>
                   <button
                     onClick={() => setSelectedOwnershipType('Municipal')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                       selectedOwnershipType === 'Municipal'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-300 hover:bg-gray-300'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
                     }`}
                   >
                     MUNICIPAL
