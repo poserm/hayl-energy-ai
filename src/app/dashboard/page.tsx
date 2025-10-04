@@ -1534,7 +1534,7 @@ export default function DashboardPage() {
                           key={corporate.id || index}
                           className={`flex-shrink-0 w-72 bg-gray-800 rounded-lg shadow-md border-2 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 relative ${
                             selectedCorporate?.id === corporate.id
-                              ? 'border-green-500 bg-green-50 ring-2 ring-green-200'
+                              ? 'border-blue-500 ring-2 ring-blue-500/30'
                               : 'border-gray-700 hover:border-gray-300'
                           }`}
                         >
@@ -2260,7 +2260,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             {activeSection === 2 && (
               <>
                 {/* Demand Overview */}
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-4 mb-6">
+                <div className="bg-gray-700 border border-gray-600 rounded-lg p-4 mb-6">
                   <div className="grid grid-cols-4 gap-4">
                     <div className="text-center">
                       <p className="text-sm text-gray-400">Total Customers</p>
@@ -2386,7 +2386,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
 
                 {/* Demand Trends */}
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Historical Demand Growth by Class</h3>
                   <div className="h-64 bg-gray-800 rounded-lg p-4 flex items-end justify-between border border-gray-700">
                     {[2020, 2021, 2022, 2023, 2024].map((year) => (
@@ -2580,7 +2580,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
 
                 {/* Contact Information */}
-                <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+                <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Procurement Contact</h3>
                   <div className="space-y-2">
                     <p className="text-sm text-gray-300">
@@ -2851,7 +2851,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Infrastructure Specifications */}
-              <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+              <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-white mb-4">Infrastructure Specifications</h3>
                 <div className="grid grid-cols-2 gap-6">
                   <div>
@@ -3210,7 +3210,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Contact Information */}
-              <div className="bg-gray-900 border border-gray-700 rounded-lg p-6">
+              <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
                 <h3 className="text-lg font-semibold text-white mb-4">Partnership Contacts</h3>
                 <div className="space-y-2">
                   <p className="text-sm text-gray-300">

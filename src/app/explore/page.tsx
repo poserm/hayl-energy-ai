@@ -211,7 +211,7 @@ export default function ExplorePage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-12 min-h-screen">
         {/* Header Section */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">
