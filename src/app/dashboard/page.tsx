@@ -1687,22 +1687,22 @@ export default function DashboardPage() {
 
         {/* Utility Analysis Section - Wireframe Format */}
         {selectedUtilityForAnalysis && (
-          <section id="utility-analysis-section" className="bg-gray-900 py-16">
-            <div className="max-w-7xl mx-auto px-6">
+          <section id="utility-analysis-section" className="bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-700">
+            <div className="max-w-7xl mx-auto">
               {/* Header */}
-              <div className="bg-gray-900 text-white rounded-2xl mb-8">
-                <div className="px-8 py-6">
+              <div className="mb-8">
+                <div className="pb-6 border-b border-gray-700">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-6">
                       <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+                        <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
                           <span className="text-white font-bold text-lg">
                             {(selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name || 'UN').substring(0, 2).toUpperCase()}
                           </span>
                         </div>
                         <div>
-                          <h1 className="text-2xl font-bold">{selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name}</h1>
-                          <p className="text-gray-300">{selectedUtilityForAnalysis.state}'s electric utility</p>
+                          <h1 className="text-2xl font-bold text-white">{selectedUtilityForAnalysis.name || selectedUtilityForAnalysis.utility_name}</h1>
+                          <p className="text-gray-400">{selectedUtilityForAnalysis.state}'s electric utility</p>
                         </div>
                       </div>
                     </div>
@@ -1741,7 +1741,7 @@ export default function DashboardPage() {
                             className={`px-4 py-2 text-sm font-medium border rounded-lg transition-colors ${
                               isFavorited
                                 ? 'bg-yellow-500 text-white border-yellow-600 hover:bg-yellow-600'
-                                : 'text-white border-gray-600 hover:bg-gray-800'
+                                : 'bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600'
                             }`}
                           >
                             <svg className="w-4 h-4 inline mr-2" fill={isFavorited ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
@@ -1751,13 +1751,13 @@ export default function DashboardPage() {
                           </button>
                         )
                       })()}
-                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                      <button className="px-4 py-2 text-sm font-medium bg-gray-700 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-600">
                         <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                         Compare
                       </button>
-                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                      <button className="px-4 py-2 text-sm font-medium bg-gray-700 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-600">
                         <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
@@ -1821,22 +1821,22 @@ export default function DashboardPage() {
 
         {/* Corporate Analysis Section */}
         {selectedCorporate && (
-          <section id="corporate-analysis-section" className="bg-gray-900 py-16">
-            <div className="max-w-7xl mx-auto px-6">
+          <section id="corporate-analysis-section" className="bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-700">
+            <div className="max-w-7xl mx-auto">
               {/* Header */}
-              <div className="bg-gray-900 text-white rounded-2xl mb-8">
-                <div className="px-8 py-6">
+              <div className="mb-8">
+                <div className="pb-6 border-b border-gray-700">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-6">
                       <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+                        <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
                           <span className="text-white font-bold text-lg">
                             {selectedCorporate.name.substring(0, 2).toUpperCase()}
                           </span>
                         </div>
                         <div>
-                          <h1 className="text-2xl font-bold">{selectedCorporate.name}</h1>
-                          <p className="text-gray-300">{selectedCorporate.type} Data Center Operator | {selectedCorporate.states?.join(', ')}</p>
+                          <h1 className="text-2xl font-bold text-white">{selectedCorporate.name}</h1>
+                          <p className="text-gray-400">{selectedCorporate.type} Data Center Operator | {selectedCorporate.states?.join(', ')}</p>
                         </div>
                       </div>
                     </div>
@@ -1877,7 +1877,7 @@ export default function DashboardPage() {
                             className={`px-4 py-2 text-sm font-medium border rounded-lg transition-colors ${
                               isFavorited
                                 ? 'bg-yellow-500 text-white border-yellow-600 hover:bg-yellow-600'
-                                : 'text-white border-gray-600 hover:bg-gray-800'
+                                : 'bg-gray-700 text-gray-300 border-gray-600 hover:bg-gray-600'
                             }`}
                           >
                             <svg className="w-4 h-4 inline mr-2" fill={isFavorited ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
@@ -1887,13 +1887,13 @@ export default function DashboardPage() {
                           </button>
                         )
                       })()}
-                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                      <button className="px-4 py-2 text-sm font-medium bg-gray-700 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-600">
                         <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
                         Compare
                       </button>
-                      <button className="px-4 py-2 text-sm font-medium text-white border border-gray-600 rounded-lg hover:bg-gray-800">
+                      <button className="px-4 py-2 text-sm font-medium bg-gray-700 text-gray-300 border border-gray-600 rounded-lg hover:bg-gray-600">
                         <svg className="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
