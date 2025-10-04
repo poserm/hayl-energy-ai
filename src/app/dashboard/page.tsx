@@ -1185,7 +1185,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Energy Buyers Section */}
-        <div className="bg-gray-900 -mx-6 px-6 py-12">
+        <div className="bg-gray-900 rounded-lg px-6 py-12">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-white mb-3">
