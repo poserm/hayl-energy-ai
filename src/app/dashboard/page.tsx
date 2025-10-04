@@ -659,7 +659,7 @@ export default function DashboardPage() {
         )}
 
         {/* Region Selection Pills */}
-        <div className="py-6">
+        <div className="bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-700 mb-6">
           <div className="flex flex-wrap gap-3">
             {Object.keys(regionStatesMap).map((regionName) => (
               <button
@@ -679,10 +679,11 @@ export default function DashboardPage() {
               </button>
             ))}
           </div>
+
         </div>
 
         {/* Latest News Ticker - State Tailored */}
-        <div className="bg-[#262626] py-4 px-6 overflow-hidden border-y border-gray-800">
+        <div className="bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-700 mb-6 overflow-hidden">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 bg-blue-600 px-3 py-1.5 rounded-md flex-shrink-0">
               <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -756,8 +757,8 @@ export default function DashboardPage() {
         </div>
 
         {/* Energy Snapshot Section - Full Width */}
-        <div className="py-8 border-b border-gray-800">
-            <div className="flex justify-between items-start mb-6">
+        <div className="bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-700">
+            <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <h3 className="text-2xl font-bold text-white mb-2">
                   {selectedStateFilter || region} {snapshotTab === 'supply' ? 'Power Supply' : 'Power Demand'}
@@ -767,10 +768,10 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="flex space-x-2">
-                <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
+                <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-900">
                   Download
                 </button>
-                <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
+                <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-900">
                   Compare
                 </button>
               </div>
@@ -778,7 +779,7 @@ export default function DashboardPage() {
 
             {/* States in Selected Region - Selectable Pills */}
             {region && regionStatesMap[region] && (
-              <div className="mb-6 pb-6 border-b border-gray-800">
+              <div className="mb-6 pb-4 border-b border-gray-700">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-sm font-medium text-gray-300">
                     Filter by State ({regionStatesMap[region].length} states in {region})
@@ -1020,22 +1021,22 @@ export default function DashboardPage() {
 
                 {/* Demand Trends */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="bg-[#262626] border border-gray-800 rounded-lg p-3">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
                     <p className="text-xs text-gray-400">Data Centers</p>
                     <p className="text-lg font-bold text-white">12.8 GW</p>
                     <p className="text-xs text-green-600">↑ 18% YoY</p>
                   </div>
-                  <div className="bg-[#262626] border border-gray-800 rounded-lg p-3">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
                     <p className="text-xs text-gray-400">EV Charging</p>
                     <p className="text-lg font-bold text-white">2.4 GW</p>
                     <p className="text-xs text-green-600">↑ 45% YoY</p>
                   </div>
-                  <div className="bg-[#262626] border border-gray-800 rounded-lg p-3">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
                     <p className="text-xs text-gray-400">Manufacturing</p>
                     <p className="text-lg font-bold text-white">15.2 GW</p>
                     <p className="text-xs text-gray-400">↑ 2% YoY</p>
                   </div>
-                  <div className="bg-[#262626] border border-gray-800 rounded-lg p-3">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
                     <p className="text-xs text-gray-400">Other</p>
                     <p className="text-lg font-bold text-white">13.5 GW</p>
                     <p className="text-xs text-gray-400">→ Flat</p>
@@ -1053,7 +1054,7 @@ export default function DashboardPage() {
 
             {/* Stacked Bar Chart - Only show for Power Supply */}
             {snapshotTab === 'supply' && (
-            <div className="bg-[#262626] rounded-lg p-4 mb-4 border border-gray-800">
+            <div className="bg-gray-900 rounded-lg p-4 mb-4">
               <h4 className="text-sm font-semibold text-gray-300 mb-3">Capacity Trends</h4>
               {capacityTrendsLoading ? (
                 <div className="flex items-center justify-center h-48">
@@ -1184,15 +1185,16 @@ export default function DashboardPage() {
         </div>
 
         {/* Energy Buyers Section */}
-        <div className="py-12 border-t border-gray-800">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-white mb-3">
-              {region} Energy Buyers
-            </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Discover the largest energy consumers in the {region} region across {selectedStates.length} states, ranked by peak load demand from highest to lowest capacity requirements.
-            </p>
-          </div>
+        <div className="bg-gray-900 -mx-6 px-6 py-12">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-white mb-3">
+                {region} Energy Buyers
+              </h2>
+              <p className="text-gray-400 max-w-2xl mx-auto">
+                Discover the largest energy consumers in the {region} region across {selectedStates.length} states, ranked by peak load demand from highest to lowest capacity requirements.
+              </p>
+            </div>
 
             {/* Tab Navigation */}
             <div className="flex justify-center mb-6">
@@ -1310,10 +1312,10 @@ export default function DashboardPage() {
                       return (
                       <div
                         key={utility.id || index}
-                        className={`flex-shrink-0 w-72 bg-[#262626] rounded-lg border p-6 transition-all duration-300 hover:border-gray-700 relative ${
+                        className={`flex-shrink-0 w-72 bg-gray-800 rounded-lg shadow-md border-2 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 relative ${
                           selectedUtilityForAnalysis?.id === utility.id
-                            ? 'border-blue-500 ring-2 ring-blue-500/30'
-                            : 'border-gray-800'
+                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                            : 'border-gray-700 hover:border-gray-300'
                         }`}
                       >
                         {/* Favorite Star Button */}
@@ -1505,10 +1507,10 @@ export default function DashboardPage() {
                         return (
                         <div
                           key={corporate.id || index}
-                          className={`flex-shrink-0 w-72 bg-[#262626] rounded-lg border p-6 transition-all duration-300 hover:border-gray-700 relative ${
+                          className={`flex-shrink-0 w-72 bg-gray-800 rounded-lg shadow-md border-2 p-6 transition-all duration-300 hover:shadow-xl hover:scale-105 relative ${
                             selectedCorporate?.id === corporate.id
-                              ? 'border-green-500 ring-2 ring-green-500/30'
-                              : 'border-gray-800'
+                              ? 'border-green-500 bg-green-50 ring-2 ring-green-200'
+                              : 'border-gray-700 hover:border-gray-300'
                           }`}
                         >
                           {/* Favorite Star Button */}
@@ -1680,14 +1682,15 @@ export default function DashboardPage() {
                 </div>
               </>
             )}
+          </div>
         </div>
 
         {/* Utility Analysis Section - Wireframe Format */}
         {selectedUtilityForAnalysis && (
-          <section id="utility-analysis-section" className="py-16 border-t border-gray-800">
+          <section id="utility-analysis-section" className="bg-gray-900 py-16">
             <div className="max-w-7xl mx-auto px-6">
               {/* Header */}
-              <div className="mb-8">
+              <div className="bg-gray-900 text-white rounded-2xl mb-8">
                 <div className="px-8 py-6">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-6">
@@ -1818,10 +1821,10 @@ export default function DashboardPage() {
 
         {/* Corporate Analysis Section */}
         {selectedCorporate && (
-          <section id="corporate-analysis-section" className="py-16 border-t border-gray-800">
+          <section id="corporate-analysis-section" className="bg-gray-900 py-16">
             <div className="max-w-7xl mx-auto px-6">
               {/* Header */}
-              <div className="mb-8">
+              <div className="bg-gray-900 text-white rounded-2xl mb-8">
                 <div className="px-8 py-6">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-6">
