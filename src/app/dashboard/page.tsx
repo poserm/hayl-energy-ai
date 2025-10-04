@@ -1198,23 +1198,23 @@ export default function DashboardPage() {
 
             {/* Tab Navigation */}
             <div className="flex justify-center mb-6">
-              <div className="inline-flex rounded-full bg-gray-200 p-1">
+              <div className="inline-flex gap-3">
                 <button
                   onClick={() => setEnergyBuyersTab('utilities')}
-                  className={`px-6 py-2 rounded-full font-medium transition-colors ${
+                  className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                     energyBuyersTab === 'utilities'
-                      ? 'bg-gray-900 text-white'
-                      : 'text-gray-300 hover:text-white'
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
                   }`}
                 >
                   Utilities
                 </button>
                 <button
                   onClick={() => setEnergyBuyersTab('corporates')}
-                  className={`px-6 py-2 rounded-full font-medium transition-colors ${
+                  className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
                     energyBuyersTab === 'corporates'
-                      ? 'bg-gray-900 text-white'
-                      : 'text-gray-300 hover:text-white'
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
                   }`}
                 >
                   Corporates
