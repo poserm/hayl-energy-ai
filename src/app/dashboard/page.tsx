@@ -2284,18 +2284,18 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 {/* Customer Class Breakdown */}
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Load by Customer Class</h3>
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-900">
+                  <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
+                    <table className="min-w-full divide-y divide-gray-600">
+                      <thead className="bg-gray-600">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Class</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Customers</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Annual Sales (GWh)</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">% of Total</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Avg. Usage per Customer</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Customer Class</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Customers</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Annual Sales (GWh)</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">% of Total</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Avg. Usage per Customer</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-gray-800 divide-y divide-gray-200">
+                      <tbody className="bg-gray-700 divide-y divide-gray-600">
                         <tr>
                           <td className="px-4 py-3 text-sm font-medium text-white">Residential</td>
                           <td className="px-4 py-3 text-sm text-white text-right">2,150,000</td>
@@ -2303,7 +2303,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                           <td className="px-4 py-3 text-sm text-white text-right">35%</td>
                           <td className="px-4 py-3 text-sm text-gray-400 text-right">7,420 kWh/yr</td>
                         </tr>
-                        <tr className="bg-gray-900">
+                        <tr className="bg-gray-600">
                           <td className="px-4 py-3 text-sm font-medium text-white">Commercial</td>
                           <td className="px-4 py-3 text-sm text-white text-right">245,000</td>
                           <td className="px-4 py-3 text-sm text-white text-right">13,680</td>
@@ -2824,18 +2824,18 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               {/* Facilities by State */}
               <div className="mb-8">
                 <h3 className="text-lg font-semibold text-white mb-4">Facilities by State</h3>
-                <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+                <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-900">
+                    <table className="min-w-full divide-y divide-gray-600">
+                      <thead className="bg-gray-600">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Facilities</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Estimated Load</th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Primary Use</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">State</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Facilities</th>
+                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Estimated Load</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Primary Use</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-gray-800 divide-y divide-gray-200">
+                      <tbody className="bg-gray-700 divide-y divide-gray-600">
                         {corporate.states?.map((state: string, idx: number) => (
                           <tr key={state}>
                             <td className="px-4 py-3 text-sm font-medium text-white">{state}</td>
@@ -2961,12 +2961,12 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
               </div>
 
               {/* Power Purchase Agreements */}
-              <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
-                <div className="px-4 py-3 bg-gray-900 border-b border-gray-700">
+              <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
+                <div className="px-4 py-3 bg-gray-600 border-b border-gray-600">
                   <h3 className="text-lg font-semibold text-white">Active Power Purchase Agreements</h3>
                 </div>
                 <table className="w-full">
-                  <thead className="bg-gray-900">
+                  <thead className="bg-gray-600">
                     <tr>
                       <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Project Name</th>
                       <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Type</th>
@@ -2980,7 +2980,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                       { name: 'Prairie Wind Project', type: 'Wind', capacity: '350 MW', term: '20 years' },
                       { name: 'Mountain Ridge Solar', type: 'Solar', capacity: '150 MW', term: '12 years' },
                     ].map((ppa, i) => (
-                      <tr key={i} className="border-t border-gray-700">
+                      <tr key={i} className="border-t border-gray-600">
                         <td className="px-4 py-2 text-sm text-white">{ppa.name}</td>
                         <td className="px-4 py-2 text-sm text-white">{ppa.type}</td>
                         <td className="px-4 py-2 text-sm text-white">{ppa.capacity}</td>
