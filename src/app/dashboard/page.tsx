@@ -636,7 +636,7 @@ export default function DashboardPage() {
         )}
 
         {/* Header Section - Minimalist Design */}
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center bg-gray-800 rounded-lg p-4">
           <h2 className="text-2xl font-bold text-white">Welcome, {user.name || user.email.split('@')[0]}</h2>
         </div>
 
