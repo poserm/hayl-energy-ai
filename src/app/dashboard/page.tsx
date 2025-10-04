@@ -606,7 +606,12 @@ export default function DashboardPage() {
                 >
                   Explore
                 </button>
-                <a href="#" className="px-3 py-2 font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-all">Connections</a>
+                <button
+                  onClick={() => window.open('/connections', '_blank', 'noopener,noreferrer')}
+                  className="px-3 py-2 font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-all"
+                >
+                  Connections
+                </button>
                 <a href="#" className="px-3 py-2 font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-all">Settings</a>
               </nav>
               <div className="flex items-center space-x-2">
