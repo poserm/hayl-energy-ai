@@ -148,6 +148,11 @@ export default function DashboardPage() {
   const [snapshotTab, setSnapshotTab] = useState<'supply' | 'demand'>('supply')
   const [supplyMetric, setSupplyMetric] = useState<'capacity' | 'generation'>('capacity')
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
+  const [showChat, setShowChat] = useState(false)
+  const [chatMessage, setChatMessage] = useState('')
+  const [chatMessages, setChatMessages] = useState<Array<{text: string, sender: 'user' | 'assistant'}>>([
+    { text: `Hello ${user?.name || 'there'}, how can I help you today?`, sender: 'assistant' }
+  ])
 
   // Toggle favorite status
   const toggleFavorite = (id: string) => {
@@ -2042,6 +2047,109 @@ export default function DashboardPage() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Fixed Bottom Chat Button */}
+      {!showChat && (
+        <button
+          onClick={() => setShowChat(true)}
+          className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full shadow-lg flex items-center space-x-2 transition-all hover:scale-105 z-40"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+          <span className="font-medium">Ask a question</span>
+        </button>
+      )}
+
+      {/* Chat Window */}
+      {showChat && (
+        <div className="fixed bottom-6 right-6 w-96 h-[500px] bg-gray-800 rounded-lg shadow-2xl border border-gray-700 flex flex-col z-50">
+          {/* Chat Header */}
+          <div className="bg-gray-900 px-4 py-3 rounded-t-lg border-b border-gray-700 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-white font-medium">Chat Assistant</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setShowChat(false)}
+                className="p-1 text-gray-400 hover:text-white rounded transition-colors"
+                title="Minimize"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setShowChat(false)}
+                className="p-1 text-gray-400 hover:text-white rounded transition-colors"
+                title="Close"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Chat Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            {chatMessages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[80%] px-4 py-2 rounded-lg ${
+                    msg.sender === 'user'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-700 text-gray-200'
+                  }`}
+                >
+                  <p className="text-sm">{msg.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Chat Input */}
+          <div className="p-4 border-t border-gray-700">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                if (chatMessage.trim()) {
+                  setChatMessages([...chatMessages, { text: chatMessage, sender: 'user' }])
+                  setChatMessage('')
+                  // Simulate assistant response
+                  setTimeout(() => {
+                    setChatMessages(prev => [...prev, {
+                      text: "I'm here to help! This is a placeholder response. Full chat functionality coming soon.",
+                      sender: 'assistant'
+                    }])
+                  }, 500)
+                }
+              }}
+              className="flex space-x-2"
+            >
+              <input
+                type="text"
+                value={chatMessage}
+                onChange={(e) => setChatMessage(e.target.value)}
+                placeholder="Type your question..."
+                className="flex-1 px-3 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none text-sm"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              </button>
+            </form>
           </div>
         </div>
       )}
