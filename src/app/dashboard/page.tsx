@@ -14,8 +14,8 @@ import UtilityAnalysisView from '@/components/ui/UtilityAnalysisView'
 import ISORegionMap from '@/components/ISORegionMap'
 import dynamic from 'next/dynamic'
 
-// Dynamically import USMap to avoid SSR issues with Leaflet
-const USMap = dynamic(() => import('@/components/USMap'), { ssr: false })
+// Dynamically import MapboxMap to avoid SSR issues
+const MapboxMap = dynamic(() => import('@/components/MapboxMap'), { ssr: false })
 
 // Plants Table Rows Component
 function PlantsTableRows({ utility }: { utility: any }) {
@@ -1974,7 +1974,7 @@ export default function DashboardPage() {
 
             {/* Interactive Map */}
             <div className="bg-gray-900 rounded-lg h-[calc(100%-80px)] overflow-hidden border border-gray-600 relative">
-              <USMap containerId="power-infrastructure-map" />
+              <MapboxMap containerId="power-infrastructure-map" />
 
               {/* Info overlay */}
               <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 border border-gray-600 z-[1000]">
