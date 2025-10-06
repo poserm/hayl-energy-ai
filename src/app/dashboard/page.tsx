@@ -2904,70 +2904,13 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
             {/* Power Plant Map */}
             <div className="bg-gray-900 rounded-lg h-[calc(100%-80px)] overflow-hidden border border-gray-600 relative">
-              <svg className="w-full h-full" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
-                <rect width="800" height="600" fill="#1a1a1a"/>
+              <MapboxMap containerId="power-plant-locations-map" />
 
-                {/* Grid */}
-                <defs>
-                  <pattern id="grid-plants" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#374151" strokeWidth="0.5"/>
-                  </pattern>
-                </defs>
-                <rect width="800" height="600" fill="url(#grid-plants)" opacity="0.3"/>
-
-                {/* State outline */}
-                <path d="M 100 150 L 700 150 L 700 450 L 100 450 Z"
-                      fill="#1e293b" stroke="#3b82f6" strokeWidth="2" opacity="0.6"/>
-
-                {/* Power Plants - Different Technologies */}
-                {/* Natural Gas (Blue) */}
-                <circle cx="200" cy="250" r="10" fill="#3b82f6" stroke="#60a5fa" strokeWidth="2"/>
-                <circle cx="350" cy="280" r="10" fill="#3b82f6" stroke="#60a5fa" strokeWidth="2"/>
-                <circle cx="500" cy="300" r="10" fill="#3b82f6" stroke="#60a5fa" strokeWidth="2"/>
-
-                {/* Coal (Gray) */}
-                <circle cx="280" cy="220" r="10" fill="#6b7280" stroke="#9ca3af" strokeWidth="2"/>
-                <circle cx="450" cy="240" r="10" fill="#6b7280" stroke="#9ca3af" strokeWidth="2"/>
-
-                {/* Nuclear (Purple) */}
-                <circle cx="320" cy="350" r="10" fill="#a855f7" stroke="#c084fc" strokeWidth="2"/>
-
-                {/* Solar (Yellow) */}
-                <circle cx="550" cy="360" r="10" fill="#eab308" stroke="#fde047" strokeWidth="2"/>
-                <circle cx="180" cy="320" r="10" fill="#eab308" stroke="#fde047" strokeWidth="2"/>
-
-                {/* Wind (Green) */}
-                <circle cx="600" cy="220" r="10" fill="#22c55e" stroke="#4ade80" strokeWidth="2"/>
-                <circle cx="420" cy="380" r="10" fill="#22c55e" stroke="#4ade80" strokeWidth="2"/>
-
-                {/* Plant Labels */}
-                <text x="400" y="80" fill="#94a3b8" fontSize="18" fontWeight="bold" textAnchor="middle">{utility?.name || utility?.utility_name} Power Plants</text>
-              </svg>
-
-              {/* Legend */}
-              <div className="absolute bottom-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 border border-gray-600">
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-blue-400"></div>
-                    <span className="text-sm text-gray-300">Natural Gas</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-gray-500 border-2 border-gray-400"></div>
-                    <span className="text-sm text-gray-300">Coal</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-purple-500 border-2 border-purple-400"></div>
-                    <span className="text-sm text-gray-300">Nuclear</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-yellow-500 border-2 border-yellow-400"></div>
-                    <span className="text-sm text-gray-300">Solar</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500 border-2 border-green-400"></div>
-                    <span className="text-sm text-gray-300">Wind</span>
-                  </div>
-                </div>
+              {/* Info overlay */}
+              <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 border border-gray-600 z-[1000]">
+                <p className="text-sm text-gray-300">
+                  {utility?.name || utility?.utility_name} Power Plants
+                </p>
               </div>
             </div>
           </div>
@@ -3649,80 +3592,12 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
 
             {/* Data Center Map */}
             <div className="bg-gray-900 rounded-lg h-[calc(100%-80px)] overflow-hidden border border-gray-600 relative">
-              <svg className="w-full h-full" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
-                <rect width="800" height="600" fill="#1a1a1a"/>
-
-                {/* Grid */}
-                <defs>
-                  <pattern id="grid-dc" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#374151" strokeWidth="0.5"/>
-                  </pattern>
-                </defs>
-                <rect width="800" height="600" fill="url(#grid-dc)" opacity="0.3"/>
-
-                {/* State boundaries */}
-                <path d="M 150 120 L 300 140 L 320 220 L 280 300 L 200 320 L 140 270 Z"
-                      fill="#1e293b" stroke="#3b82f6" strokeWidth="2" opacity="0.6"/>
-                <path d="M 320 220 L 450 200 L 500 270 L 480 340 L 400 360 L 320 320 Z"
-                      fill="#1e293b" stroke="#3b82f6" strokeWidth="2" opacity="0.6"/>
-                <path d="M 500 270 L 650 260 L 680 340 L 620 420 L 520 400 L 480 340 Z"
-                      fill="#1e293b" stroke="#3b82f6" strokeWidth="2" opacity="0.6"/>
-
-                {/* Data Centers (represented as buildings/squares) */}
-                <g>
-                  <rect x="190" y="200" width="20" height="24" fill="#10b981" stroke="#34d399" strokeWidth="2"/>
-                  <rect x="192" y="196" width="16" height="4" fill="#34d399"/>
-                </g>
-                <g>
-                  <rect x="270" y="240" width="20" height="24" fill="#10b981" stroke="#34d399" strokeWidth="2"/>
-                  <rect x="272" y="236" width="16" height="4" fill="#34d399"/>
-                </g>
-                <g>
-                  <rect x="370" y="270" width="20" height="24" fill="#10b981" stroke="#34d399" strokeWidth="2"/>
-                  <rect x="372" y="266" width="16" height="4" fill="#34d399"/>
-                </g>
-                <g>
-                  <rect x="510" y="300" width="20" height="24" fill="#10b981" stroke="#34d399" strokeWidth="2"/>
-                  <rect x="512" y="296" width="16" height="4" fill="#34d399"/>
-                </g>
-                <g>
-                  <rect x="590" y="330" width="20" height="24" fill="#10b981" stroke="#34d399" strokeWidth="2"/>
-                  <rect x="592" y="326" width="16" height="4" fill="#34d399"/>
-                </g>
-
-                {/* Network connections (fiber optic lines) */}
-                <line x1="200" y1="212" x2="280" y2="252" stroke="#6366f1" strokeWidth="2" strokeDasharray="5,5" opacity="0.6"/>
-                <line x1="280" y1="252" x2="380" y2="282" stroke="#6366f1" strokeWidth="2" strokeDasharray="5,5" opacity="0.6"/>
-                <line x1="380" y1="282" x2="520" y2="312" stroke="#6366f1" strokeWidth="2" strokeDasharray="5,5" opacity="0.6"/>
-                <line x1="520" y1="312" x2="600" y2="342" stroke="#6366f1" strokeWidth="2" strokeDasharray="5,5" opacity="0.6"/>
-
-                {/* Title */}
-                <text x="400" y="80" fill="#94a3b8" fontSize="18" fontWeight="bold" textAnchor="middle">{corporate.name} Data Centers</text>
-
-                {/* State Labels */}
-                <text x="220" y="220" fill="#94a3b8" fontSize="14" fontWeight="bold">VA</text>
-                <text x="400" y="280" fill="#94a3b8" fontSize="14" fontWeight="bold">MD</text>
-                <text x="580" y="340" fill="#94a3b8" fontSize="14" fontWeight="bold">DE</text>
-              </svg>
-
-              {/* Legend */}
-              <div className="absolute bottom-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 border border-gray-600">
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-green-500 border-2 border-green-400"></div>
-                    <span className="text-sm text-gray-300">Data Centers</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="w-3 h-3 bg-indigo-500"></div>
-                    <span className="text-sm text-gray-300">Network Links</span>
-                  </div>
-                </div>
-              </div>
+              <MapboxMap containerId="data-center-locations-map" />
 
               {/* Info overlay */}
-              <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 border border-gray-600">
+              <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 border border-gray-600 z-[1000]">
                 <p className="text-sm text-gray-300">
-                  {corporate.facilities} facilities across {corporate.states?.length} states
+                  {corporate.name} Data Centers
                 </p>
               </div>
             </div>
