@@ -161,8 +161,8 @@ export default function MapboxMap({ containerId, plants }: MapboxMapProps) {
           </div>
         `)
 
-        // Create and add marker
-        const marker = new mapboxgl.Marker(el)
+        // Create and add marker (with draggable: false to prevent movement)
+        const marker = new mapboxgl.Marker({ element: el, draggable: false })
           .setLngLat([lng, lat])
           .setPopup(popup)
           .addTo(map.current!)
@@ -183,11 +183,49 @@ export default function MapboxMap({ containerId, plants }: MapboxMapProps) {
   }, [plants])
 
   return (
-    <div
-      ref={mapContainer}
-      id={containerId}
-      className="w-full h-full rounded-lg"
-      style={{ minHeight: '400px' }}
-    />
+    <div className="relative w-full h-full">
+      <div
+        ref={mapContainer}
+        id={containerId}
+        className="w-full h-full rounded-lg"
+        style={{ minHeight: '400px' }}
+      />
+
+      {/* Legend - only show if plants data is provided */}
+      {plants && plants.length > 0 && (
+        <div className="absolute bottom-4 right-4 bg-gray-800/95 backdrop-blur-sm rounded-lg p-4 border border-gray-600 z-[1000] shadow-lg">
+          <h4 className="text-sm font-semibold text-white mb-3">Technology Types</h4>
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#3b82f6', border: '2px solid rgba(255, 255, 255, 0.5)' }}></div>
+              <span className="text-xs text-gray-300">Natural Gas</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#6b7280', border: '2px solid rgba(255, 255, 255, 0.5)' }}></div>
+              <span className="text-xs text-gray-300">Coal</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#a855f7', border: '2px solid rgba(255, 255, 255, 0.5)' }}></div>
+              <span className="text-xs text-gray-300">Nuclear</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#eab308', border: '2px solid rgba(255, 255, 255, 0.5)' }}></div>
+              <span className="text-xs text-gray-300">Solar</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#22c55e', border: '2px solid rgba(255, 255, 255, 0.5)' }}></div>
+              <span className="text-xs text-gray-300">Wind</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#06b6d4', border: '2px solid rgba(255, 255, 255, 0.5)' }}></div>
+              <span className="text-xs text-gray-300">Hydro</span>
+            </div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-gray-600">
+            <p className="text-xs text-gray-400 italic">Circle size = Capacity</p>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
