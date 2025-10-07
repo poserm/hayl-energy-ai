@@ -18,43 +18,7 @@ import dynamic from 'next/dynamic'
 const MapboxMap = dynamic(() => import('@/components/MapboxMap'), { ssr: false })
 
 // Plants Table Rows Component
-function PlantsTableRows({ utility }: { utility: any }) {
-  const [plants, setPlants] = useState<any[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchPlants = async () => {
-      if (!utility?.name && !utility?.utility_name) return
-
-      setLoading(true)
-      setError(null)
-      try {
-        const utilityName = utility.name || utility.utility_name
-        console.log('🔍 Fetching plants for utility:', utilityName)
-        const response = await fetch(`/api/plants?utility=${encodeURIComponent(utilityName)}`)
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          console.error('❌ API Error:', errorData)
-          throw new Error(errorData.details || errorData.error || `HTTP ${response.status}`)
-        }
-
-        const data = await response.json()
-        console.log(`✅ Received ${data.length} plants`)
-        setPlants(data)
-      } catch (error) {
-        console.error('Error fetching plants:', error)
-        setError(error instanceof Error ? error.message : 'Failed to load plant data')
-        setPlants([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchPlants()
-  }, [utility])
-
+function PlantsTableRows({ plants, loading, error }: { plants: any[], loading?: boolean, error?: string | null }) {
   if (loading) {
     return (
       <tr>
@@ -2201,6 +2165,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   const [portfolioData, setPortfolioData] = useState<any>(null)
   const [portfolioLoading, setPortfolioLoading] = useState(false)
   const [showPowerPlantMapModal, setShowPowerPlantMapModal] = useState(false)
+  const [plants, setPlants] = useState<any[]>([])
+  const [plantsLoading, setPlantsLoading] = useState(false)
+  const [plantsError, setPlantsError] = useState<string | null>(null)
 
   // Fetch portfolio data when utility changes
   useEffect(() => {
@@ -2233,6 +2200,42 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
     }
 
     fetchPortfolioData()
+  }, [utility])
+
+  // Fetch plants data when utility changes
+  useEffect(() => {
+    const fetchPlants = async () => {
+      if (!utility?.name && !utility?.utility_name) {
+        setPlants([])
+        return
+      }
+
+      setPlantsLoading(true)
+      setPlantsError(null)
+      try {
+        const utilityName = utility.name || utility.utility_name
+        console.log('🔍 Fetching plants for utility:', utilityName)
+        const response = await fetch(`/api/plants?utility=${encodeURIComponent(utilityName)}`)
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          console.error('❌ API Error:', errorData)
+          throw new Error(errorData.details || errorData.error || `HTTP ${response.status}`)
+        }
+
+        const data = await response.json()
+        console.log(`✅ Received ${data.length} plants`)
+        setPlants(data)
+      } catch (error) {
+        console.error('Error fetching plants:', error)
+        setPlantsError(error instanceof Error ? error.message : 'Failed to load plant data')
+        setPlants([])
+      } finally {
+        setPlantsLoading(false)
+      }
+    }
+
+    fetchPlants()
   }, [utility])
 
   const sections = [
@@ -2344,7 +2347,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                             </tr>
                           </thead>
                           <tbody className="bg-gray-700 divide-y divide-gray-600">
-                            <PlantsTableRows utility={utility} />
+                            <PlantsTableRows plants={plants} loading={plantsLoading} error={plantsError} />
                           </tbody>
                         </table>
                       </div>
@@ -2904,12 +2907,12 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
             {/* Power Plant Map */}
             <div className="bg-gray-900 rounded-lg h-[calc(100%-80px)] overflow-hidden border border-gray-600 relative">
-              <MapboxMap containerId="power-plant-locations-map" />
+              <MapboxMap containerId="power-plant-locations-map" plants={plants} />
 
               {/* Info overlay */}
               <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 border border-gray-600 z-[1000]">
                 <p className="text-sm text-gray-300">
-                  {utility?.name || utility?.utility_name} Power Plants
+                  {utility?.name || utility?.utility_name} Power Plants - {plants.length} facilities
                 </p>
               </div>
             </div>
