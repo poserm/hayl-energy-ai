@@ -770,78 +770,30 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* States in Selected Region - Selectable Pills */}
-            {region && regionStatesMap[region] && (
-              <div className="mb-6 pb-4 border-b border-gray-700">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-medium text-gray-300">
-                    Filter by State ({regionStatesMap[region].length} states in {region})
-                  </h4>
-                  {selectedStateFilter && (
-                    <button
-                      onClick={() => setSelectedStateFilter(null)}
-                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                      Clear filter
-                    </button>
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {regionStatesMap[region].map((state) => (
-                    <button
-                      key={state}
-                      onClick={() => setSelectedStateFilter(selectedStateFilter === state ? null : state)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                        selectedStateFilter === state
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                      }`}
-                    >
-                      {state}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Quick Controls - Expand/Collapse All */}
-            <div className="mb-6 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Click any pillar below to expand detailed analytics</span>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    setSupplyExpanded(true)
-                    setDemandExpanded(true)
-                    setPricesExpanded(true)
-                  }}
-                  className="px-3 py-1.5 text-xs font-medium text-gray-300 bg-gray-800/50 hover:bg-gray-700 rounded-lg border border-gray-700 transition-colors"
-                >
-                  Expand All
-                </button>
-                <button
-                  onClick={() => {
-                    setSupplyExpanded(false)
-                    setDemandExpanded(false)
-                    setPricesExpanded(false)
-                  }}
-                  className="px-3 py-1.5 text-xs font-medium text-gray-300 bg-gray-800/50 hover:bg-gray-700 rounded-lg border border-gray-700 transition-colors"
-                >
-                  Collapse All
-                </button>
-              </div>
+            {/* Quick Hint */}
+            <div className="mb-6 flex items-center gap-2 text-sm text-gray-400 px-1">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Click any pillar to view detailed market analytics</span>
             </div>
 
             {/* Hero Metrics - 3 Pillars Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {/* SUPPLY Pillar */}
               <button
-                onClick={() => setSupplyExpanded(!supplyExpanded)}
-                className="bg-gradient-to-br from-blue-900/30 to-blue-800/30 border border-blue-500/30 hover:border-blue-400/50 rounded-xl p-6 transition-all hover:shadow-lg hover:shadow-blue-500/10 text-left group"
+                onClick={() => {
+                  setSupplyExpanded(!supplyExpanded)
+                  setDemandExpanded(false)
+                  setPricesExpanded(false)
+                }}
+                className={`rounded-xl p-6 transition-all text-left group ${
+                  supplyExpanded
+                    ? 'bg-gradient-to-br from-blue-900/50 to-blue-800/50 border-2 border-blue-400 shadow-xl shadow-blue-500/20 scale-[1.02]'
+                    : demandExpanded || pricesExpanded
+                    ? 'bg-gradient-to-br from-gray-900/30 to-gray-800/30 border border-gray-600/30 opacity-50 hover:opacity-70'
+                    : 'bg-gradient-to-br from-blue-900/30 to-blue-800/30 border border-blue-500/30 hover:border-blue-400/50 hover:shadow-lg hover:shadow-blue-500/10'
+                }`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
@@ -901,8 +853,18 @@ export default function DashboardPage() {
 
               {/* DEMAND Pillar */}
               <button
-                onClick={() => setDemandExpanded(!demandExpanded)}
-                className="bg-gradient-to-br from-purple-900/30 to-purple-800/30 border border-purple-500/30 hover:border-purple-400/50 rounded-xl p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 text-left group"
+                onClick={() => {
+                  setDemandExpanded(!demandExpanded)
+                  setSupplyExpanded(false)
+                  setPricesExpanded(false)
+                }}
+                className={`rounded-xl p-6 transition-all text-left group ${
+                  demandExpanded
+                    ? 'bg-gradient-to-br from-purple-900/50 to-purple-800/50 border-2 border-purple-400 shadow-xl shadow-purple-500/20 scale-[1.02]'
+                    : supplyExpanded || pricesExpanded
+                    ? 'bg-gradient-to-br from-gray-900/30 to-gray-800/30 border border-gray-600/30 opacity-50 hover:opacity-70'
+                    : 'bg-gradient-to-br from-purple-900/30 to-purple-800/30 border border-purple-500/30 hover:border-purple-400/50 hover:shadow-lg hover:shadow-purple-500/10'
+                }`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
@@ -944,8 +906,18 @@ export default function DashboardPage() {
 
               {/* PRICES Pillar */}
               <button
-                onClick={() => setPricesExpanded(!pricesExpanded)}
-                className="bg-gradient-to-br from-emerald-900/30 to-emerald-800/30 border border-emerald-500/30 hover:border-emerald-400/50 rounded-xl p-6 transition-all hover:shadow-lg hover:shadow-emerald-500/10 text-left group"
+                onClick={() => {
+                  setPricesExpanded(!pricesExpanded)
+                  setSupplyExpanded(false)
+                  setDemandExpanded(false)
+                }}
+                className={`rounded-xl p-6 transition-all text-left group ${
+                  pricesExpanded
+                    ? 'bg-gradient-to-br from-emerald-900/50 to-emerald-800/50 border-2 border-emerald-400 shadow-xl shadow-emerald-500/20 scale-[1.02]'
+                    : supplyExpanded || demandExpanded
+                    ? 'bg-gradient-to-br from-gray-900/30 to-gray-800/30 border border-gray-600/30 opacity-50 hover:opacity-70'
+                    : 'bg-gradient-to-br from-emerald-900/30 to-emerald-800/30 border border-emerald-500/30 hover:border-emerald-400/50 hover:shadow-lg hover:shadow-emerald-500/10'
+                }`}
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
