@@ -119,6 +119,9 @@ export default function DashboardPage() {
   const [showDataCenterMapModal, setShowDataCenterMapModal] = useState(false)
   const [snapshotTab, setSnapshotTab] = useState<'supply' | 'demand'>('supply')
   const [supplyMetric, setSupplyMetric] = useState<'capacity' | 'generation'>('capacity')
+  const [supplyExpanded, setSupplyExpanded] = useState(true)
+  const [demandExpanded, setDemandExpanded] = useState(true)
+  const [pricesExpanded, setPricesExpanded] = useState(true)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [showChat, setShowChat] = useState(false)
   const [chatMessage, setChatMessage] = useState('')
@@ -801,13 +804,48 @@ export default function DashboardPage() {
               </div>
             )}
 
+            {/* Quick Controls - Expand/Collapse All */}
+            <div className="mb-6 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>Click any pillar below to expand detailed analytics</span>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setSupplyExpanded(true)
+                    setDemandExpanded(true)
+                    setPricesExpanded(true)
+                  }}
+                  className="px-3 py-1.5 text-xs font-medium text-gray-300 bg-gray-800/50 hover:bg-gray-700 rounded-lg border border-gray-700 transition-colors"
+                >
+                  Expand All
+                </button>
+                <button
+                  onClick={() => {
+                    setSupplyExpanded(false)
+                    setDemandExpanded(false)
+                    setPricesExpanded(false)
+                  }}
+                  className="px-3 py-1.5 text-xs font-medium text-gray-300 bg-gray-800/50 hover:bg-gray-700 rounded-lg border border-gray-700 transition-colors"
+                >
+                  Collapse All
+                </button>
+              </div>
+            </div>
+
             {/* Hero Metrics - 3 Pillars Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {/* SUPPLY Pillar */}
-              <div className="bg-gradient-to-br from-blue-900/30 to-blue-800/30 border border-blue-500/30 rounded-xl p-6">
+              <button
+                onClick={() => setSupplyExpanded(!supplyExpanded)}
+                className="bg-gradient-to-br from-blue-900/30 to-blue-800/30 border border-blue-500/30 hover:border-blue-400/50 rounded-xl p-6 transition-all hover:shadow-lg hover:shadow-blue-500/10 text-left group"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 bg-blue-500/20 rounded-lg">
+                    <div className="p-2 bg-blue-500/20 group-hover:bg-blue-500/30 rounded-lg transition-colors">
                       <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
@@ -819,8 +857,32 @@ export default function DashboardPage() {
                 <div className="text-4xl font-bold text-white mb-1">
                   {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
                 </div>
-                <p className="text-xs text-gray-400">Total Installed Capacity</p>
-                <div className="mt-4 pt-4 border-t border-blue-500/20 flex justify-between text-xs">
+                <p className="text-xs text-gray-400 mb-3">Total Installed Capacity</p>
+
+                {/* Mini Trend Chart - Sparkline */}
+                <div className="h-8 mb-3">
+                  <svg className="w-full h-full" viewBox="0 0 100 30" preserveAspectRatio="none">
+                    <polyline
+                      points="0,25 20,22 40,18 60,20 80,15 100,12"
+                      fill="none"
+                      stroke="rgba(96, 165, 250, 0.5)"
+                      strokeWidth="2"
+                    />
+                    <polyline
+                      points="0,25 20,22 40,18 60,20 80,15 100,12 100,30 0,30"
+                      fill="url(#supplyGradient)"
+                      stroke="none"
+                    />
+                    <defs>
+                      <linearGradient id="supplyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="rgba(96, 165, 250, 0.3)" />
+                        <stop offset="100%" stopColor="rgba(96, 165, 250, 0.0)" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+
+                <div className="pt-3 border-t border-blue-500/20 flex justify-between text-xs">
                   <div>
                     <p className="text-gray-400">Renewable</p>
                     <p className="text-white font-semibold">15.2 GW</p>
@@ -829,14 +891,22 @@ export default function DashboardPage() {
                     <p className="text-gray-400">Pipeline</p>
                     <p className="text-white font-semibold">12.8 GW</p>
                   </div>
+                  <div className="flex items-center text-blue-400 group-hover:text-blue-300">
+                    <svg className={`w-4 h-4 transition-transform ${supplyExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
-              </div>
+              </button>
 
               {/* DEMAND Pillar */}
-              <div className="bg-gradient-to-br from-purple-900/30 to-purple-800/30 border border-purple-500/30 rounded-xl p-6">
+              <button
+                onClick={() => setDemandExpanded(!demandExpanded)}
+                className="bg-gradient-to-br from-purple-900/30 to-purple-800/30 border border-purple-500/30 hover:border-purple-400/50 rounded-xl p-6 transition-all hover:shadow-lg hover:shadow-purple-500/10 text-left group"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 bg-purple-500/20 rounded-lg">
+                    <div className="p-2 bg-purple-500/20 group-hover:bg-purple-500/30 rounded-lg transition-colors">
                       <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                       </svg>
@@ -846,8 +916,16 @@ export default function DashboardPage() {
                   <span className="text-xs text-green-400 font-medium">↑ 3.2%</span>
                 </div>
                 <div className="text-4xl font-bold text-white mb-1">68.5 GW</div>
-                <p className="text-xs text-gray-400">Peak Load (Summer '24)</p>
-                <div className="mt-4 pt-4 border-t border-purple-500/20 flex justify-between text-xs">
+                <p className="text-xs text-gray-400 mb-3">Peak Load (Summer '24)</p>
+
+                {/* Mini Trend Chart - Bar Chart Style */}
+                <div className="h-8 mb-3 flex items-end justify-between gap-1">
+                  {[45, 48, 52, 58, 62, 68, 65, 55, 50, 48, 52, 56].map((val, i) => (
+                    <div key={i} className="flex-1 bg-purple-500/30 rounded-t transition-all group-hover:bg-purple-500/40" style={{ height: `${(val / 70) * 100}%` }}></div>
+                  ))}
+                </div>
+
+                <div className="pt-3 border-t border-purple-500/20 flex justify-between text-xs">
                   <div>
                     <p className="text-gray-400">Average</p>
                     <p className="text-white font-semibold">42.3 GW</p>
@@ -856,14 +934,22 @@ export default function DashboardPage() {
                     <p className="text-gray-400">Growth</p>
                     <p className="text-white font-semibold">+3.2%</p>
                   </div>
+                  <div className="flex items-center text-purple-400 group-hover:text-purple-300">
+                    <svg className={`w-4 h-4 transition-transform ${demandExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
-              </div>
+              </button>
 
               {/* PRICES Pillar */}
-              <div className="bg-gradient-to-br from-emerald-900/30 to-emerald-800/30 border border-emerald-500/30 rounded-xl p-6">
+              <button
+                onClick={() => setPricesExpanded(!pricesExpanded)}
+                className="bg-gradient-to-br from-emerald-900/30 to-emerald-800/30 border border-emerald-500/30 hover:border-emerald-400/50 rounded-xl p-6 transition-all hover:shadow-lg hover:shadow-emerald-500/10 text-left group"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 bg-emerald-500/20 rounded-lg">
+                    <div className="p-2 bg-emerald-500/20 group-hover:bg-emerald-500/30 rounded-lg transition-colors">
                       <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
@@ -873,8 +959,32 @@ export default function DashboardPage() {
                   <span className="text-xs text-red-400 font-medium">↓ 12%</span>
                 </div>
                 <div className="text-4xl font-bold text-white mb-1">$32.45</div>
-                <p className="text-xs text-gray-400">Energy Price ($/MWh)</p>
-                <div className="mt-4 pt-4 border-t border-emerald-500/20 flex justify-between text-xs">
+                <p className="text-xs text-gray-400 mb-3">Energy Price ($/MWh)</p>
+
+                {/* Mini Trend Chart - Declining Line */}
+                <div className="h-8 mb-3">
+                  <svg className="w-full h-full" viewBox="0 0 100 30" preserveAspectRatio="none">
+                    <polyline
+                      points="0,5 20,8 40,12 60,15 80,22 100,25"
+                      fill="none"
+                      stroke="rgba(52, 211, 153, 0.5)"
+                      strokeWidth="2"
+                    />
+                    <polyline
+                      points="0,5 20,8 40,12 60,15 80,22 100,25 100,30 0,30"
+                      fill="url(#pricesGradient)"
+                      stroke="none"
+                    />
+                    <defs>
+                      <linearGradient id="pricesGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="rgba(52, 211, 153, 0.3)" />
+                        <stop offset="100%" stopColor="rgba(52, 211, 153, 0.0)" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+
+                <div className="pt-3 border-t border-emerald-500/20 flex justify-between text-xs">
                   <div>
                     <p className="text-gray-400">On-Peak</p>
                     <p className="text-white font-semibold">$45.20</p>
@@ -883,337 +993,869 @@ export default function DashboardPage() {
                     <p className="text-gray-400">Capacity</p>
                     <p className="text-white font-semibold">$8.50</p>
                   </div>
+                  <div className="flex items-center text-emerald-400 group-hover:text-emerald-300">
+                    <svg className={`w-4 h-4 transition-transform ${pricesExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
-              </div>
+              </button>
             </div>
 
-            {/* Power Supply Content */}
-            {snapshotTab === 'supply' && (
-              <>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-              {capacityTrends?.technologyBreakdown ? capacityTrends.technologyBreakdown
-                .slice(0, 6)
-                .map((tech: any) => {
-                  const colors: Record<string, string> = {
-                    'Natural Gas': 'bg-blue-500',
-                    'Coal': 'bg-gray-700',
-                    'Nuclear': 'bg-purple-500',
-                    'Solar': 'bg-yellow-500',
-                    'Wind': 'bg-green-500',
-                    'Hydro': 'bg-cyan-500',
-                    'Battery Storage': 'bg-indigo-500',
-                    'Biomass': 'bg-emerald-600',
-                    'Other': 'bg-gray-400'
-                  }
-                  return (
-                    <div key={tech.technology} className="flex items-center space-x-2">
-                      <div className={`w-3 h-3 rounded-full ${colors[tech.technology] || colors.Other}`} />
-                      <span className="text-sm text-gray-300">{tech.technology}:</span>
-                      <span className="text-sm font-semibold text-white">
-                        {tech.capacity.toLocaleString()} MW
-                      </span>
-                    </div>
-                  )
-                }) : capacityTrendsLoading ? (
-                <div className="col-span-6 text-center py-4">
-                  <div className="animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
-                    <p className="text-gray-500 text-sm">Loading energy data...</p>
+            {/* ========== SUPPLY PILLAR - Detailed Section ========== */}
+            <div className="mb-6">
+              <button
+                onClick={() => setSupplyExpanded(!supplyExpanded)}
+                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-blue-900/20 to-blue-800/20 hover:from-blue-900/30 hover:to-blue-800/30 border border-blue-500/30 rounded-xl transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-500/20 rounded-lg">
+                    <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white text-left">Supply Details</h3>
+                    <p className="text-sm text-gray-400 text-left">Capacity mix, pipeline projects, and retirements</p>
                   </div>
                 </div>
-              ) : generators.length > 0 ? Object.entries(
-                generators.reduce((acc, gen) => {
-                  const tech = gen.technology || 'Other'
-                  acc[tech] = (acc[tech] || 0) + (gen.capacity?.nameplate || 0)
-                  return acc
-                }, {} as Record<string, number>)
-              )
-                .sort(([, a], [, b]) => (b as number) - (a as number))
-                .slice(0, 6)
-                .map(([tech, capacity]) => {
-                  const colors: Record<string, string> = {
-                    'Coal': 'bg-gray-700',
-                    'Natural Gas': 'bg-blue-500',
-                    'Nuclear': 'bg-purple-500',
-                    'Solar': 'bg-yellow-500',
-                    'Wind': 'bg-green-500',
-                    'Hydro': 'bg-cyan-500',
-                    'Other': 'bg-gray-400'
-                  }
-                  return (
-                    <div key={tech} className="flex items-center space-x-2">
-                      <div className={`w-3 h-3 rounded-full ${colors[tech] || colors.Other}`} />
-                      <span className="text-sm text-gray-300">{tech}:</span>
-                      <span className="text-sm font-semibold text-white">
-                        {Math.round(capacity as number).toLocaleString()} MW
-                      </span>
+                <svg
+                  className={`w-6 h-6 text-gray-400 transition-transform ${supplyExpanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {supplyExpanded && (
+              <div className="mt-4 space-y-6">
+                {/* Existing Capacity Mix */}
+                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-blue-500 rounded-full"></span>
+                    Existing Capacity Mix
+                  </h4>
+
+                  {/* Horizontal Stacked Bar */}
+                  <div className="mb-6">
+                    <div className="flex h-16 rounded-lg overflow-hidden border border-gray-700">
+                      {capacityTrends?.technologyBreakdown?.slice(0, 6).map((tech: any) => {
+                        const colors: Record<string, string> = {
+                          'Natural Gas': 'bg-blue-500',
+                          'Coal': 'bg-gray-600',
+                          'Nuclear': 'bg-purple-500',
+                          'Solar': 'bg-yellow-500',
+                          'Wind': 'bg-green-500',
+                          'Hydro': 'bg-cyan-500',
+                          'Battery Storage': 'bg-indigo-500'
+                        }
+                        const total = capacityTrends.technologyBreakdown.reduce((sum: number, t: any) => sum + t.capacity, 0)
+                        const percent = Math.round((tech.capacity / total) * 100)
+                        return (
+                          <div
+                            key={tech.technology}
+                            className={`${colors[tech.technology] || 'bg-gray-400'} flex items-center justify-center text-white text-sm font-semibold hover:opacity-80 transition-opacity cursor-pointer`}
+                            style={{ width: `${percent}%` }}
+                            title={`${tech.technology}: ${tech.capacity.toLocaleString()} MW (${percent}%)`}
+                          >
+                            {percent >= 8 && <span>{percent}%</span>}
+                          </div>
+                        )
+                      })}
                     </div>
-                  )
-                }) : (
-                <div className="col-span-6 text-center py-4">
-                  <div className="animate-pulse">
-                    <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
-                    <p className="text-gray-500 text-sm">Loading energy data...</p>
+
+                    {/* Technology Legend Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
+                      {capacityTrends?.technologyBreakdown?.slice(0, 6).map((tech: any) => {
+                        const colors: Record<string, string> = {
+                          'Natural Gas': 'bg-blue-500',
+                          'Coal': 'bg-gray-600',
+                          'Nuclear': 'bg-purple-500',
+                          'Solar': 'bg-yellow-500',
+                          'Wind': 'bg-green-500',
+                          'Hydro': 'bg-cyan-500',
+                          'Battery Storage': 'bg-indigo-500'
+                        }
+                        return (
+                          <div key={tech.technology} className="flex items-center gap-2 bg-gray-800/50 rounded-lg p-2">
+                            <div className={`w-3 h-3 rounded ${colors[tech.technology] || 'bg-gray-400'}`}></div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-medium text-gray-300 truncate">{tech.technology}</p>
+                              <p className="text-sm font-bold text-white">{tech.capacity.toLocaleString()} MW</p>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
                 </div>
-              )}
+
+                {/* Pipeline Projects & New Builds */}
+                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-green-500 rounded-full"></span>
+                    Pipeline Projects & New Builds
+                    <span className="ml-auto text-sm text-green-400 font-medium">12.8 GW Total</span>
+                  </h4>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Solar Pipeline */}
+                    <div className="bg-gradient-to-br from-yellow-900/20 to-yellow-800/20 border border-yellow-500/30 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 bg-yellow-500/20 rounded">
+                            <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                          </div>
+                          <h5 className="font-semibold text-white">Solar</h5>
+                        </div>
+                        <span className="text-lg font-bold text-white">5.2 GW</span>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Under Construction</span>
+                          <span className="text-white font-medium">2.1 GW</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Permitted</span>
+                          <span className="text-white font-medium">1.8 GW</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Proposed</span>
+                          <span className="text-white font-medium">1.3 GW</span>
+                        </div>
+                        <div className="pt-2 border-t border-yellow-500/20">
+                          <span className="text-xs text-gray-400">Avg. COD: Q3 2026</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Wind Pipeline */}
+                    <div className="bg-gradient-to-br from-green-900/20 to-green-800/20 border border-green-500/30 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 bg-green-500/20 rounded">
+                            <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          </div>
+                          <h5 className="font-semibold text-white">Wind</h5>
+                        </div>
+                        <span className="text-lg font-bold text-white">3.8 GW</span>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Under Construction</span>
+                          <span className="text-white font-medium">1.5 GW</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Permitted</span>
+                          <span className="text-white font-medium">1.4 GW</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Proposed</span>
+                          <span className="text-white font-medium">0.9 GW</span>
+                        </div>
+                        <div className="pt-2 border-t border-green-500/20">
+                          <span className="text-xs text-gray-400">Avg. COD: Q1 2027</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Battery Storage Pipeline */}
+                    <div className="bg-gradient-to-br from-indigo-900/20 to-indigo-800/20 border border-indigo-500/30 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 bg-indigo-500/20 rounded">
+                            <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                            </svg>
+                          </div>
+                          <h5 className="font-semibold text-white">Storage</h5>
+                        </div>
+                        <span className="text-lg font-bold text-white">2.4 GW</span>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Under Construction</span>
+                          <span className="text-white font-medium">1.2 GW</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Permitted</span>
+                          <span className="text-white font-medium">0.8 GW</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Proposed</span>
+                          <span className="text-white font-medium">0.4 GW</span>
+                        </div>
+                        <div className="pt-2 border-t border-indigo-500/20">
+                          <span className="text-xs text-gray-400">Avg. COD: Q2 2026</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Gas Pipeline */}
+                    <div className="bg-gradient-to-br from-blue-900/20 to-blue-800/20 border border-blue-500/30 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 bg-blue-500/20 rounded">
+                            <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                            </svg>
+                          </div>
+                          <h5 className="font-semibold text-white">Natural Gas</h5>
+                        </div>
+                        <span className="text-lg font-bold text-white">1.4 GW</span>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Under Construction</span>
+                          <span className="text-white font-medium">0.8 GW</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Permitted</span>
+                          <span className="text-white font-medium">0.6 GW</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Proposed</span>
+                          <span className="text-white font-medium">0 GW</span>
+                        </div>
+                        <div className="pt-2 border-t border-blue-500/20">
+                          <span className="text-xs text-gray-400">Avg. COD: Q4 2025</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Planned Retirements */}
+                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-red-500 rounded-full"></span>
+                    Planned Retirements
+                    <span className="ml-auto text-sm text-red-400 font-medium">4.2 GW by 2030</span>
+                  </h4>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+                        <div>
+                          <p className="text-white font-medium">Coal Plants</p>
+                          <p className="text-xs text-gray-400">8 facilities • Avg. age: 52 years</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-white">2.8 GW</p>
+                        <p className="text-xs text-red-400">2025-2028</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                        <div>
+                          <p className="text-white font-medium">Gas Peakers</p>
+                          <p className="text-xs text-gray-400">12 facilities • Avg. age: 38 years</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-white">1.1 GW</p>
+                        <p className="text-xs text-red-400">2026-2029</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
+                        <div>
+                          <p className="text-white font-medium">Hydro (Relicensing)</p>
+                          <p className="text-xs text-gray-400">2 facilities • Environmental concerns</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-white">0.3 GW</p>
+                        <p className="text-xs text-red-400">2027-2030</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              </>
-            )}
+              )}
+            </div>
 
-            {/* Power Demand Content */}
-            {snapshotTab === 'demand' && (
-              <div>
-                {/* Peak Load Overview */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-4 border border-red-200">
-                    <p className="text-sm text-red-600 font-medium mb-1">Peak Load</p>
-                    <p className="text-3xl font-bold text-red-900">68.5 GW</p>
-                    <p className="text-xs text-red-600 mt-1">Summer 2024</p>
+            {/* ========== DEMAND PILLAR - Detailed Section ========== */}
+            <div className="mb-6">
+              <button
+                onClick={() => setDemandExpanded(!demandExpanded)}
+                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-purple-900/20 to-purple-800/20 hover:from-purple-900/30 hover:to-purple-800/30 border border-purple-500/30 rounded-xl transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-500/20 rounded-lg">
+                    <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
                   </div>
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-                    <p className="text-sm text-blue-600 font-medium mb-1">Average Load</p>
-                    <p className="text-3xl font-bold text-blue-900">42.3 GW</p>
-                    <p className="text-xs text-blue-600 mt-1">Annual average</p>
+                  <div>
+                    <h3 className="text-xl font-bold text-white text-left">Demand Details</h3>
+                    <p className="text-sm text-gray-400 text-left">Load profiles, customer classes, and growth drivers</p>
                   </div>
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200">
-                    <p className="text-sm text-purple-600 font-medium mb-1">Load Growth</p>
-                    <p className="text-3xl font-bold text-purple-900">+3.2%</p>
-                    <p className="text-xs text-purple-600 mt-1">YoY growth rate</p>
+                </div>
+                <svg
+                  className={`w-6 h-6 text-gray-400 transition-transform ${demandExpanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {demandExpanded && (
+              <div className="mt-4 space-y-6">
+                {/* Load Profile Summary */}
+                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-purple-500 rounded-full"></span>
+                    Load Profile Summary
+                  </h4>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-gradient-to-br from-red-900/20 to-red-800/20 border border-red-500/30 rounded-lg p-4">
+                      <p className="text-sm text-red-400 font-medium mb-1">Peak Load</p>
+                      <p className="text-3xl font-bold text-white">68.5 GW</p>
+                      <p className="text-xs text-gray-400 mt-1">Summer 2024 (July 15, 4 PM)</p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-blue-900/20 to-blue-800/20 border border-blue-500/30 rounded-lg p-4">
+                      <p className="text-sm text-blue-400 font-medium mb-1">Average Load</p>
+                      <p className="text-3xl font-bold text-white">42.3 GW</p>
+                      <p className="text-xs text-gray-400 mt-1">Annual average (2024)</p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-green-900/20 to-green-800/20 border border-green-500/30 rounded-lg p-4">
+                      <p className="text-sm text-green-400 font-medium mb-1">Load Factor</p>
+                      <p className="text-3xl font-bold text-white">61.7%</p>
+                      <p className="text-xs text-gray-400 mt-1">Capacity utilization</p>
+                    </div>
+                  </div>
+
+                  {/* Seasonal Patterns */}
+                  <div className="bg-gray-800/50 rounded-lg p-4 mb-4">
+                    <h5 className="text-sm font-semibold text-white mb-3">Seasonal Peak Patterns</h5>
+                    <div className="grid grid-cols-4 gap-3">
+                      <div className="text-center">
+                        <p className="text-xs text-gray-400 mb-1">Winter</p>
+                        <p className="text-lg font-bold text-white">54.2 GW</p>
+                        <p className="text-xs text-cyan-400">Jan Peak</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-gray-400 mb-1">Spring</p>
+                        <p className="text-lg font-bold text-white">38.7 GW</p>
+                        <p className="text-xs text-green-400">Apr Peak</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-gray-400 mb-1">Summer</p>
+                        <p className="text-lg font-bold text-red-400">68.5 GW</p>
+                        <p className="text-xs text-red-400">Jul Peak</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-gray-400 mb-1">Fall</p>
+                        <p className="text-lg font-bold text-white">41.3 GW</p>
+                        <p className="text-xs text-yellow-400">Oct Peak</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Hourly Load Profile Visualization */}
+                  <div className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h5 className="text-sm font-semibold text-white">Typical Weekday Load Profile (Summer)</h5>
+                      <span className="text-xs text-gray-400">Peak: 4-5 PM</span>
+                    </div>
+
+                    {/* Interactive Hourly Chart */}
+                    <div className="relative h-32 mb-2">
+                      {/* Grid lines */}
+                      <div className="absolute inset-0 flex flex-col justify-between">
+                        {[0, 1, 2, 3, 4].map((i) => (
+                          <div key={i} className="border-t border-gray-700/50"></div>
+                        ))}
+                      </div>
+
+                      {/* Load curve */}
+                      <div className="absolute inset-0 flex items-end justify-between gap-0.5">
+                        {[38, 35, 32, 30, 32, 35, 42, 48, 52, 54, 56, 58, 60, 62, 64, 68, 66, 64, 60, 56, 52, 48, 44, 40].map((load, hour) => {
+                          const height = (load / 70) * 100
+                          const isPeak = hour >= 16 && hour <= 18
+                          const isOffPeak = hour < 6 || hour > 22
+                          return (
+                            <div key={hour} className="flex-1 flex flex-col items-center group cursor-pointer">
+                              <div
+                                className={`w-full rounded-t transition-all ${
+                                  isPeak ? 'bg-red-500/60 group-hover:bg-red-500/80' :
+                                  isOffPeak ? 'bg-blue-500/40 group-hover:bg-blue-500/60' :
+                                  'bg-purple-500/50 group-hover:bg-purple-500/70'
+                                }`}
+                                style={{ height: `${height}%` }}
+                              >
+                                {/* Tooltip on hover */}
+                                <div className="opacity-0 group-hover:opacity-100 absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap pointer-events-none z-10">
+                                  {hour}:00 - {load} GW
+                                </div>
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Hour labels */}
+                    <div className="flex justify-between text-xs text-gray-500 mb-2">
+                      <span>12 AM</span>
+                      <span>6 AM</span>
+                      <span>12 PM</span>
+                      <span>6 PM</span>
+                      <span>11 PM</span>
+                    </div>
+
+                    {/* Legend */}
+                    <div className="flex justify-center gap-4 text-xs">
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-blue-500/40 rounded"></div>
+                        <span className="text-gray-400">Off-Peak</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-purple-500/50 rounded"></div>
+                        <span className="text-gray-400">Mid-Peak</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-red-500/60 rounded"></div>
+                        <span className="text-gray-400">On-Peak (4-7 PM)</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Load by Customer Class */}
-                <div className="bg-gray-900 rounded-lg p-6 mb-6">
-                  <h4 className="text-lg font-semibold text-white mb-4">Load by Customer Class</h4>
+                {/* Customer Class Breakdown */}
+                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-purple-500 rounded-full"></span>
+                    Load by Customer Class
+                  </h4>
+
                   <div className="space-y-4">
                     {/* Residential */}
-                    <div>
+                    <div className="bg-gray-800/50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                          <span className="text-sm font-medium text-gray-300">Residential</span>
+                          <span className="font-medium text-white">Residential</span>
                         </div>
-                        <span className="text-sm font-semibold text-white">24.1 GW (35%)</span>
+                        <span className="text-lg font-bold text-white">24.1 GW (35%)</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-blue-500 h-2 rounded-full" style={{ width: '35%' }}></div>
+                      <div className="w-full bg-gray-700 rounded-full h-3 mb-3">
+                        <div className="bg-blue-500 h-3 rounded-full" style={{ width: '35%' }}></div>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">8.2M customers • 156 TWh/year</p>
+                      <div className="grid grid-cols-3 gap-4 text-xs">
+                        <div>
+                          <p className="text-gray-400">Customers</p>
+                          <p className="text-white font-semibold">8.2M</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400">Annual Sales</p>
+                          <p className="text-white font-semibold">156 TWh</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400">Avg. Usage</p>
+                          <p className="text-white font-semibold">19 MWh/yr</p>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Commercial */}
-                    <div>
+                    <div className="bg-gray-800/50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                          <span className="text-sm font-medium text-gray-300">Commercial</span>
+                          <span className="font-medium text-white">Commercial</span>
                         </div>
-                        <span className="text-sm font-semibold text-white">20.6 GW (30%)</span>
+                        <span className="text-lg font-bold text-white">20.6 GW (30%)</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-green-500 h-2 rounded-full" style={{ width: '30%' }}></div>
+                      <div className="w-full bg-gray-700 rounded-full h-3 mb-3">
+                        <div className="bg-green-500 h-3 rounded-full" style={{ width: '30%' }}></div>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">1.1M customers • 134 TWh/year</p>
+                      <div className="grid grid-cols-3 gap-4 text-xs">
+                        <div>
+                          <p className="text-gray-400">Customers</p>
+                          <p className="text-white font-semibold">1.1M</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400">Annual Sales</p>
+                          <p className="text-white font-semibold">134 TWh</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400">Avg. Usage</p>
+                          <p className="text-white font-semibold">122 MWh/yr</p>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Industrial */}
-                    <div>
+                    <div className="bg-gray-800/50 rounded-lg p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                           <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                          <span className="text-sm font-medium text-gray-300">Industrial</span>
+                          <span className="font-medium text-white">Industrial</span>
                         </div>
-                        <span className="text-sm font-semibold text-white">24.1 GW (35%)</span>
+                        <span className="text-lg font-bold text-white">24.1 GW (35%)</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-purple-500 h-2 rounded-full" style={{ width: '35%' }}></div>
+                      <div className="w-full bg-gray-700 rounded-full h-3 mb-3">
+                        <div className="bg-purple-500 h-3 rounded-full" style={{ width: '35%' }}></div>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">42K customers • 156 TWh/year</p>
+                      <div className="grid grid-cols-3 gap-4 text-xs">
+                        <div>
+                          <p className="text-gray-400">Customers</p>
+                          <p className="text-white font-semibold">42K</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400">Annual Sales</p>
+                          <p className="text-white font-semibold">156 TWh</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400">Avg. Usage</p>
+                          <p className="text-white font-semibold">3.7 GWh/yr</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Demand Trends */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
-                    <p className="text-xs text-gray-400">Data Centers</p>
-                    <p className="text-lg font-bold text-white">12.8 GW</p>
-                    <p className="text-xs text-green-600">↑ 18% YoY</p>
-                  </div>
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
-                    <p className="text-xs text-gray-400">EV Charging</p>
-                    <p className="text-lg font-bold text-white">2.4 GW</p>
-                    <p className="text-xs text-green-600">↑ 45% YoY</p>
-                  </div>
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
-                    <p className="text-xs text-gray-400">Manufacturing</p>
-                    <p className="text-lg font-bold text-white">15.2 GW</p>
-                    <p className="text-xs text-gray-400">↑ 2% YoY</p>
-                  </div>
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
-                    <p className="text-xs text-gray-400">Other</p>
-                    <p className="text-lg font-bold text-white">13.5 GW</p>
-                    <p className="text-xs text-gray-400">→ Flat</p>
-                  </div>
-                </div>
-              </div>
-            )}
+                {/* Demand Growth Drivers */}
+                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-green-500 rounded-full"></span>
+                    Demand Growth Drivers
+                    <span className="ml-auto text-sm text-green-400 font-medium">+3.2% YoY</span>
+                  </h4>
 
-            {/* Total capacity (for supply tab only) */}
-            {snapshotTab === 'supply' && (
-              <div className="text-xl font-semibold text-white mb-4">
-                Total: {capacityTrends ? Math.round(capacityTrends.totalCapacity / 1000) : Math.round(metrics.totalCapacity / 1000)} GW
-              </div>
-            )}
-
-            {/* Stacked Bar Chart - Only show for Power Supply */}
-            {snapshotTab === 'supply' && (
-            <div className="bg-gray-900 rounded-lg p-4 mb-4">
-              <div className="flex justify-end mb-4">
-                <div className="inline-flex rounded-lg bg-gray-700 p-0.5">
-                  <button onClick={() => setSupplyMetric('capacity')} className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
-                    supplyMetric === 'capacity' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'
-                  }`}>
-                    Capacity (MW)
-                  </button>
-                  <button onClick={() => setSupplyMetric('generation')} className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all ${
-                    supplyMetric === 'generation' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-400 hover:text-white'
-                  }`}>
-                    Generation (MWh)
-                  </button>
-                </div>
-              </div>
-              {capacityTrendsLoading ? (
-                <div className="flex items-center justify-center h-48">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                </div>
-              ) : capacityTrends?.chartData ? (
-                <div className="h-48">
-                {/* Chart Container */}
-                <div className="relative h-full">
-                  {/* Chart Area */}
-                  <div className="ml-4 mr-4 h-full">
-                    {(() => {
-                      const maxCapacity = Math.max(...capacityTrends.chartData.map((d: any) =>
-                        d.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
-                      ))
-                      const chartHeight = 160
-                      const techOrder = ['Natural Gas', 'Coal', 'Nuclear', 'Solar', 'Wind', 'Hydro', 'Battery Storage', 'Biomass', 'Other']
-                      const techColors: { [key: string]: string } = {
-                        'Natural Gas': '#3B82F6',
-                        'Coal': '#374151',
-                        'Nuclear': '#8B5CF6',
-                        'Solar': '#EAB308',
-                        'Wind': '#10B981',
-                        'Hydro': '#06B6D4',
-                        'Battery Storage': '#6366F1',
-                        'Biomass': '#059669',
-                        'Other': '#6B7280'
-                      }
-
-                      return (
-                        <div className="h-full flex flex-col">
-                          {/* Chart Area */}
-                          <div className="flex flex-1">
-                            {/* Y-Axis Scale */}
-                            <div className="w-8 flex flex-col justify-between text-right pr-2" style={{ height: `${chartHeight}px` }}>
-                              {[0, 1, 2, 3, 4, 5].reverse().map(i => (
-                                <div key={i} className="text-xs text-gray-400">
-                                  {Math.round((maxCapacity * i / 5) / 1000)}k
-                                </div>
-                              ))}
-                            </div>
-
-                            {/* Chart Bars */}
-                            <div className="flex-1 flex items-end justify-between space-x-8 border-l border-b border-gray-300 pl-4 pb-2" style={{ height: `${chartHeight}px` }}>
-                              {capacityTrends.chartData.map((yearData: any) => {
-                                const totalForYear = yearData.data.reduce((sum: number, tech: any) => sum + tech.capacity, 0)
-
-                                // Create technology map for consistent ordering
-                                const techMap: { [key: string]: number } = {}
-                                yearData.data.forEach((tech: any) => {
-                                  techMap[tech.technology] = tech.capacity
-                                })
-
-                                // Calculate stacked segments
-                                const segments: Array<{tech: string, capacity: number, height: number, startY: number}> = []
-                                let currentY = 0
-
-                                techOrder.forEach(tech => {
-                                  const capacity = techMap[tech] || 0
-                                  if (capacity > 0) {
-                                    const segmentHeight = maxCapacity > 0 ? (capacity / maxCapacity) * (chartHeight - 20) : 0
-                                    segments.push({
-                                      tech,
-                                      capacity,
-                                      height: segmentHeight,
-                                      startY: currentY
-                                    })
-                                    currentY += segmentHeight
-                                  }
-                                })
-
-                                return (
-                                  <div key={yearData.year} className="flex flex-col items-center space-y-2 flex-1">
-                                    {/* Single Stacked Bar */}
-                                    <div
-                                      className="relative w-12 border border-gray-700"
-                                      style={{ height: `${chartHeight - 20}px` }}
-                                    >
-                                      {segments.map((segment, index) => (
-                                        <div
-                                          key={`${yearData.year}-${segment.tech}`}
-                                          className="absolute w-full hover:opacity-80 transition-opacity cursor-pointer"
-                                          style={{
-                                            height: `${segment.height}px`,
-                                            backgroundColor: techColors[segment.tech],
-                                            bottom: `${segment.startY}px`,
-                                            minHeight: segment.height > 0 ? '1px' : '0px'
-                                          }}
-                                          title={`${segment.tech}: ${segment.capacity.toLocaleString()} MW (${Math.round((segment.capacity / totalForYear) * 100)}%)`}
-                                        />
-                                      ))}
-                                    </div>
-
-                                    {/* Year Label */}
-                                    <span className="text-sm font-medium text-gray-300">{yearData.year}</span>
-                                  </div>
-                                )
-                              })}
-                            </div>
-                          </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Data Centers */}
+                    <div className="bg-gradient-to-br from-cyan-900/20 to-cyan-800/20 border border-cyan-500/30 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                          </svg>
+                          <span className="font-semibold text-white">Data Centers</span>
                         </div>
-                      )
-                    })()}
+                        <span className="text-green-400 text-sm font-medium">↑ 18%</span>
+                      </div>
+                      <p className="text-2xl font-bold text-white mb-2">12.8 GW</p>
+                      <p className="text-xs text-gray-400">54 facilities • AI/Cloud computing expansion</p>
+                    </div>
+
+                    {/* EV Charging */}
+                    <div className="bg-gradient-to-br from-green-900/20 to-green-800/20 border border-green-500/30 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          <span className="font-semibold text-white">EV Charging</span>
+                        </div>
+                        <span className="text-green-400 text-sm font-medium">↑ 45%</span>
+                      </div>
+                      <p className="text-2xl font-bold text-white mb-2">2.4 GW</p>
+                      <p className="text-xs text-gray-400">12K charging stations • Fleet electrification</p>
+                    </div>
+
+                    {/* Manufacturing */}
+                    <div className="bg-gradient-to-br from-orange-900/20 to-orange-800/20 border border-orange-500/30 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                          </svg>
+                          <span className="font-semibold text-white">Manufacturing</span>
+                        </div>
+                        <span className="text-gray-400 text-sm font-medium">↑ 2%</span>
+                      </div>
+                      <p className="text-2xl font-bold text-white mb-2">15.2 GW</p>
+                      <p className="text-xs text-gray-400">Reshoring initiatives • Semiconductor fabs</p>
+                    </div>
+
+                    {/* Residential Growth */}
+                    <div className="bg-gradient-to-br from-blue-900/20 to-blue-800/20 border border-blue-500/30 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                          </svg>
+                          <span className="font-semibold text-white">Residential</span>
+                        </div>
+                        <span className="text-green-400 text-sm font-medium">↑ 1.8%</span>
+                      </div>
+                      <p className="text-2xl font-bold text-white mb-2">13.5 GW</p>
+                      <p className="text-xs text-gray-400">Population growth • Smart home adoption</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            ) : (
-              // Fallback placeholder
-              <div className="h-48 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="text-gray-500 mb-2">No data available</div>
-                  <div className="text-sm text-gray-400">Select a state to view capacity trends</div>
+              )}
+            </div>
+
+            {/* ========== PRICES PILLAR - Detailed Section ========== */}
+            <div className="mb-6">
+              <button
+                onClick={() => setPricesExpanded(!pricesExpanded)}
+                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-emerald-900/20 to-emerald-800/20 hover:from-emerald-900/30 hover:to-emerald-800/30 border border-emerald-500/30 rounded-xl transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-emerald-500/20 rounded-lg">
+                    <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white text-left">Price Details</h3>
+                    <p className="text-sm text-gray-400 text-left">Energy and capacity market pricing trends</p>
+                  </div>
+                </div>
+                <svg
+                  className={`w-6 h-6 text-gray-400 transition-transform ${pricesExpanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {pricesExpanded && (
+              <div className="mt-4 space-y-6">
+                {/* Energy Prices */}
+                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-emerald-500 rounded-full"></span>
+                    Energy Prices ($/MWh)
+                  </h4>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-gradient-to-br from-emerald-900/20 to-emerald-800/20 border border-emerald-500/30 rounded-lg p-4">
+                      <p className="text-sm text-emerald-400 font-medium mb-1">Average (24/7)</p>
+                      <p className="text-3xl font-bold text-white">$32.45</p>
+                      <p className="text-xs text-red-400 mt-1">↓ 12% vs last year</p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-orange-900/20 to-orange-800/20 border border-orange-500/30 rounded-lg p-4">
+                      <p className="text-sm text-orange-400 font-medium mb-1">On-Peak</p>
+                      <p className="text-3xl font-bold text-white">$45.20</p>
+                      <p className="text-xs text-red-400 mt-1">↓ 8% vs last year</p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-blue-900/20 to-blue-800/20 border border-blue-500/30 rounded-lg p-4">
+                      <p className="text-sm text-blue-400 font-medium mb-1">Off-Peak</p>
+                      <p className="text-3xl font-bold text-white">$19.70</p>
+                      <p className="text-xs text-red-400 mt-1">↓ 15% vs last year</p>
+                    </div>
+                  </div>
+
+                  {/* Price Trends by Month - Enhanced Visualization */}
+                  <div className="bg-gray-800/50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h5 className="text-sm font-semibold text-white">Monthly Average Prices (2024)</h5>
+                      <span className="text-xs text-gray-400">Peak: August</span>
+                    </div>
+
+                    {/* Interactive Line Chart */}
+                    <div className="relative h-40 mb-4">
+                      {/* Y-axis labels */}
+                      <div className="absolute left-0 inset-y-0 flex flex-col justify-between text-xs text-gray-500 pr-2">
+                        <span>$50</span>
+                        <span>$40</span>
+                        <span>$30</span>
+                        <span>$20</span>
+                      </div>
+
+                      {/* Chart area */}
+                      <div className="ml-8 h-full">
+                        {/* Grid lines */}
+                        <div className="absolute inset-0 ml-8 flex flex-col justify-between">
+                          {[0, 1, 2, 3, 4].map((i) => (
+                            <div key={i} className="border-t border-gray-700/50"></div>
+                          ))}
+                        </div>
+
+                        {/* Price line chart */}
+                        <svg className="w-full h-full relative z-10" viewBox="0 0 120 100" preserveAspectRatio="none">
+                          <defs>
+                            <linearGradient id="priceChartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                              <stop offset="0%" stopColor="rgba(16, 185, 129, 0.4)" />
+                              <stop offset="100%" stopColor="rgba(16, 185, 129, 0.0)" />
+                            </linearGradient>
+                          </defs>
+                          {/* Area fill */}
+                          <polyline
+                            points="0,23 10,30 20,34 30,42 40,47 50,37 60,15 70,8 80,22 90,34 100,27 110,31 110,100 0,100"
+                            fill="url(#priceChartGradient)"
+                            stroke="none"
+                          />
+                          {/* Line */}
+                          <polyline
+                            points="0,23 10,30 20,34 30,42 40,47 50,37 60,15 70,8 80,22 90,34 100,27 110,31"
+                            fill="none"
+                            stroke="rgba(16, 185, 129, 0.8)"
+                            strokeWidth="2"
+                          />
+                          {/* Data points */}
+                          {[23, 30, 34, 42, 47, 37, 15, 8, 22, 34, 27, 31].map((y, i) => (
+                            <circle key={i} cx={i * 10} cy={y} r="3" fill="rgb(16, 185, 129)" className="cursor-pointer hover:r-4 transition-all" />
+                          ))}
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Month labels with actual values */}
+                    <div className="grid grid-cols-6 gap-2">
+                      {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, i) => {
+                        const prices = [38.5, 35.2, 32.8, 28.9, 26.4, 31.7, 42.3, 45.8, 38.9, 33.2, 36.7, 34.5]
+                        const isHighest = i === 7
+                        const isLowest = i === 4
+                        return (
+                          <div key={month} className={`text-center rounded p-2 transition-all hover:bg-gray-900/70 cursor-pointer ${
+                            isHighest ? 'bg-red-900/20 border border-red-500/30' :
+                            isLowest ? 'bg-blue-900/20 border border-blue-500/30' :
+                            'bg-gray-900/30'
+                          }`}>
+                            <p className="text-xs text-gray-400 mb-1">{month}</p>
+                            <p className={`text-sm font-bold ${
+                              isHighest ? 'text-red-400' :
+                              isLowest ? 'text-blue-400' :
+                              'text-white'
+                            }`}>${prices[i]}</p>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Capacity Market */}
+                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-indigo-500 rounded-full"></span>
+                    Capacity Market Prices
+                  </h4>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-gradient-to-br from-indigo-900/20 to-indigo-800/20 border border-indigo-500/30 rounded-lg p-4">
+                      <p className="text-sm text-indigo-400 font-medium mb-2">Current Auction (2025/26)</p>
+                      <p className="text-3xl font-bold text-white mb-1">$8.50</p>
+                      <p className="text-sm text-gray-400">per kW-month</p>
+                      <div className="mt-3 pt-3 border-t border-indigo-500/20">
+                        <p className="text-xs text-gray-400">Cleared Capacity</p>
+                        <p className="text-white font-semibold">72,450 MW</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-violet-900/20 to-violet-800/20 border border-violet-500/30 rounded-lg p-4">
+                      <p className="text-sm text-violet-400 font-medium mb-2">Next Auction (2026/27)</p>
+                      <p className="text-3xl font-bold text-white mb-1">$9.20</p>
+                      <p className="text-sm text-gray-400">per kW-month (forecast)</p>
+                      <div className="mt-3 pt-3 border-t border-violet-500/20">
+                        <p className="text-xs text-gray-400">Expected Demand</p>
+                        <p className="text-white font-semibold">74,800 MW</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Historical Capacity Prices */}
+                  <div className="mt-4 bg-gray-800/50 rounded-lg p-4">
+                    <h5 className="text-sm font-semibold text-white mb-3">Historical Capacity Auction Results</h5>
+                    <div className="grid grid-cols-5 gap-3">
+                      {[
+                        { year: '2021/22', price: 7.35 },
+                        { year: '2022/23', price: 6.90 },
+                        { year: '2023/24', price: 7.80 },
+                        { year: '2024/25', price: 8.15 },
+                        { year: '2025/26', price: 8.50 }
+                      ].map(item => (
+                        <div key={item.year} className="text-center bg-gray-900/50 rounded p-2">
+                          <p className="text-xs text-gray-400 mb-1">{item.year}</p>
+                          <p className="text-lg font-bold text-white">${item.price}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Price Drivers */}
+                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-1 h-6 bg-yellow-500 rounded-full"></span>
+                    Key Price Drivers
+                  </h4>
+
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3 bg-gray-800/50 rounded-lg p-3">
+                      <div className="p-1.5 bg-blue-500/20 rounded mt-0.5">
+                        <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-white mb-1">Natural Gas Prices</p>
+                        <p className="text-sm text-gray-400">Henry Hub averaging $2.45/MMBtu (↓18% YoY) driving lower marginal costs</p>
+                      </div>
+                      <span className="text-red-400 font-medium whitespace-nowrap">-↓</span>
+                    </div>
+
+                    <div className="flex items-start gap-3 bg-gray-800/50 rounded-lg p-3">
+                      <div className="p-1.5 bg-green-500/20 rounded mt-0.5">
+                        <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-white mb-1">Renewable Penetration</p>
+                        <p className="text-sm text-gray-400">15.2 GW of zero-marginal-cost renewables reducing peak prices</p>
+                      </div>
+                      <span className="text-red-400 font-medium whitespace-nowrap">-↓</span>
+                    </div>
+
+                    <div className="flex items-start gap-3 bg-gray-800/50 rounded-lg p-3">
+                      <div className="p-1.5 bg-purple-500/20 rounded mt-0.5">
+                        <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-white mb-1">Demand Growth</p>
+                        <p className="text-sm text-gray-400">Data centers and EVs driving +3.2% annual load growth, tightening supply</p>
+                      </div>
+                      <span className="text-green-400 font-medium whitespace-nowrap">-↑</span>
+                    </div>
+
+                    <div className="flex items-start gap-3 bg-gray-800/50 rounded-lg p-3">
+                      <div className="p-1.5 bg-red-500/20 rounded mt-0.5">
+                        <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-white mb-1">Coal Retirements</p>
+                        <p className="text-sm text-gray-400">4.2 GW retiring by 2030, potential reliability concerns during peak periods</p>
+                      </div>
+                      <span className="text-green-400 font-medium whitespace-nowrap">-↑</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            )}
-            </div>
-            )}
-
-            {/* Sources */}
-            <div className="text-sm text-gray-400 mb-4">
-              Sources: EIA.gov, State Energy Data System
-            </div>
-
-            {/* Download and Compare buttons */}
-            <div className="flex justify-center space-x-3">
-              <button className="px-6 py-2.5 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
-                Download
-              </button>
-              <button className="px-6 py-2.5 text-sm font-medium text-gray-300 hover:text-white border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors">
-                Compare
-              </button>
+              )}
             </div>
         </div>
 
