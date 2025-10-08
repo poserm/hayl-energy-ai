@@ -2520,6 +2520,27 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
   return (
     <div className="w-full">
+      {/* Company Header */}
+      <div className="mb-6 pb-6 border-b border-gray-700">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-3">
+              <h1 className="text-3xl font-bold text-white">{utility?.name || utility?.utility_name}</h1>
+              <span className="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
+                {utility?.ownershipType || 'Investor-Owned'}
+              </span>
+            </div>
+            <p className="text-sm text-gray-400 mb-2">
+              {utility?.states?.join(', ') || 'Multi-state service territory'}
+            </p>
+            <p className="text-sm text-gray-300 max-w-3xl leading-relaxed">
+              Leading electric utility providing generation, transmission, and distribution services across {utility?.states?.length || 'multiple'} states.
+              Committed to delivering reliable power to 2.4M+ customers while transitioning to clean energy with a goal of 40% renewable capacity by 2030.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Section Navigation - Horizontal at Top */}
       <div className="mb-8">
         <div className="flex justify-center mb-6">
@@ -2597,18 +2618,12 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
                 {/* ===== SUPPLY SIDE ===== */}
                 <div className="mb-10">
-                  <div className="relative mb-8">
-                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="w-full border-t-2 border-blue-500/30"></div>
-                    </div>
-                    <div className="relative flex justify-center">
-                      <div className="bg-gradient-to-r from-blue-900/50 to-blue-800/50 px-6 py-3 rounded-lg border border-blue-500/40">
-                        <h2 className="text-xl font-bold text-white flex items-center gap-3">
-                          <span className="text-2xl">⚡</span>
-                          Supply Side: Generation Portfolio
-                        </h2>
-                      </div>
-                    </div>
+                  <div className="mb-6">
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-1">
+                      <span>⚡</span>
+                      Generation Portfolio
+                    </h2>
+                    <p className="text-sm text-gray-400">Supply-side capacity and infrastructure</p>
                   </div>
 
                   {/* Key Insights - Supply */}
@@ -2654,7 +2669,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                           ))}
                         </div>
                         {/* Legend */}
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center">
                           {[
                             { tech: 'Natural Gas', capacity: 3200, color: 'bg-blue-500', percent: 45 },
                             { tech: 'Coal', capacity: 2100, color: 'bg-gray-600', percent: 29 },
@@ -2665,10 +2680,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                           ].map((item) => (
                             <div key={item.tech} className="flex items-center gap-2">
                               <div className={`w-3 h-3 rounded ${item.color}`}></div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-xs font-medium text-gray-300 truncate">{item.tech}</p>
-                                <p className="text-xs text-gray-400">{item.capacity} MW ({item.percent}%)</p>
-                              </div>
+                              <span className="text-xs text-gray-300">{item.tech}: <span className="font-medium text-white">{item.capacity} MW</span> ({item.percent}%)</span>
                             </div>
                           ))}
                         </div>
@@ -2788,18 +2800,12 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
                 {/* ===== DEMAND SIDE ===== */}
                 <div className="mb-10">
-                  <div className="relative mb-8 mt-12">
-                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="w-full border-t-2 border-purple-500/30"></div>
-                    </div>
-                    <div className="relative flex justify-center">
-                      <div className="bg-gradient-to-r from-purple-900/50 to-purple-800/50 px-6 py-3 rounded-lg border border-purple-500/40">
-                        <h2 className="text-xl font-bold text-white flex items-center gap-3">
-                          <span className="text-2xl">👥</span>
-                          Demand Side: Customer Base & Load Profile
-                        </h2>
-                      </div>
-                    </div>
+                  <div className="mb-6 mt-8">
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-1">
+                      <span>👥</span>
+                      Customer Base & Load Profile
+                    </h2>
+                    <p className="text-sm text-gray-400">Demand-side customer classes and consumption</p>
                   </div>
 
                   {/* Key Insights - Demand */}
