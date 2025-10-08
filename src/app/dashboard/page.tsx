@@ -988,254 +988,342 @@ export default function DashboardPage() {
             {/* Supply Content */}
             {supplyExpanded && (
               <div className="mb-6 mt-6 space-y-6">
-                {/* Existing Capacity Mix */}
-                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
-                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span className="w-1 h-6 bg-blue-500 rounded-full"></span>
-                    Existing Capacity Mix
-                  </h4>
 
-                  {/* Horizontal Stacked Bar */}
-                  <div className="mb-6">
-                    <div className="flex h-16 rounded-lg overflow-hidden border border-gray-700">
-                      {capacityTrends?.technologyBreakdown?.slice(0, 6).map((tech: any) => {
-                        const colors: Record<string, string> = {
-                          'Natural Gas': 'bg-blue-500',
-                          'Coal': 'bg-gray-600',
-                          'Nuclear': 'bg-purple-500',
-                          'Solar': 'bg-yellow-500',
-                          'Wind': 'bg-green-500',
-                          'Hydro': 'bg-cyan-500',
-                          'Battery Storage': 'bg-indigo-500'
-                        }
-                        const total = capacityTrends.technologyBreakdown.reduce((sum: number, t: any) => sum + t.capacity, 0)
-                        const percent = Math.round((tech.capacity / total) * 100)
-                        return (
-                          <div
-                            key={tech.technology}
-                            className={`${colors[tech.technology] || 'bg-gray-400'} flex items-center justify-center text-white text-sm font-semibold hover:opacity-80 transition-opacity cursor-pointer`}
-                            style={{ width: `${percent}%` }}
-                            title={`${tech.technology}: ${tech.capacity.toLocaleString()} MW (${percent}%)`}
-                          >
-                            {percent >= 8 && <span>{percent}%</span>}
-                          </div>
-                        )
-                      })}
+                {/* Summary Flow Bar */}
+                <div className="bg-gradient-to-r from-blue-900/30 via-green-900/30 to-red-900/30 border border-gray-700 rounded-xl p-6">
+                  <div className="flex items-center justify-between gap-4">
+                    {/* Current */}
+                    <div className="flex-1 text-center">
+                      <p className="text-xs text-gray-400 mb-1">CURRENT CAPACITY</p>
+                      <p className="text-3xl font-bold text-white">85.0 GW</p>
+                      <p className="text-xs text-blue-400 mt-1">Installed & Operating</p>
                     </div>
 
-                    {/* Technology Legend Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
-                      {capacityTrends?.technologyBreakdown?.slice(0, 6).map((tech: any) => {
-                        const colors: Record<string, string> = {
-                          'Natural Gas': 'bg-blue-500',
-                          'Coal': 'bg-gray-600',
-                          'Nuclear': 'bg-purple-500',
-                          'Solar': 'bg-yellow-500',
-                          'Wind': 'bg-green-500',
-                          'Hydro': 'bg-cyan-500',
-                          'Battery Storage': 'bg-indigo-500'
-                        }
-                        return (
-                          <div key={tech.technology} className="flex items-center gap-2 bg-gray-800/50 rounded-lg p-2">
-                            <div className={`w-3 h-3 rounded ${colors[tech.technology] || 'bg-gray-400'}`}></div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs font-medium text-gray-300 truncate">{tech.technology}</p>
-                              <p className="text-sm font-bold text-white">{tech.capacity.toLocaleString()} MW</p>
-                            </div>
-                          </div>
-                        )
-                      })}
+                    {/* Arrow */}
+                    <div className="flex flex-col items-center gap-1">
+                      <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m0 0l-4-4m4 4l4-4" />
+                      </svg>
+                      <p className="text-xs text-green-400 font-medium">+12.8 GW</p>
+                    </div>
+
+                    {/* Pipeline */}
+                    <div className="flex-1 text-center">
+                      <p className="text-xs text-gray-400 mb-1">PIPELINE</p>
+                      <p className="text-3xl font-bold text-green-400">+12.8 GW</p>
+                      <p className="text-xs text-green-400 mt-1">Under Development</p>
+                    </div>
+
+                    {/* Arrow */}
+                    <div className="flex flex-col items-center gap-1">
+                      <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                      </svg>
+                      <p className="text-xs text-red-400 font-medium">-4.2 GW</p>
+                    </div>
+
+                    {/* Retirements */}
+                    <div className="flex-1 text-center">
+                      <p className="text-xs text-gray-400 mb-1">RETIREMENTS</p>
+                      <p className="text-3xl font-bold text-red-400">-4.2 GW</p>
+                      <p className="text-xs text-red-400 mt-1">By 2030</p>
+                    </div>
+
+                    {/* Arrow */}
+                    <div className="flex flex-col items-center gap-1">
+                      <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                      </svg>
+                      <p className="text-xs text-emerald-400 font-medium">+8.6 GW</p>
+                    </div>
+
+                    {/* Net Change */}
+                    <div className="flex-1 text-center">
+                      <p className="text-xs text-gray-400 mb-1">NET CHANGE</p>
+                      <p className="text-3xl font-bold text-emerald-400">+8.6 GW</p>
+                      <p className="text-xs text-emerald-400 mt-1">+10% Growth</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Pipeline Projects & New Builds */}
-                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
-                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span className="w-1 h-6 bg-green-500 rounded-full"></span>
-                    Pipeline Projects & New Builds
-                    <span className="ml-auto text-sm text-green-400 font-medium">12.8 GW Total</span>
-                  </h4>
+                {/* Technology Transformation Grid */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-lg font-semibold text-white">Supply by Technology</h4>
+                    <p className="text-xs text-gray-400">Hover for details</p>
+                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Solar Pipeline */}
-                    <div className="bg-gradient-to-br from-yellow-900/20 to-yellow-800/20 border border-yellow-500/30 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="p-1.5 bg-yellow-500/20 rounded">
-                            <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                          </div>
-                          <h5 className="font-semibold text-white">Solar</h5>
+                  {/* Natural Gas */}
+                  <div className="bg-gray-900/50 border border-gray-700 hover:border-blue-500/50 rounded-xl p-5 transition-all hover:shadow-lg hover:shadow-blue-500/10 group cursor-pointer">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                          <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                          </svg>
                         </div>
-                        <span className="text-lg font-bold text-white">5.2 GW</span>
+                        <div>
+                          <h5 className="text-lg font-bold text-white">Natural Gas</h5>
+                          <p className="text-xs text-gray-400">Baseload & Peaking</p>
+                        </div>
                       </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Under Construction</span>
-                          <span className="text-white font-medium">2.1 GW</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Permitted</span>
-                          <span className="text-white font-medium">1.8 GW</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Proposed</span>
-                          <span className="text-white font-medium">1.3 GW</span>
-                        </div>
-                        <div className="pt-2 border-t border-yellow-500/20">
-                          <span className="text-xs text-gray-400">Avg. COD: Q3 2026</span>
-                        </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-white">45.2 GW</p>
+                        <p className="text-xs text-gray-400">53% of total</p>
                       </div>
                     </div>
 
-                    {/* Wind Pipeline */}
-                    <div className="bg-gradient-to-br from-green-900/20 to-green-800/20 border border-green-500/30 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="p-1.5 bg-green-500/20 rounded">
-                            <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                          </div>
-                          <h5 className="font-semibold text-white">Wind</h5>
-                        </div>
-                        <span className="text-lg font-bold text-white">3.8 GW</span>
+                    {/* Progress bar */}
+                    <div className="w-full bg-gray-800 rounded-full h-3 mb-3">
+                      <div className="bg-blue-500 h-3 rounded-full transition-all" style={{ width: '53%' }}></div>
+                    </div>
+
+                    {/* Details Grid */}
+                    <div className="grid grid-cols-3 gap-3 mt-4">
+                      <div className="bg-gray-800/50 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 mb-1">Current</p>
+                        <p className="text-lg font-bold text-white">45.2 GW</p>
                       </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Under Construction</span>
-                          <span className="text-white font-medium">1.5 GW</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Permitted</span>
-                          <span className="text-white font-medium">1.4 GW</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Proposed</span>
-                          <span className="text-white font-medium">0.9 GW</span>
-                        </div>
-                        <div className="pt-2 border-t border-green-500/20">
-                          <span className="text-xs text-gray-400">Avg. COD: Q1 2027</span>
-                        </div>
+                      <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3">
+                        <p className="text-xs text-green-400 mb-1">Pipeline</p>
+                        <p className="text-lg font-bold text-green-400">+1.4 GW</p>
+                        <p className="text-xs text-gray-400 mt-1">0.8 GW construction</p>
+                      </div>
+                      <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-3">
+                        <p className="text-xs text-red-400 mb-1">Retirements</p>
+                        <p className="text-lg font-bold text-red-400">-1.1 GW</p>
+                        <p className="text-xs text-gray-400 mt-1">12 peaker units</p>
                       </div>
                     </div>
 
-                    {/* Battery Storage Pipeline */}
-                    <div className="bg-gradient-to-br from-indigo-900/20 to-indigo-800/20 border border-indigo-500/30 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="p-1.5 bg-indigo-500/20 rounded">
-                            <svg className="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                            </svg>
-                          </div>
-                          <h5 className="font-semibold text-white">Storage</h5>
+                    {/* Net Change Indicator */}
+                    <div className="mt-3 flex items-center justify-between bg-emerald-900/20 border border-emerald-500/30 rounded-lg p-3">
+                      <span className="text-sm text-gray-300">Net Change by 2030</span>
+                      <span className="text-lg font-bold text-emerald-400">+0.3 GW</span>
+                    </div>
+                  </div>
+
+                  {/* Coal */}
+                  <div className="bg-gray-900/50 border border-gray-700 hover:border-gray-500/50 rounded-xl p-5 transition-all hover:shadow-lg hover:shadow-gray-500/10 group cursor-pointer">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-gray-600/20 rounded-lg group-hover:bg-gray-600/30 transition-colors">
+                          <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                          </svg>
                         </div>
-                        <span className="text-lg font-bold text-white">2.4 GW</span>
+                        <div>
+                          <h5 className="text-lg font-bold text-white flex items-center gap-2">
+                            Coal
+                            <span className="px-2 py-0.5 bg-red-500/20 text-red-400 text-xs rounded-full">Declining</span>
+                          </h5>
+                          <p className="text-xs text-gray-400">Legacy Baseload</p>
+                        </div>
                       </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Under Construction</span>
-                          <span className="text-white font-medium">1.2 GW</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Permitted</span>
-                          <span className="text-white font-medium">0.8 GW</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Proposed</span>
-                          <span className="text-white font-medium">0.4 GW</span>
-                        </div>
-                        <div className="pt-2 border-t border-indigo-500/20">
-                          <span className="text-xs text-gray-400">Avg. COD: Q2 2026</span>
-                        </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-white">12.0 GW</p>
+                        <p className="text-xs text-gray-400">14% of total</p>
                       </div>
                     </div>
 
-                    {/* Gas Pipeline */}
-                    <div className="bg-gradient-to-br from-blue-900/20 to-blue-800/20 border border-blue-500/30 rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="p-1.5 bg-blue-500/20 rounded">
-                            <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-                            </svg>
-                          </div>
-                          <h5 className="font-semibold text-white">Natural Gas</h5>
-                        </div>
-                        <span className="text-lg font-bold text-white">1.4 GW</span>
+                    {/* Progress bar */}
+                    <div className="w-full bg-gray-800 rounded-full h-3 mb-3">
+                      <div className="bg-gray-600 h-3 rounded-full transition-all" style={{ width: '14%' }}></div>
+                    </div>
+
+                    {/* Details Grid */}
+                    <div className="grid grid-cols-3 gap-3 mt-4">
+                      <div className="bg-gray-800/50 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 mb-1">Current</p>
+                        <p className="text-lg font-bold text-white">12.0 GW</p>
                       </div>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Under Construction</span>
-                          <span className="text-white font-medium">0.8 GW</span>
+                      <div className="bg-gray-800/30 rounded-lg p-3">
+                        <p className="text-xs text-gray-500 mb-1">Pipeline</p>
+                        <p className="text-lg font-bold text-gray-500">0 GW</p>
+                        <p className="text-xs text-gray-500 mt-1">No new builds</p>
+                      </div>
+                      <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-3">
+                        <p className="text-xs text-red-400 mb-1">Retirements</p>
+                        <p className="text-lg font-bold text-red-400">-2.8 GW</p>
+                        <p className="text-xs text-gray-400 mt-1">8 facilities</p>
+                      </div>
+                    </div>
+
+                    {/* Net Change Indicator */}
+                    <div className="mt-3 flex items-center justify-between bg-red-900/20 border border-red-500/30 rounded-lg p-3">
+                      <span className="text-sm text-gray-300">Net Change by 2030</span>
+                      <span className="text-lg font-bold text-red-400">-2.8 GW (-23%)</span>
+                    </div>
+                  </div>
+
+                  {/* Solar */}
+                  <div className="bg-gray-900/50 border border-gray-700 hover:border-yellow-500/50 rounded-xl p-5 transition-all hover:shadow-lg hover:shadow-yellow-500/10 group cursor-pointer">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-yellow-500/20 rounded-lg group-hover:bg-yellow-500/30 transition-colors">
+                          <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Permitted</span>
-                          <span className="text-white font-medium">0.6 GW</span>
+                        <div>
+                          <h5 className="text-lg font-bold text-white flex items-center gap-2">
+                            Solar
+                            <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">Growing</span>
+                          </h5>
+                          <p className="text-xs text-gray-400">Renewable Energy</p>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Proposed</span>
-                          <span className="text-white font-medium">0 GW</span>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-white">8.0 GW</p>
+                        <p className="text-xs text-gray-400">9% of total</p>
+                      </div>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="w-full bg-gray-800 rounded-full h-3 mb-3">
+                      <div className="bg-yellow-500 h-3 rounded-full transition-all" style={{ width: '9%' }}></div>
+                    </div>
+
+                    {/* Details Grid */}
+                    <div className="grid grid-cols-3 gap-3 mt-4">
+                      <div className="bg-gray-800/50 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 mb-1">Current</p>
+                        <p className="text-lg font-bold text-white">8.0 GW</p>
+                      </div>
+                      <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3">
+                        <p className="text-xs text-green-400 mb-1">Pipeline</p>
+                        <p className="text-lg font-bold text-green-400">+5.2 GW</p>
+                        <p className="text-xs text-gray-400 mt-1">2.1 GW construction</p>
+                      </div>
+                      <div className="bg-gray-800/30 rounded-lg p-3">
+                        <p className="text-xs text-gray-500 mb-1">Retirements</p>
+                        <p className="text-lg font-bold text-gray-500">0 GW</p>
+                        <p className="text-xs text-gray-500 mt-1">None planned</p>
+                      </div>
+                    </div>
+
+                    {/* Net Change Indicator */}
+                    <div className="mt-3 flex items-center justify-between bg-emerald-900/20 border border-emerald-500/30 rounded-lg p-3">
+                      <span className="text-sm text-gray-300">Net Change by 2030</span>
+                      <span className="text-lg font-bold text-emerald-400">+5.2 GW (+65%)</span>
+                    </div>
+                  </div>
+
+                  {/* Wind - Collapsible for space, can add more technologies */}
+                  <div className="bg-gray-900/50 border border-gray-700 hover:border-green-500/50 rounded-xl p-5 transition-all hover:shadow-lg hover:shadow-green-500/10 group cursor-pointer">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-green-500/20 rounded-lg group-hover:bg-green-500/30 transition-colors">
+                          <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
                         </div>
-                        <div className="pt-2 border-t border-blue-500/20">
-                          <span className="text-xs text-gray-400">Avg. COD: Q4 2025</span>
+                        <div>
+                          <h5 className="text-lg font-bold text-white flex items-center gap-2">
+                            Wind
+                            <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">Growing</span>
+                          </h5>
+                          <p className="text-xs text-gray-400">Renewable Energy</p>
                         </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold text-white">6.0 GW</p>
+                        <p className="text-xs text-gray-400">7% of total</p>
+                      </div>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="w-full bg-gray-800 rounded-full h-3 mb-3">
+                      <div className="bg-green-500 h-3 rounded-full transition-all" style={{ width: '7%' }}></div>
+                    </div>
+
+                    {/* Details Grid */}
+                    <div className="grid grid-cols-3 gap-3 mt-4">
+                      <div className="bg-gray-800/50 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 mb-1">Current</p>
+                        <p className="text-lg font-bold text-white">6.0 GW</p>
+                      </div>
+                      <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-3">
+                        <p className="text-xs text-green-400 mb-1">Pipeline</p>
+                        <p className="text-lg font-bold text-green-400">+3.8 GW</p>
+                        <p className="text-xs text-gray-400 mt-1">1.5 GW construction</p>
+                      </div>
+                      <div className="bg-gray-800/30 rounded-lg p-3">
+                        <p className="text-xs text-gray-500 mb-1">Retirements</p>
+                        <p className="text-lg font-bold text-gray-500">0 GW</p>
+                        <p className="text-xs text-gray-500 mt-1">None planned</p>
+                      </div>
+                    </div>
+
+                    {/* Net Change Indicator */}
+                    <div className="mt-3 flex items-center justify-between bg-emerald-900/20 border border-emerald-500/30 rounded-lg p-3">
+                      <span className="text-sm text-gray-300">Net Change by 2030</span>
+                      <span className="text-lg font-bold text-emerald-400">+3.8 GW (+63%)</span>
+                    </div>
+                  </div>
+
+                  {/* Other Technologies Summary Card */}
+                  <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-5">
+                    <h5 className="text-sm font-semibold text-white mb-4">Other Technologies</h5>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      <div className="bg-gray-800/50 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                          <p className="text-xs text-gray-400">Nuclear</p>
+                        </div>
+                        <p className="text-lg font-bold text-white">10.2 GW</p>
+                        <p className="text-xs text-gray-400 mt-1">Stable</p>
+                      </div>
+                      <div className="bg-gray-800/50 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
+                          <p className="text-xs text-gray-400">Storage</p>
+                        </div>
+                        <p className="text-lg font-bold text-white">2.0 GW</p>
+                        <p className="text-xs text-green-400 mt-1">+2.4 GW pipeline</p>
+                      </div>
+                      <div className="bg-gray-800/50 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
+                          <p className="text-xs text-gray-400">Hydro</p>
+                        </div>
+                        <p className="text-lg font-bold text-white">1.6 GW</p>
+                        <p className="text-xs text-red-400 mt-1">-0.3 GW retiring</p>
+                      </div>
+                      <div className="bg-gray-800/50 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                          <p className="text-xs text-gray-400">Other</p>
+                        </div>
+                        <p className="text-lg font-bold text-white">0.8 GW</p>
+                        <p className="text-xs text-gray-400 mt-1">Biomass, etc</p>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Planned Retirements */}
-                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
-                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                    <span className="w-1 h-6 bg-red-500 rounded-full"></span>
-                    Planned Retirements
-                    <span className="ml-auto text-sm text-red-400 font-medium">4.2 GW by 2030</span>
-                  </h4>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-gray-600"></div>
-                        <div>
-                          <p className="text-white font-medium">Coal Plants</p>
-                          <p className="text-xs text-gray-400">8 facilities • Avg. age: 52 years</p>
-                        </div>
+                  {/* Key Insights */}
+                  <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 border border-blue-500/30 rounded-xl p-5">
+                    <h5 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Key Insights
+                    </h5>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 mb-1">Clean Energy Growth</p>
+                        <p className="text-lg font-bold text-green-400">11.4 GW</p>
+                        <p className="text-xs text-gray-400 mt-1">Solar + Wind + Storage pipeline</p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-white">2.8 GW</p>
-                        <p className="text-xs text-red-400">2025-2028</p>
+                      <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 mb-1">Fossil Retirements</p>
+                        <p className="text-lg font-bold text-red-400">3.9 GW</p>
+                        <p className="text-xs text-gray-400 mt-1">Coal + Gas peakers by 2030</p>
                       </div>
-                    </div>
-
-                    <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                        <div>
-                          <p className="text-white font-medium">Gas Peakers</p>
-                          <p className="text-xs text-gray-400">12 facilities • Avg. age: 38 years</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-white">1.1 GW</p>
-                        <p className="text-xs text-red-400">2026-2029</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-cyan-500"></div>
-                        <div>
-                          <p className="text-white font-medium">Hydro (Relicensing)</p>
-                          <p className="text-xs text-gray-400">2 facilities • Environmental concerns</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-white">0.3 GW</p>
-                        <p className="text-xs text-red-400">2027-2030</p>
+                      <div className="bg-gray-900/50 rounded-lg p-3">
+                        <p className="text-xs text-gray-400 mb-1">Energy Transition</p>
+                        <p className="text-lg font-bold text-emerald-400">18% → 28%</p>
+                        <p className="text-xs text-gray-400 mt-1">Renewable share growing</p>
                       </div>
                     </div>
                   </div>
