@@ -2438,6 +2438,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   const [plants, setPlants] = useState<any[]>([])
   const [plantsLoading, setPlantsLoading] = useState(false)
   const [plantsError, setPlantsError] = useState<string | null>(null)
+  const [selectedRFP, setSelectedRFP] = useState<any>(null)
 
   // Fetch portfolio data when utility changes
   useEffect(() => {
@@ -2588,37 +2589,6 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             <p className="text-xs text-gray-400 mt-1">Load Factor: 61%</p>
           </div>
         </div>
-
-        {/* Action Buttons Bar */}
-        <div className="flex flex-wrap gap-3">
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-            Set Alert
-          </button>
-
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            Add to Connections
-          </button>
-
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Export Profile
-          </button>
-
-          <button className="flex items-center gap-2 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-            </svg>
-            Share
-          </button>
-        </div>
       </div>
 
       {/* Section Navigation - Horizontal at Top */}
@@ -2640,18 +2610,6 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Section Description */}
-        <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-2">
-            {sections[activeSection - 1].title}
-          </h2>
-          <p className="text-gray-400">
-            {activeSection === 1 && `Complete supply and demand landscape: generation portfolio, capacity mix, customer base, and load profile for ${utility?.name || utility?.utility_name}.`}
-            {activeSection === 2 && `Active RFPs, procurement calendar, and opportunity pipeline from ${utility?.name || utility?.utility_name}.`}
-            {activeSection === 3 && `Decision makers, procurement team, and key stakeholders at ${utility?.name || utility?.utility_name}.`}
-          </p>
         </div>
       </div>
 
@@ -2977,22 +2935,6 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
             {activeSection === 2 && (
               <>
-                {/* Procurement Overview Stats */}
-                <div className="grid grid-cols-3 gap-4 mb-8">
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
-                    <p className="text-sm text-gray-400 mb-1">RFP Cycle</p>
-                    <p className="text-2xl font-bold text-white">Quarterly</p>
-                  </div>
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
-                    <p className="text-sm text-gray-400 mb-1">Avg. Contract Size</p>
-                    <p className="text-2xl font-bold text-white">$250M - $1B</p>
-                  </div>
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
-                    <p className="text-sm text-gray-400 mb-1">Active RFPs</p>
-                    <p className="text-2xl font-bold text-green-400">3</p>
-                  </div>
-                </div>
-
                 {/* Active RFPs */}
                 <div className="mb-8">
                   <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
@@ -3060,18 +3002,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                             </div>
                           </div>
                           <button
-                            onClick={() => {
-                              const params = new URLSearchParams({
-                                title: rfp.title,
-                                type: rfp.type,
-                                deadline: rfp.deadline,
-                                status: rfp.status,
-                                capacity: rfp.capacity,
-                                cod: 'Q4 2026 - Q2 2027',
-                                link: rfp.link
-                              })
-                              window.open(`/rfp?${params.toString()}`, '_blank')
-                            }}
+                            onClick={() => setSelectedRFP(rfp)}
                             className="ml-4 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
                           >
                             View Details
@@ -3135,49 +3066,6 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         </tr>
                       </tbody>
                     </table>
-                  </div>
-                </div>
-
-                {/* Procurement Profile */}
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
-                    <h3 className="text-lg font-semibold text-white mb-4">Procurement Preferences</h3>
-                    <div className="space-y-3 text-sm">
-                      <div>
-                        <p className="text-gray-400 mb-1">Technology Focus</p>
-                        <p className="text-white">Solar, Wind, Storage, Natural Gas (peaking)</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400 mb-1">Contract Structure</p>
-                        <p className="text-white">PPAs (10-25 years), Build-Own-Transfer</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400 mb-1">Geographic Scope</p>
-                        <p className="text-white">Service territory + adjacent regions</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
-                    <h3 className="text-lg font-semibold text-white mb-4">Procurement Contact</h3>
-                    <div className="space-y-2 text-sm">
-                      <div>
-                        <p className="text-gray-400">Department</p>
-                        <p className="text-white">Power Supply & Procurement</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400">Email</p>
-                        <p className="text-white">procurement@{(utility?.name || utility?.utility_name || 'utility').toLowerCase().replace(/\s+/g, '')}.com</p>
-                      </div>
-                      <div className="pt-2">
-                        <a href="https://example.com/rfp-portal" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 flex items-center gap-2">
-                          View RFP Portal
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                        </a>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </>
@@ -3436,6 +3324,122 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
           </div>
         </div>
       )}
+
+      {/* RFP Detail Modal */}
+      {selectedRFP && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-800 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-gray-700">
+            <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-6 z-10">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold text-white mb-2">{selectedRFP.title}</h2>
+                  <div className="flex items-center gap-4">
+                    <span className="text-gray-400">{utility?.name || utility?.utility_name}</span>
+                    <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${
+                      selectedRFP.status === 'Open'
+                        ? 'bg-green-900/50 text-green-400 border-green-700'
+                        : 'bg-blue-900/50 text-blue-400 border-blue-700'
+                    }`}>
+                      {selectedRFP.status}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedRFP(null)}
+                  className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6">
+              {/* Key Info Grid */}
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="bg-gray-700 rounded-lg p-4">
+                  <div className="text-xs text-gray-400 mb-1">Type</div>
+                  <div className="text-lg font-semibold text-white">{selectedRFP.type}</div>
+                </div>
+                <div className="bg-gray-700 rounded-lg p-4">
+                  <div className="text-xs text-gray-400 mb-1">Capacity</div>
+                  <div className="text-lg font-semibold text-white">{selectedRFP.capacity}</div>
+                </div>
+                <div className="bg-gray-700 rounded-lg p-4">
+                  <div className="text-xs text-gray-400 mb-1">Proposal Deadline</div>
+                  <div className="text-lg font-semibold text-white">{selectedRFP.deadline}</div>
+                </div>
+                <div className="bg-gray-700 rounded-lg p-4">
+                  <div className="text-xs text-gray-400 mb-1">Issued Date</div>
+                  <div className="text-lg font-semibold text-white">{selectedRFP.issued}</div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-white mb-3">Project Overview</h3>
+                <p className="text-gray-300">
+                  {utility?.name || utility?.utility_name} is seeking proposals for {selectedRFP.capacity} of {selectedRFP.type.toLowerCase()} capacity.
+                  This procurement is part of the utility's broader strategy to enhance grid reliability and meet growing energy demands while advancing clean energy goals.
+                </p>
+              </div>
+
+              {/* Key Requirements */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-white mb-3">Key Requirements</h3>
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Project must be located within or adjacent to service territory
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Commercial operation date: Q4 2026 - Q2 2027
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Proven technology and development experience
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Competitive pricing and long-term PPA structure
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-300">
+                    <svg className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Financial strength and project financing capabilities
+                  </li>
+                </ul>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-3 pt-4 border-t border-gray-700">
+                <a
+                  href={selectedRFP.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all text-center"
+                >
+                  View Official RFP Document
+                </a>
+                <button className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-all">
+                  Track Opportunity
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -3527,7 +3531,7 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                         </tr>
                       </thead>
                       <tbody className="bg-gray-700 divide-y divide-gray-600">
-                        {corporate.states?.map((state: string, idx: number) => (
+                        {corporate.states?.map((state: string) => (
                           <tr key={state}>
                             <td className="px-4 py-3 text-sm font-medium text-white">{state}</td>
                             <td className="px-4 py-3 text-sm text-white text-right">{Math.floor(corporate.facilities / corporate.states.length)}</td>
