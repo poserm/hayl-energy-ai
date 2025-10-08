@@ -2442,6 +2442,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   const [showAllPlants, setShowAllPlants] = useState(false)
   const [showAllFutureProjects, setShowAllFutureProjects] = useState(false)
   const [customerClassView, setCustomerClassView] = useState<'table' | 'visual'>('visual')
+  const [supplyExpanded, setSupplyExpanded] = useState(true)
+  const [demandExpanded, setDemandExpanded] = useState(true)
 
   // Fetch portfolio data when utility changes
   useEffect(() => {
@@ -2617,14 +2619,30 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                 </div>
 
                 {/* ===== SUPPLY SIDE ===== */}
-                <div className="mb-10">
-                  <div className="mb-6">
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-1">
-                      <span>⚡</span>
-                      Generation Portfolio
-                    </h2>
-                    <p className="text-sm text-gray-400">Supply-side capacity and infrastructure</p>
-                  </div>
+                <div className="mb-6">
+                  <button
+                    onClick={() => setSupplyExpanded(!supplyExpanded)}
+                    className="w-full flex items-center justify-between p-4 bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700 rounded-lg transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">⚡</span>
+                      <div className="text-left">
+                        <h2 className="text-xl font-bold text-white">Generation Portfolio</h2>
+                        <p className="text-sm text-gray-400">Supply-side capacity and infrastructure</p>
+                      </div>
+                    </div>
+                    <svg
+                      className={`w-5 h-5 text-gray-400 transition-transform ${supplyExpanded ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {supplyExpanded && (
+                  <div className="mt-6">
 
                   {/* Key Insights - Supply */}
                   <div className="bg-gradient-to-br from-blue-900/20 to-blue-800/20 border border-blue-500/20 rounded-lg p-5 mb-6">
@@ -2796,17 +2814,35 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                       </div>
                     </div>
                   </div>
+                  </div>
+                  )}
                 </div>
 
                 {/* ===== DEMAND SIDE ===== */}
-                <div className="mb-10">
-                  <div className="mb-6 mt-8">
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-1">
-                      <span>👥</span>
-                      Customer Base & Load Profile
-                    </h2>
-                    <p className="text-sm text-gray-400">Demand-side customer classes and consumption</p>
-                  </div>
+                <div className="mb-6">
+                  <button
+                    onClick={() => setDemandExpanded(!demandExpanded)}
+                    className="w-full flex items-center justify-between p-4 bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700 rounded-lg transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">👥</span>
+                      <div className="text-left">
+                        <h2 className="text-xl font-bold text-white">Customer Base & Load Profile</h2>
+                        <p className="text-sm text-gray-400">Demand-side customer classes and consumption</p>
+                      </div>
+                    </div>
+                    <svg
+                      className={`w-5 h-5 text-gray-400 transition-transform ${demandExpanded ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  {demandExpanded && (
+                  <div className="mt-6">
 
                   {/* Key Insights - Demand */}
                   <div className="bg-gradient-to-br from-purple-900/20 to-purple-800/20 border border-purple-500/20 rounded-lg p-5 mb-6">
@@ -3003,6 +3039,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                       </div>
                     </div>
                   </div>
+                </div>
+                  )}
                 </div>
 
                 <div className="mt-6">
