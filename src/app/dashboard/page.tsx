@@ -760,12 +760,23 @@ export default function DashboardPage() {
                 </div>
                 <button
                   onClick={() => setShowMapModal(true)}
-                  className="p-3 bg-gray-700/50 hover:bg-gray-600 text-gray-300 hover:text-white rounded-xl transition-all border border-gray-600 hover:border-gray-500"
-                  title="View Regional Map"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-700/50 hover:bg-gray-600 text-gray-300 hover:text-white rounded-xl transition-all border border-gray-600 hover:border-gray-500"
+                  title={
+                    supplyExpanded ? `View ${selectedStateFilter || region} Power Supply Map` :
+                    demandExpanded ? `View ${selectedStateFilter || region} Demand Map` :
+                    pricesExpanded ? `View ${selectedStateFilter || region} Pricing Map` :
+                    `View ${selectedStateFilter || region} Regional Map`
+                  }
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                   </svg>
+                  <span className="text-sm font-medium">
+                    {supplyExpanded ? 'Supply Map' :
+                     demandExpanded ? 'Demand Map' :
+                     pricesExpanded ? 'Pricing Map' :
+                     'View Map'}
+                  </span>
                 </button>
               </div>
             </div>
@@ -974,35 +985,9 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            {/* ========== SUPPLY PILLAR - Detailed Section ========== */}
-            <div className="mb-6">
-              <button
-                onClick={() => setSupplyExpanded(!supplyExpanded)}
-                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-blue-900/20 to-blue-800/20 hover:from-blue-900/30 hover:to-blue-800/30 border border-blue-500/30 rounded-xl transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-500/20 rounded-lg">
-                    <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white text-left">Supply Details</h3>
-                    <p className="text-sm text-gray-400 text-left">Capacity mix, pipeline projects, and retirements</p>
-                  </div>
-                </div>
-                <svg
-                  className={`w-6 h-6 text-gray-400 transition-transform ${supplyExpanded ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {supplyExpanded && (
-              <div className="mt-4 space-y-6">
+            {/* Supply Content */}
+            {supplyExpanded && (
+              <div className="mb-6 mt-6 space-y-6">
                 {/* Existing Capacity Mix */}
                 <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
                   <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
@@ -1256,38 +1241,11 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
-              )}
-            </div>
+            )}
 
-            {/* ========== DEMAND PILLAR - Detailed Section ========== */}
-            <div className="mb-6">
-              <button
-                onClick={() => setDemandExpanded(!demandExpanded)}
-                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-purple-900/20 to-purple-800/20 hover:from-purple-900/30 hover:to-purple-800/30 border border-purple-500/30 rounded-xl transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-500/20 rounded-lg">
-                    <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white text-left">Demand Details</h3>
-                    <p className="text-sm text-gray-400 text-left">Load profiles, customer classes, and growth drivers</p>
-                  </div>
-                </div>
-                <svg
-                  className={`w-6 h-6 text-gray-400 transition-transform ${demandExpanded ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {demandExpanded && (
-              <div className="mt-4 space-y-6">
+            {/* Demand Content */}
+            {demandExpanded && (
+              <div className="mb-6 mt-6 space-y-6">
                 {/* Load Profile Summary */}
                 <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
                   <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
@@ -1577,38 +1535,11 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
-              )}
-            </div>
+            )}
 
-            {/* ========== PRICES PILLAR - Detailed Section ========== */}
-            <div className="mb-6">
-              <button
-                onClick={() => setPricesExpanded(!pricesExpanded)}
-                className="w-full flex items-center justify-between p-5 bg-gradient-to-r from-emerald-900/20 to-emerald-800/20 hover:from-emerald-900/30 hover:to-emerald-800/30 border border-emerald-500/30 rounded-xl transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-emerald-500/20 rounded-lg">
-                    <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white text-left">Price Details</h3>
-                    <p className="text-sm text-gray-400 text-left">Energy and capacity market pricing trends</p>
-                  </div>
-                </div>
-                <svg
-                  className={`w-6 h-6 text-gray-400 transition-transform ${pricesExpanded ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {pricesExpanded && (
-              <div className="mt-4 space-y-6">
+            {/* Prices Content */}
+            {pricesExpanded && (
+              <div className="mb-6 mt-6 space-y-6">
                 {/* Energy Prices */}
                 <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
                   <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
@@ -1827,8 +1758,7 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
-              )}
-            </div>
+            )}
         </div>
 
         {/* Opportunities/RFP Section */}
@@ -2860,7 +2790,12 @@ export default function DashboardPage() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-gray-800 rounded-lg max-w-4xl w-full h-[90vh] p-8 border border-gray-700">
             <div className="flex justify-between items-start mb-6">
-              <h2 className="text-2xl font-bold text-white">Power Infrastructure Map</h2>
+              <h2 className="text-2xl font-bold text-white">
+                {supplyExpanded ? `${selectedStateFilter || region} Power Supply Map` :
+                 demandExpanded ? `${selectedStateFilter || region} Demand Map` :
+                 pricesExpanded ? `${selectedStateFilter || region} Pricing Map` :
+                 `${selectedStateFilter || region} Power Market Map`}
+              </h2>
               <button
                 onClick={() => setShowMapModal(false)}
                 className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition-colors"
