@@ -2439,6 +2439,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   const [plantsLoading, setPlantsLoading] = useState(false)
   const [plantsError, setPlantsError] = useState<string | null>(null)
   const [selectedRFP, setSelectedRFP] = useState<any>(null)
+  const [showAllPlants, setShowAllPlants] = useState(false)
 
   // Fetch portfolio data when utility changes
   useEffect(() => {
@@ -2517,80 +2518,6 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
   return (
     <div className="w-full">
-      {/* Executive Summary Card */}
-      <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl p-6 mb-8">
-        <div className="flex items-start justify-between mb-6">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-3">
-              <h2 className="text-3xl font-bold text-white">{utility?.name || utility?.utility_name}</h2>
-              <span className="px-3 py-1 bg-blue-600 text-white text-sm font-semibold rounded-full">
-                {utility?.ownershipType || 'Investor-Owned'} Utility
-              </span>
-              <span className="px-3 py-1 bg-green-600 text-white text-sm font-semibold rounded-full flex items-center gap-1">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
-                </svg>
-                3 Active RFPs
-              </span>
-            </div>
-            <p className="text-gray-300 text-sm mb-3">
-              {utility?.states?.join(', ') || 'Multi-state service territory'}
-            </p>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-3xl">
-              Leading electric utility providing generation, transmission, and distribution services across {utility?.states?.length || 'multiple'} states.
-              Committed to delivering reliable power to 2.4M+ customers while transitioning to clean energy with a goal of 40% renewable capacity by 2030.
-            </p>
-          </div>
-        </div>
-
-        {/* Quick Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <p className="text-xs text-gray-400 font-medium">Total Capacity</p>
-            </div>
-            <p className="text-2xl font-bold text-white">7,150 MW</p>
-            <p className="text-xs text-green-400 mt-1">↑ 8.3% YoY</p>
-          </div>
-
-          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-              <p className="text-xs text-gray-400 font-medium">Renewable %</p>
-            </div>
-            <p className="text-2xl font-bold text-white">15%</p>
-            <p className="text-xs text-gray-400 mt-1">Target: 40% by 2030</p>
-          </div>
-
-          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <p className="text-xs text-gray-400 font-medium">Customers</p>
-            </div>
-            <p className="text-2xl font-bold text-white">2.4M</p>
-            <p className="text-xs text-green-400 mt-1">↑ 3.2% YoY</p>
-          </div>
-
-          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-              </svg>
-              <p className="text-xs text-gray-400 font-medium">Peak Demand</p>
-            </div>
-            <p className="text-2xl font-bold text-white">8.5 GW</p>
-            <p className="text-xs text-gray-400 mt-1">Load Factor: 61%</p>
-          </div>
-        </div>
-      </div>
-
       {/* Section Navigation - Horizontal at Top */}
       <div className="mb-8">
         <div className="flex justify-center mb-6">
@@ -2619,15 +2546,67 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             {/* Section 1: At a Glance */}
             {activeSection === 1 && (
               <>
+                {/* Quick Stats Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                  <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <p className="text-xs text-gray-400 font-medium">Total Capacity</p>
+                    </div>
+                    <p className="text-2xl font-bold text-white">7,150 MW</p>
+                    <p className="text-xs text-green-400 mt-1">↑ 8.3% YoY</p>
+                  </div>
+
+                  <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      <p className="text-xs text-gray-400 font-medium">Renewable %</p>
+                    </div>
+                    <p className="text-2xl font-bold text-white">15%</p>
+                    <p className="text-xs text-gray-400 mt-1">Target: 40% by 2030</p>
+                  </div>
+
+                  <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      <p className="text-xs text-gray-400 font-medium">Customers</p>
+                    </div>
+                    <p className="text-2xl font-bold text-white">2.4M</p>
+                    <p className="text-xs text-green-400 mt-1">↑ 3.2% YoY</p>
+                  </div>
+
+                  <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                      </svg>
+                      <p className="text-xs text-gray-400 font-medium">Peak Demand</p>
+                    </div>
+                    <p className="text-2xl font-bold text-white">8.5 GW</p>
+                    <p className="text-xs text-gray-400 mt-1">Load Factor: 61%</p>
+                  </div>
+                </div>
+
                 {/* ===== SUPPLY SIDE ===== */}
                 <div className="mb-10">
-                  <div className="flex items-center mb-6">
-                    <div className="flex-1 border-t border-gray-600"></div>
-                    <h2 className="px-4 text-xl font-bold text-white flex items-center gap-2">
-                      <span className="text-2xl">⚡</span>
-                      Supply Side: Generation Portfolio
-                    </h2>
-                    <div className="flex-1 border-t border-gray-600"></div>
+                  <div className="relative mb-8">
+                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                      <div className="w-full border-t-2 border-blue-500/30"></div>
+                    </div>
+                    <div className="relative flex justify-center">
+                      <div className="bg-gradient-to-r from-blue-900/50 to-blue-800/50 px-6 py-3 rounded-lg border border-blue-500/40">
+                        <h2 className="text-xl font-bold text-white flex items-center gap-3">
+                          <span className="text-2xl">⚡</span>
+                          Supply Side: Generation Portfolio
+                        </h2>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Capacity by Technology Chart */}
@@ -2635,7 +2614,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                     <div className="mb-8">
                       <h3 className="text-lg font-semibold text-white mb-4">Capacity by Technology</h3>
                       <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
-                        <div className="space-y-3">
+                        {/* Stacked Bar Chart */}
+                        <div className="flex h-12 rounded-lg overflow-hidden mb-4">
                           {[
                             { tech: 'Natural Gas', capacity: 3200, color: 'bg-blue-500', percent: 45 },
                             { tech: 'Coal', capacity: 2100, color: 'bg-gray-600', percent: 29 },
@@ -2644,16 +2624,31 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                             { tech: 'Wind', capacity: 350, color: 'bg-green-500', percent: 5 },
                             { tech: 'Hydro', capacity: 150, color: 'bg-cyan-500', percent: 2 }
                           ].map((item) => (
-                            <div key={item.tech}>
-                              <div className="flex items-center justify-between mb-1">
-                                <span className="text-sm font-medium text-gray-300">{item.tech}</span>
-                                <span className="text-sm text-gray-400">{item.capacity} MW ({item.percent}%)</span>
-                              </div>
-                              <div className="w-full bg-gray-600 rounded-full h-3">
-                                <div
-                                  className={`${item.color} h-3 rounded-full transition-all duration-500`}
-                                  style={{ width: `${item.percent}%` }}
-                                ></div>
+                            <div
+                              key={item.tech}
+                              className={`${item.color} flex items-center justify-center text-white text-xs font-semibold hover:opacity-80 transition-opacity cursor-pointer`}
+                              style={{ width: `${item.percent}%` }}
+                              title={`${item.tech}: ${item.capacity} MW (${item.percent}%)`}
+                            >
+                              {item.percent >= 10 && <span>{item.percent}%</span>}
+                            </div>
+                          ))}
+                        </div>
+                        {/* Legend */}
+                        <div className="grid grid-cols-3 gap-3">
+                          {[
+                            { tech: 'Natural Gas', capacity: 3200, color: 'bg-blue-500', percent: 45 },
+                            { tech: 'Coal', capacity: 2100, color: 'bg-gray-600', percent: 29 },
+                            { tech: 'Nuclear', capacity: 900, color: 'bg-purple-500', percent: 13 },
+                            { tech: 'Solar', capacity: 450, color: 'bg-yellow-500', percent: 6 },
+                            { tech: 'Wind', capacity: 350, color: 'bg-green-500', percent: 5 },
+                            { tech: 'Hydro', capacity: 150, color: 'bg-cyan-500', percent: 2 }
+                          ].map((item) => (
+                            <div key={item.tech} className="flex items-center gap-2">
+                              <div className={`w-3 h-3 rounded ${item.color}`}></div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-medium text-gray-300 truncate">{item.tech}</p>
+                                <p className="text-xs text-gray-400">{item.capacity} MW ({item.percent}%)</p>
                               </div>
                             </div>
                           ))}
@@ -2690,10 +2685,34 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                               </tr>
                             </thead>
                             <tbody className="bg-gray-700 divide-y divide-gray-600">
-                              <PlantsTableRows plants={plants} loading={plantsLoading} error={plantsError} />
+                              <PlantsTableRows plants={showAllPlants ? plants : plants.slice(0, 5)} loading={plantsLoading} error={plantsError} />
                             </tbody>
                           </table>
                         </div>
+                        {!plantsLoading && !plantsError && plants.length > 5 && (
+                          <div className="px-4 py-3 bg-gray-700 border-t border-gray-600">
+                            <button
+                              onClick={() => setShowAllPlants(!showAllPlants)}
+                              className="w-full py-2 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors flex items-center justify-center gap-2"
+                            >
+                              {showAllPlants ? (
+                                <>
+                                  Show Less
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                                  </svg>
+                                </>
+                              ) : (
+                                <>
+                                  View All ({plants.length} plants)
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
@@ -2745,13 +2764,18 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
                 {/* ===== DEMAND SIDE ===== */}
                 <div className="mb-10">
-                  <div className="flex items-center mb-6">
-                    <div className="flex-1 border-t border-gray-600"></div>
-                    <h2 className="px-4 text-xl font-bold text-white flex items-center gap-2">
-                      <span className="text-2xl">👥</span>
-                      Demand Side: Customer Base & Load Profile
-                    </h2>
-                    <div className="flex-1 border-t border-gray-600"></div>
+                  <div className="relative mb-8 mt-12">
+                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                      <div className="w-full border-t-2 border-purple-500/30"></div>
+                    </div>
+                    <div className="relative flex justify-center">
+                      <div className="bg-gradient-to-r from-purple-900/50 to-purple-800/50 px-6 py-3 rounded-lg border border-purple-500/40">
+                        <h2 className="text-xl font-bold text-white flex items-center gap-3">
+                          <span className="text-2xl">👥</span>
+                          Demand Side: Customer Base & Load Profile
+                        </h2>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Demand Overview */}
