@@ -2509,10 +2509,10 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   }, [utility])
 
   const sections = [
-    { id: 1, title: 'Energy Supply' },
-    { id: 2, title: 'Energy demand' },
-    { id: 3, title: 'RFP Opportunities' },
-    { id: 4, title: 'Key Documents' }
+    { id: 1, title: 'At a Glance', icon: '📊' },
+    { id: 2, title: 'RFPs & Opportunities', icon: '🎯' },
+    { id: 3, title: 'Supply Portfolio', icon: '⚡' },
+    { id: 4, title: 'Key Contacts', icon: '👥' }
   ]
 
   return (
@@ -2525,13 +2525,14 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`px-6 py-2.5 rounded-md font-semibold transition-all ${
+                className={`px-6 py-2.5 rounded-md font-semibold transition-all flex items-center gap-2 ${
                   activeSection === section.id
                     ? 'bg-gray-800 text-blue-600 shadow-sm'
                     : 'text-gray-400 hover:text-white'
                 }`}
               >
-                {section.title}
+                <span>{section.icon}</span>
+                <span>{section.title}</span>
               </button>
             ))}
           </div>
@@ -2543,10 +2544,10 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             {sections[activeSection - 1].title}
           </h2>
           <p className="text-gray-400">
-            {activeSection === 1 && `Comprehensive overview of ${utility?.name || utility?.utility_name}'s generation portfolio, capacity mix, and supply infrastructure.`}
-            {activeSection === 2 && `Detailed analysis of ${utility?.name || utility?.utility_name}'s energy demand patterns, customer segments, and load profiles.`}
-            {activeSection === 3 && `Current and upcoming procurement opportunities, RFPs, and partnership initiatives from ${utility?.name || utility?.utility_name}.`}
-            {activeSection === 4 && `Access regulatory filings, integrated resource plans, and key documents from ${utility?.name || utility?.utility_name}.`}
+            {activeSection === 1 && `Key metrics, strategic priorities, and business overview for ${utility?.name || utility?.utility_name}.`}
+            {activeSection === 2 && `Active RFPs, procurement calendar, and opportunity pipeline from ${utility?.name || utility?.utility_name}.`}
+            {activeSection === 3 && `Generation portfolio, power plants, capacity mix, and supply infrastructure for ${utility?.name || utility?.utility_name}.`}
+            {activeSection === 4 && `Decision makers, procurement team, and key stakeholders at ${utility?.name || utility?.utility_name}.`}
           </p>
         </div>
       </div>
@@ -2554,7 +2555,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
       {/* Section Content */}
       <div className="w-full">
 
-            {/* Section 1: Energy Supply */}
+            {/* Section 1: At a Glance */}
             {activeSection === 1 && (
               <>
                 {/* Capacity by Technology Chart */}
@@ -2678,9 +2679,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               </>
             )}
 
-            {activeSection === 2 && (
+            {activeSection === 3 && (
               <>
-                {/* Demand Overview */}
+                {/* Demand Overview - Now in Section 3 */}
                 <div className="bg-gray-700 border border-gray-600 rounded-lg p-4 mb-6">
                   <div className="grid grid-cols-4 gap-4">
                     <div className="text-center">
@@ -2851,9 +2852,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               </>
             )}
 
-            {activeSection === 3 && (
+            {activeSection === 2 && (
               <>
-                {/* RFP Overview */}
+                {/* RFP Overview - Now in Section 2 */}
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 mb-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Active Procurement Opportunities</h3>
                   <p className="text-gray-300 mb-4">
@@ -3018,14 +3019,96 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               </>
             )}
 
-            {/* Section 4: Key Documents */}
+            {/* Section 4: Key Contacts */}
             {activeSection === 4 && (
               <>
-                <div className="bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-700 rounded-lg p-6 mb-6">
-                  <h3 className="text-xl font-bold text-white mb-2">Regulatory & Planning Documents</h3>
-                  <p className="text-gray-400">
-                    Access key regulatory filings, integrated resource plans, and financial documents for {utility?.name || utility?.utility_name}.
+                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
+                  <h3 className="text-xl font-bold text-white mb-4">Decision Makers & Key Stakeholders</h3>
+                  <p className="text-gray-400 mb-6">
+                    Connect with procurement leaders and decision makers at {utility?.name || utility?.utility_name}.
                   </p>
+
+                  {/* Contact Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      {
+                        name: 'Sarah Johnson',
+                        title: 'VP, Power Supply & Procurement',
+                        department: 'Procurement',
+                        email: 's.johnson@utility.com',
+                        phone: '(555) 123-4567',
+                        linkedin: '#'
+                      },
+                      {
+                        name: 'Michael Chen',
+                        title: 'Director, Renewable Energy',
+                        department: 'Clean Energy',
+                        email: 'm.chen@utility.com',
+                        phone: '(555) 234-5678',
+                        linkedin: '#'
+                      },
+                      {
+                        name: 'Emily Rodriguez',
+                        title: 'Manager, Strategic Sourcing',
+                        department: 'Procurement',
+                        email: 'e.rodriguez@utility.com',
+                        phone: '(555) 345-6789',
+                        linkedin: '#'
+                      },
+                      {
+                        name: 'David Park',
+                        title: 'Senior Analyst, Resource Planning',
+                        department: 'Planning',
+                        email: 'd.park@utility.com',
+                        phone: '(555) 456-7890',
+                        linkedin: '#'
+                      }
+                    ].map((contact, idx) => (
+                      <div key={idx} className="bg-gray-700 rounded-lg p-5 border border-gray-600 hover:border-blue-500 transition-all">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h4 className="font-semibold text-white text-lg">{contact.name}</h4>
+                            <p className="text-sm text-gray-400">{contact.title}</p>
+                            <span className="inline-block mt-1 px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs rounded">
+                              {contact.department}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2 text-gray-300">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <a href={`mailto:${contact.email}`} className="hover:text-blue-400 transition-colors">
+                              {contact.email}
+                            </a>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-300">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            {contact.phone}
+                          </div>
+                          <div className="flex items-center gap-2 pt-2">
+                            <a
+                              href={contact.linkedin}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-blue-400 hover:text-blue-300 text-xs font-medium"
+                            >
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                              </svg>
+                              Connect
+                            </a>
+                            <button className="ml-auto px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition-colors">
+                              Add to Network
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Document Categories */}
