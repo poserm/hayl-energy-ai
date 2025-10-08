@@ -16,6 +16,8 @@ import dynamic from 'next/dynamic'
 
 // Dynamically import MapboxMap to avoid SSR issues
 const MapboxMap = dynamic(() => import('@/components/MapboxMap'), { ssr: false })
+// Dynamically import OpportunitiesSection
+const OpportunitiesSection = dynamic(() => import('@/components/OpportunitiesSection'), { ssr: false })
 
 // Plants Table Rows Component
 function PlantsTableRows({ plants, loading, error }: { plants: any[], loading?: boolean, error?: string | null }) {
@@ -1163,6 +1165,9 @@ export default function DashboardPage() {
               </button>
             </div>
         </div>
+
+        {/* Opportunities/RFP Section */}
+        <OpportunitiesSection region={region} />
 
         {/* Energy Buyers Section */}
         <div className="bg-gray-900 rounded-lg px-6 py-12">
