@@ -2523,17 +2523,21 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             <div className="flex items-center gap-3 mb-3">
               <h2 className="text-3xl font-bold text-white">{utility?.name || utility?.utility_name}</h2>
               <span className="px-3 py-1 bg-blue-600 text-white text-sm font-semibold rounded-full">
-                Utility
+                {utility?.ownershipType || 'Investor-Owned'} Utility
               </span>
               <span className="px-3 py-1 bg-green-600 text-white text-sm font-semibold rounded-full flex items-center gap-1">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
                 </svg>
-                Active Opportunities
+                3 Active RFPs
               </span>
             </div>
-            <p className="text-gray-300 text-sm mb-4 max-w-2xl">
-              {utility?.states?.join(', ') || 'Multi-state service territory'} • {utility?.ownershipType || 'Investor-Owned Utility'}
+            <p className="text-gray-300 text-sm mb-3">
+              {utility?.states?.join(', ') || 'Multi-state service territory'}
+            </p>
+            <p className="text-gray-400 text-sm leading-relaxed max-w-3xl">
+              Leading electric utility providing generation, transmission, and distribution services across {utility?.states?.length || 'multiple'} states.
+              Committed to delivering reliable power to 2.4M+ customers while transitioning to clean energy with a goal of 40% renewable capacity by 2030.
             </p>
           </div>
         </div>
@@ -2576,12 +2580,12 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
               </svg>
-              <p className="text-xs text-gray-400 font-medium">Active RFPs</p>
+              <p className="text-xs text-gray-400 font-medium">Peak Demand</p>
             </div>
-            <p className="text-2xl font-bold text-white">3</p>
-            <p className="text-xs text-blue-400 mt-1">850 MW Total</p>
+            <p className="text-2xl font-bold text-white">8.5 GW</p>
+            <p className="text-xs text-gray-400 mt-1">Load Factor: 61%</p>
           </div>
         </div>
 
@@ -2614,91 +2618,6 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             </svg>
             Share
           </button>
-        </div>
-      </div>
-
-      {/* Quick Links */}
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-5 mb-8">
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">Quick Links</h3>
-        <div className="flex flex-wrap gap-4">
-          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-            </svg>
-            Company Website
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            RFP Portal
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Regulatory Filings
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            IRP Document
-          </a>
-          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-            </svg>
-            Latest News
-          </a>
-        </div>
-      </div>
-
-      {/* Upcoming Milestones Timeline */}
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-5 mb-8">
-        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">Upcoming Milestones</h3>
-        <div className="space-y-3">
-          <div className="flex items-start gap-4 group">
-            <div className="flex-shrink-0 w-20 text-right">
-              <p className="text-xs text-gray-500">Mar 15</p>
-              <p className="text-xs text-gray-400 font-medium">2025</p>
-            </div>
-            <div className="flex-shrink-0 mt-1">
-              <div className="w-3 h-3 bg-green-500 rounded-full border-4 border-gray-700 group-hover:border-gray-600 transition-colors"></div>
-            </div>
-            <div className="flex-1 pb-3 border-b border-gray-700">
-              <p className="text-sm font-medium text-white">Solar + Storage RFP Deadline</p>
-              <p className="text-xs text-gray-400 mt-1">500 MW Solar + 200 MW/800 MWh Storage</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4 group">
-            <div className="flex-shrink-0 w-20 text-right">
-              <p className="text-xs text-gray-500">Apr 30</p>
-              <p className="text-xs text-gray-400 font-medium">2025</p>
-            </div>
-            <div className="flex-shrink-0 mt-1">
-              <div className="w-3 h-3 bg-blue-500 rounded-full border-4 border-gray-700 group-hover:border-gray-600 transition-colors"></div>
-            </div>
-            <div className="flex-1 pb-3 border-b border-gray-700">
-              <p className="text-sm font-medium text-white">Wind PPA Proposal Due</p>
-              <p className="text-xs text-gray-400 mt-1">350 MW Wind Power Purchase Agreement</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4 group">
-            <div className="flex-shrink-0 w-20 text-right">
-              <p className="text-xs text-gray-500">Q4</p>
-              <p className="text-xs text-gray-400 font-medium">2026</p>
-            </div>
-            <div className="flex-shrink-0 mt-1">
-              <div className="w-3 h-3 bg-purple-500 rounded-full border-4 border-gray-700 group-hover:border-gray-600 transition-colors"></div>
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-white">New Solar Plant Online</p>
-              <p className="text-xs text-gray-400 mt-1">450 MW facility begins commercial operation</p>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -3058,34 +2977,36 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
 
             {activeSection === 2 && (
               <>
-                {/* RFP Overview - Now in Section 2 */}
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-6 mb-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Active Procurement Opportunities</h3>
-                  <p className="text-gray-300 mb-4">
-                    {utility?.name || utility?.utility_name} regularly issues Requests for Proposals (RFPs) for renewable energy, generation capacity, and grid services. Monitor upcoming opportunities to participate in their procurement process.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-300 mb-1">Typical RFP Cycle</p>
-                      <p className="text-xl font-bold text-blue-700">Quarterly</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-300 mb-1">Avg. Contract Value</p>
-                      <p className="text-xl font-bold text-blue-700">$250M - $1B+</p>
-                    </div>
+                {/* Procurement Overview Stats */}
+                <div className="grid grid-cols-3 gap-4 mb-8">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
+                    <p className="text-sm text-gray-400 mb-1">RFP Cycle</p>
+                    <p className="text-2xl font-bold text-white">Quarterly</p>
+                  </div>
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
+                    <p className="text-sm text-gray-400 mb-1">Avg. Contract Size</p>
+                    <p className="text-2xl font-bold text-white">$250M - $1B</p>
+                  </div>
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
+                    <p className="text-sm text-gray-400 mb-1">Active RFPs</p>
+                    <p className="text-2xl font-bold text-green-400">3</p>
                   </div>
                 </div>
 
-                {/* Current RFP Opportunities */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Current & Upcoming RFPs</h3>
-                  <div className="space-y-4">
+                {/* Active RFPs */}
+                <div className="mb-8">
+                  <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    Active & Upcoming RFPs
+                  </h3>
+                  <div className="space-y-3">
                     {[
                       {
                         title: 'Solar + Storage Capacity',
                         type: 'Renewable Energy',
                         capacity: '500 MW Solar + 200 MW/800 MWh Storage',
                         deadline: 'March 15, 2025',
+                        issued: 'Dec 1, 2024',
                         status: 'Open',
                         link: (utility?.name || utility?.utility_name)?.toLowerCase().includes('appalachian')
                           ? 'https://www.appalachianpower.com/business/b2b/energy-rfps/2025-RFPS'
@@ -3096,6 +3017,7 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         type: 'Renewable Energy',
                         capacity: '350 MW Wind',
                         deadline: 'April 30, 2025',
+                        issued: 'Jan 15, 2025',
                         status: 'Open',
                         link: 'https://example.com/rfp/wind-ppa-2025'
                       },
@@ -3104,35 +3026,39 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                         type: 'Grid Services',
                         capacity: '100 MW Load Reduction',
                         deadline: 'May 20, 2025',
+                        issued: 'Feb 1, 2025',
                         status: 'Upcoming',
                         link: 'https://example.com/rfp/demand-response-2025'
                       }
                     ].map((rfp, i) => (
-                      <div key={i} className="bg-gray-800 border border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow">
+                      <div key={i} className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:border-blue-500 transition-all">
                         <div className="flex justify-between items-start mb-3">
-                          <div>
-                            <h4 className="font-semibold text-white text-lg">{rfp.title}</h4>
-                            <p className="text-sm text-gray-400 mt-1">{rfp.type}</p>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h4 className="font-semibold text-white">{rfp.title}</h4>
+                              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                rfp.status === 'Open'
+                                  ? 'bg-green-900/50 text-green-400 border border-green-700'
+                                  : 'bg-blue-900/50 text-blue-400 border border-blue-700'
+                              }`}>
+                                {rfp.status}
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-3 gap-4 text-sm">
+                              <div>
+                                <p className="text-gray-500 text-xs">Type</p>
+                                <p className="text-gray-300">{rfp.type}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-500 text-xs">Capacity</p>
+                                <p className="text-gray-300">{rfp.capacity}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-500 text-xs">Deadline</p>
+                                <p className="text-white font-medium">{rfp.deadline}</p>
+                              </div>
+                            </div>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            rfp.status === 'Open'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-blue-100 text-blue-700'
-                          }`}>
-                            {rfp.status}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <p className="text-xs text-gray-500">Capacity</p>
-                            <p className="text-sm font-medium text-white">{rfp.capacity}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500">Proposal Deadline</p>
-                            <p className="text-sm font-medium text-white">{rfp.deadline}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-3">
                           <button
                             onClick={() => {
                               const params = new URLSearchParams({
@@ -3146,78 +3072,112 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                               })
                               window.open(`/rfp?${params.toString()}`, '_blank')
                             }}
-                            className="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                            className="ml-4 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
                           >
-                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            Explore RFP
-                          </button>
-                          <a
-                            href={rfp.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800"
-                          >
+                            View Details
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
-                          </a>
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Procurement Preferences */}
-                <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Procurement Preferences</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                      <div>
-                        <h4 className="font-medium text-white">Technology Focus</h4>
-                        <p className="text-sm text-gray-400">Solar, wind, battery storage, natural gas (peaking), demand response</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                      <div>
-                        <h4 className="font-medium text-white">Contract Structure</h4>
-                        <p className="text-sm text-gray-400">PPAs (10-25 years), capacity contracts, build-own-transfer, merchant projects</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                      <div>
-                        <h4 className="font-medium text-white">Geographic Preference</h4>
-                        <p className="text-sm text-gray-400">Within service territory or direct interconnection to transmission system</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start space-x-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                      <div>
-                        <h4 className="font-medium text-white">Sustainability Requirements</h4>
-                        <p className="text-sm text-gray-400">Carbon-free or low-carbon resources preferred; renewable energy credits (RECs) included</p>
-                      </div>
-                    </div>
+                {/* Recent Completed RFPs */}
+                <div className="mb-8">
+                  <h3 className="text-xl font-semibold text-white mb-4">Recent Completed RFPs</h3>
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+                    <table className="w-full">
+                      <thead className="bg-gray-700">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Project</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Type</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Capacity</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Awarded</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">Winner</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase">COD</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-700">
+                        <tr className="hover:bg-gray-750">
+                          <td className="px-4 py-3 text-sm text-white">Coastal Solar Farm</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Solar PV</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">300 MW</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Oct 2024</td>
+                          <td className="px-4 py-3 text-sm text-blue-400">NextEra Energy</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Q2 2026</td>
+                        </tr>
+                        <tr className="hover:bg-gray-750">
+                          <td className="px-4 py-3 text-sm text-white">Mountain Wind Project</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Wind</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">250 MW</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Aug 2024</td>
+                          <td className="px-4 py-3 text-sm text-blue-400">Avangrid Renewables</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Q4 2025</td>
+                        </tr>
+                        <tr className="hover:bg-gray-750">
+                          <td className="px-4 py-3 text-sm text-white">Battery Storage System</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Storage</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">150 MW/600 MWh</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Jun 2024</td>
+                          <td className="px-4 py-3 text-sm text-blue-400">Fluence Energy</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Q3 2025</td>
+                        </tr>
+                        <tr className="hover:bg-gray-750">
+                          <td className="px-4 py-3 text-sm text-white">Combined Cycle Gas Plant</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Natural Gas</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">450 MW</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Mar 2024</td>
+                          <td className="px-4 py-3 text-sm text-blue-400">Siemens Energy</td>
+                          <td className="px-4 py-3 text-sm text-gray-300">Q1 2026</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
 
-                {/* Contact Information */}
-                <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Procurement Contact</h3>
-                  <div className="space-y-2">
-                    <p className="text-sm text-gray-300">
-                      <strong>Department:</strong> Power Supply & Procurement
-                    </p>
-                    <p className="text-sm text-gray-300">
-                      <strong>Email:</strong> procurement@{(utility?.name || utility?.utility_name || 'utility').toLowerCase().replace(/\s+/g, '')}.com
-                    </p>
-                    <p className="text-sm text-gray-300">
-                      <strong>RFP Portal:</strong> <a href="https://example.com/rfp-portal" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">View All Opportunities →</a>
-                    </p>
+                {/* Procurement Profile */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
+                    <h3 className="text-lg font-semibold text-white mb-4">Procurement Preferences</h3>
+                    <div className="space-y-3 text-sm">
+                      <div>
+                        <p className="text-gray-400 mb-1">Technology Focus</p>
+                        <p className="text-white">Solar, Wind, Storage, Natural Gas (peaking)</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 mb-1">Contract Structure</p>
+                        <p className="text-white">PPAs (10-25 years), Build-Own-Transfer</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400 mb-1">Geographic Scope</p>
+                        <p className="text-white">Service territory + adjacent regions</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-800 border border-gray-700 rounded-lg p-5">
+                    <h3 className="text-lg font-semibold text-white mb-4">Procurement Contact</h3>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <p className="text-gray-400">Department</p>
+                        <p className="text-white">Power Supply & Procurement</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400">Email</p>
+                        <p className="text-white">procurement@{(utility?.name || utility?.utility_name || 'utility').toLowerCase().replace(/\s+/g, '')}.com</p>
+                      </div>
+                      <div className="pt-2">
+                        <a href="https://example.com/rfp-portal" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 flex items-center gap-2">
+                          View RFP Portal
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </>
