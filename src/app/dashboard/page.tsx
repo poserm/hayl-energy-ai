@@ -2511,12 +2511,197 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
   const sections = [
     { id: 1, title: 'At a Glance', icon: '📊' },
     { id: 2, title: 'RFPs & Opportunities', icon: '🎯' },
-    { id: 3, title: 'Supply Portfolio', icon: '⚡' },
-    { id: 4, title: 'Key Contacts', icon: '👥' }
+    { id: 3, title: 'Key Contacts', icon: '👥' }
   ]
 
   return (
     <div className="w-full">
+      {/* Executive Summary Card */}
+      <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl p-6 mb-8">
+        <div className="flex items-start justify-between mb-6">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-3">
+              <h2 className="text-3xl font-bold text-white">{utility?.name || utility?.utility_name}</h2>
+              <span className="px-3 py-1 bg-blue-600 text-white text-sm font-semibold rounded-full">
+                Utility
+              </span>
+              <span className="px-3 py-1 bg-green-600 text-white text-sm font-semibold rounded-full flex items-center gap-1">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
+                </svg>
+                Active Opportunities
+              </span>
+            </div>
+            <p className="text-gray-300 text-sm mb-4 max-w-2xl">
+              {utility?.states?.join(', ') || 'Multi-state service territory'} • {utility?.ownershipType || 'Investor-Owned Utility'}
+            </p>
+          </div>
+        </div>
+
+        {/* Quick Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              <p className="text-xs text-gray-400 font-medium">Total Capacity</p>
+            </div>
+            <p className="text-2xl font-bold text-white">7,150 MW</p>
+            <p className="text-xs text-green-400 mt-1">↑ 8.3% YoY</p>
+          </div>
+
+          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <p className="text-xs text-gray-400 font-medium">Renewable %</p>
+            </div>
+            <p className="text-2xl font-bold text-white">15%</p>
+            <p className="text-xs text-gray-400 mt-1">Target: 40% by 2030</p>
+          </div>
+
+          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <p className="text-xs text-gray-400 font-medium">Customers</p>
+            </div>
+            <p className="text-2xl font-bold text-white">2.4M</p>
+            <p className="text-xs text-green-400 mt-1">↑ 3.2% YoY</p>
+          </div>
+
+          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-xs text-gray-400 font-medium">Active RFPs</p>
+            </div>
+            <p className="text-2xl font-bold text-white">3</p>
+            <p className="text-xs text-blue-400 mt-1">850 MW Total</p>
+          </div>
+        </div>
+
+        {/* Action Buttons Bar */}
+        <div className="flex flex-wrap gap-3">
+          <button className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            Set Alert
+          </button>
+
+          <button className="flex items-center gap-2 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Add to Connections
+          </button>
+
+          <button className="flex items-center gap-2 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export Profile
+          </button>
+
+          <button className="flex items-center gap-2 px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-lg transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            Share
+          </button>
+        </div>
+      </div>
+
+      {/* Quick Links */}
+      <div className="bg-gray-800 border border-gray-700 rounded-lg p-5 mb-8">
+        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">Quick Links</h3>
+        <div className="flex flex-wrap gap-4">
+          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+            </svg>
+            Company Website
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            RFP Portal
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Regulatory Filings
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            IRP Document
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+            </svg>
+            Latest News
+          </a>
+        </div>
+      </div>
+
+      {/* Upcoming Milestones Timeline */}
+      <div className="bg-gray-800 border border-gray-700 rounded-lg p-5 mb-8">
+        <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">Upcoming Milestones</h3>
+        <div className="space-y-3">
+          <div className="flex items-start gap-4 group">
+            <div className="flex-shrink-0 w-20 text-right">
+              <p className="text-xs text-gray-500">Mar 15</p>
+              <p className="text-xs text-gray-400 font-medium">2025</p>
+            </div>
+            <div className="flex-shrink-0 mt-1">
+              <div className="w-3 h-3 bg-green-500 rounded-full border-4 border-gray-700 group-hover:border-gray-600 transition-colors"></div>
+            </div>
+            <div className="flex-1 pb-3 border-b border-gray-700">
+              <p className="text-sm font-medium text-white">Solar + Storage RFP Deadline</p>
+              <p className="text-xs text-gray-400 mt-1">500 MW Solar + 200 MW/800 MWh Storage</p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4 group">
+            <div className="flex-shrink-0 w-20 text-right">
+              <p className="text-xs text-gray-500">Apr 30</p>
+              <p className="text-xs text-gray-400 font-medium">2025</p>
+            </div>
+            <div className="flex-shrink-0 mt-1">
+              <div className="w-3 h-3 bg-blue-500 rounded-full border-4 border-gray-700 group-hover:border-gray-600 transition-colors"></div>
+            </div>
+            <div className="flex-1 pb-3 border-b border-gray-700">
+              <p className="text-sm font-medium text-white">Wind PPA Proposal Due</p>
+              <p className="text-xs text-gray-400 mt-1">350 MW Wind Power Purchase Agreement</p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4 group">
+            <div className="flex-shrink-0 w-20 text-right">
+              <p className="text-xs text-gray-500">Q4</p>
+              <p className="text-xs text-gray-400 font-medium">2026</p>
+            </div>
+            <div className="flex-shrink-0 mt-1">
+              <div className="w-3 h-3 bg-purple-500 rounded-full border-4 border-gray-700 group-hover:border-gray-600 transition-colors"></div>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-white">New Solar Plant Online</p>
+              <p className="text-xs text-gray-400 mt-1">450 MW facility begins commercial operation</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Section Navigation - Horizontal at Top */}
       <div className="mb-8">
         <div className="flex justify-center mb-6">
@@ -2544,10 +2729,9 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             {sections[activeSection - 1].title}
           </h2>
           <p className="text-gray-400">
-            {activeSection === 1 && `Key metrics, strategic priorities, and business overview for ${utility?.name || utility?.utility_name}.`}
+            {activeSection === 1 && `Complete supply and demand landscape: generation portfolio, capacity mix, customer base, and load profile for ${utility?.name || utility?.utility_name}.`}
             {activeSection === 2 && `Active RFPs, procurement calendar, and opportunity pipeline from ${utility?.name || utility?.utility_name}.`}
-            {activeSection === 3 && `Generation portfolio, power plants, capacity mix, and supply infrastructure for ${utility?.name || utility?.utility_name}.`}
-            {activeSection === 4 && `Decision makers, procurement team, and key stakeholders at ${utility?.name || utility?.utility_name}.`}
+            {activeSection === 3 && `Decision makers, procurement team, and key stakeholders at ${utility?.name || utility?.utility_name}.`}
           </p>
         </div>
       </div>
@@ -2558,296 +2742,316 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
             {/* Section 1: At a Glance */}
             {activeSection === 1 && (
               <>
-                {/* Capacity by Technology Chart */}
-                {utility && (
-                  <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-white mb-4">Capacity by Technology</h3>
-                    <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
-                      <div className="space-y-3">
-                        {[
-                          { tech: 'Natural Gas', capacity: 3200, color: 'bg-blue-500', percent: 45 },
-                          { tech: 'Coal', capacity: 2100, color: 'bg-gray-600', percent: 29 },
-                          { tech: 'Nuclear', capacity: 900, color: 'bg-purple-500', percent: 13 },
-                          { tech: 'Solar', capacity: 450, color: 'bg-yellow-500', percent: 6 },
-                          { tech: 'Wind', capacity: 350, color: 'bg-green-500', percent: 5 },
-                          { tech: 'Hydro', capacity: 150, color: 'bg-cyan-500', percent: 2 }
-                        ].map((item) => (
-                          <div key={item.tech}>
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-sm font-medium text-gray-300">{item.tech}</span>
-                              <span className="text-sm text-gray-400">{item.capacity} MW ({item.percent}%)</span>
+                {/* ===== SUPPLY SIDE ===== */}
+                <div className="mb-10">
+                  <div className="flex items-center mb-6">
+                    <div className="flex-1 border-t border-gray-600"></div>
+                    <h2 className="px-4 text-xl font-bold text-white flex items-center gap-2">
+                      <span className="text-2xl">⚡</span>
+                      Supply Side: Generation Portfolio
+                    </h2>
+                    <div className="flex-1 border-t border-gray-600"></div>
+                  </div>
+
+                  {/* Capacity by Technology Chart */}
+                  {utility && (
+                    <div className="mb-8">
+                      <h3 className="text-lg font-semibold text-white mb-4">Capacity by Technology</h3>
+                      <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
+                        <div className="space-y-3">
+                          {[
+                            { tech: 'Natural Gas', capacity: 3200, color: 'bg-blue-500', percent: 45 },
+                            { tech: 'Coal', capacity: 2100, color: 'bg-gray-600', percent: 29 },
+                            { tech: 'Nuclear', capacity: 900, color: 'bg-purple-500', percent: 13 },
+                            { tech: 'Solar', capacity: 450, color: 'bg-yellow-500', percent: 6 },
+                            { tech: 'Wind', capacity: 350, color: 'bg-green-500', percent: 5 },
+                            { tech: 'Hydro', capacity: 150, color: 'bg-cyan-500', percent: 2 }
+                          ].map((item) => (
+                            <div key={item.tech}>
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-sm font-medium text-gray-300">{item.tech}</span>
+                                <span className="text-sm text-gray-400">{item.capacity} MW ({item.percent}%)</span>
+                              </div>
+                              <div className="w-full bg-gray-600 rounded-full h-3">
+                                <div
+                                  className={`${item.color} h-3 rounded-full transition-all duration-500`}
+                                  style={{ width: `${item.percent}%` }}
+                                ></div>
+                              </div>
                             </div>
-                            <div className="w-full bg-gray-600 rounded-full h-3">
-                              <div
-                                className={`${item.color} h-3 rounded-full transition-all duration-500`}
-                                style={{ width: `${item.percent}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Power Plants Table */}
+                  {utility && (
+                    <div className="mb-8">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-white">Power Plant Portfolio</h3>
+                        <button
+                          onClick={() => setShowPowerPlantMapModal(true)}
+                          className="p-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white rounded-lg transition-all"
+                          title="View Map"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full divide-y divide-gray-600">
+                            <thead className="bg-gray-600">
+                              <tr>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Plant Name</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Technology</th>
+                                <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Capacity (MW)</th>
+                                <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">Operating Year</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Location</th>
+                              </tr>
+                            </thead>
+                            <tbody className="bg-gray-700 divide-y divide-gray-600">
+                              <PlantsTableRows plants={plants} loading={plantsLoading} error={plantsError} />
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Generation Sources */}
+                  <div className="space-y-4 mb-6">
+                    <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
+                      <h4 className="font-semibold text-white mb-2">Generation Sources</h4>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <span className="text-sm text-gray-300">Primary Source:</span>
+                          <span className="ml-2 font-medium text-white">Natural Gas</span>
+                        </div>
+                        <div>
+                          <span className="text-sm text-gray-300">Renewable %:</span>
+                          <span className="ml-2 font-medium text-white">15%</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                )}
 
-                {/* Power Plants Table */}
-                {utility && (
-                  <div className="mb-8">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-semibold text-white">Power Plant Portfolio</h3>
-                      <button
-                        onClick={() => setShowPowerPlantMapModal(true)}
-                        className="p-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white rounded-lg transition-all"
-                        title="View Map"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                        </svg>
-                      </button>
-                    </div>
+                  {/* Future Projects Table */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">Future Supply Projects</h3>
                     <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
-                      <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-600">
-                          <thead className="bg-gray-600">
-                            <tr>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Plant Name</th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Technology</th>
-                              <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Capacity (MW)</th>
-                              <th className="px-4 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider">Operating Year</th>
-                              <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Location</th>
+                      <table className="w-full">
+                        <thead className="bg-gray-600">
+                          <tr>
+                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Project</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Type</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Status</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Timeline</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {[...Array(4)].map((_, i) => (
+                            <tr key={i} className="border-t border-gray-600">
+                              <td className="px-4 py-2 text-sm text-white">Project {i + 1}</td>
+                              <td className="px-4 py-2 text-sm text-white">Solar</td>
+                              <td className="px-4 py-2 text-sm text-green-400">Planned</td>
+                              <td className="px-4 py-2 text-sm text-white">2025</td>
                             </tr>
-                          </thead>
-                          <tbody className="bg-gray-700 divide-y divide-gray-600">
-                            <PlantsTableRows plants={plants} loading={plantsLoading} error={plantsError} />
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Generation Sources */}
-                <div className="space-y-4 mb-6">
-                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4">
-                    <h4 className="font-semibold text-white mb-2">Generation Sources</h4>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <span className="text-sm text-gray-300">Primary Source:</span>
-                        <span className="ml-2 font-medium text-white">Natural Gas</span>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-300">Renewable %:</span>
-                        <span className="ml-2 font-medium text-white">15%</span>
-                      </div>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
 
-                {/* Future Projects Table */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Future Supply Projects</h3>
-                  <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
-                    <table className="w-full">
-                      <thead className="bg-gray-600">
-                        <tr>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Project</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Type</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Status</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-300">Timeline</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {[...Array(4)].map((_, i) => (
-                          <tr key={i} className="border-t border-gray-600">
-                            <td className="px-4 py-2 text-sm text-white">Project {i + 1}</td>
-                            <td className="px-4 py-2 text-sm text-white">Solar</td>
-                            <td className="px-4 py-2 text-sm text-green-400">Planned</td>
-                            <td className="px-4 py-2 text-sm text-white">2025</td>
+                {/* ===== DEMAND SIDE ===== */}
+                <div className="mb-10">
+                  <div className="flex items-center mb-6">
+                    <div className="flex-1 border-t border-gray-600"></div>
+                    <h2 className="px-4 text-xl font-bold text-white flex items-center gap-2">
+                      <span className="text-2xl">👥</span>
+                      Demand Side: Customer Base & Load Profile
+                    </h2>
+                    <div className="flex-1 border-t border-gray-600"></div>
+                  </div>
+
+                  {/* Demand Overview */}
+                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4 mb-6">
+                    <div className="grid grid-cols-4 gap-4">
+                      <div className="text-center">
+                        <p className="text-sm text-gray-400">Total Customers</p>
+                        <p className="text-xl font-bold text-white">2.4M</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm text-gray-400">Annual Sales</p>
+                        <p className="text-xl font-bold text-white">45,600 GWh</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm text-gray-400">Peak Demand</p>
+                        <p className="text-xl font-bold text-white">8.5 GW</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-sm text-gray-400">Load Factor</p>
+                        <p className="text-xl font-bold text-white">61%</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Customer Class Breakdown */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">Load by Customer Class</h3>
+                    <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
+                      <table className="min-w-full divide-y divide-gray-600">
+                        <thead className="bg-gray-600">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Customer Class</th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Customers</th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Annual Sales (GWh)</th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">% of Total</th>
+                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Avg. Usage per Customer</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="bg-gray-700 divide-y divide-gray-600">
+                          <tr>
+                            <td className="px-4 py-3 text-sm font-medium text-white">Residential</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">2,150,000</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">15,960</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">35%</td>
+                            <td className="px-4 py-3 text-sm text-gray-400 text-right">7,420 kWh/yr</td>
+                          </tr>
+                          <tr className="bg-gray-600">
+                            <td className="px-4 py-3 text-sm font-medium text-white">Commercial</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">245,000</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">13,680</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">30%</td>
+                            <td className="px-4 py-3 text-sm text-gray-400 text-right">55,840 kWh/yr</td>
+                          </tr>
+                          <tr>
+                            <td className="px-4 py-3 text-sm font-medium text-white">Industrial</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">5,200</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">15,960</td>
+                            <td className="px-4 py-3 text-sm text-white text-right">35%</td>
+                            <td className="px-4 py-3 text-sm text-gray-400 text-right">3.07 GWh/yr</td>
+                          </tr>
+                        </tbody>
+                        <tfoot className="bg-gray-700">
+                          <tr>
+                            <td className="px-4 py-3 text-sm font-bold text-white">Total</td>
+                            <td className="px-4 py-3 text-sm font-bold text-white text-right">2,400,200</td>
+                            <td className="px-4 py-3 text-sm font-bold text-white text-right">45,600</td>
+                            <td className="px-4 py-3 text-sm font-bold text-white text-right">100%</td>
+                            <td className="px-4 py-3 text-sm text-gray-400 text-right">-</td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Load Profile by Customer Class */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">Customer Class Contribution</h3>
+                    <div className="space-y-3">
+                      <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-4 h-4 bg-blue-500 rounded"></div>
+                            <span className="font-medium text-white">Residential</span>
+                          </div>
+                          <span className="font-bold text-white">35%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                          <div className="bg-blue-500 h-3 rounded-full" style={{width: '35%'}}></div>
+                        </div>
+                        <div className="mt-2 text-sm text-gray-400">
+                          2.15M customers | 15,960 GWh annual sales
+                        </div>
+                      </div>
+
+                      <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-4 h-4 bg-green-500 rounded"></div>
+                            <span className="font-medium text-white">Commercial</span>
+                          </div>
+                          <span className="font-bold text-white">30%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                          <div className="bg-green-500 h-3 rounded-full" style={{width: '30%'}}></div>
+                        </div>
+                        <div className="mt-2 text-sm text-gray-400">
+                          245K customers | 13,680 GWh annual sales
+                        </div>
+                      </div>
+
+                      <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-4 h-4 bg-purple-500 rounded"></div>
+                            <span className="font-medium text-white">Industrial</span>
+                          </div>
+                          <span className="font-bold text-white">35%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3">
+                          <div className="bg-purple-500 h-3 rounded-full" style={{width: '35%'}}></div>
+                        </div>
+                        <div className="mt-2 text-sm text-gray-400">
+                          5.2K customers | 15,960 GWh annual sales
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Demand Trends */}
+                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">Historical Demand Growth by Class</h3>
+                    <div className="h-64 bg-gray-800 rounded-lg p-4 flex items-end justify-between border border-gray-700">
+                      {[2020, 2021, 2022, 2023, 2024].map((year) => (
+                        <div key={year} className="flex flex-col items-center space-y-2 flex-1">
+                          <div className="w-full max-w-[60px] space-y-0.5">
+                            <div
+                              className="w-full bg-blue-500 rounded-t"
+                              style={{ height: `${Math.random() * 40 + 30}px` }}
+                              title="Residential"
+                            />
+                            <div
+                              className="w-full bg-green-500"
+                              style={{ height: `${Math.random() * 35 + 25}px` }}
+                              title="Commercial"
+                            />
+                            <div
+                              className="w-full bg-purple-500"
+                              style={{ height: `${Math.random() * 40 + 30}px` }}
+                              title="Industrial"
+                            />
+                          </div>
+                          <span className="text-xs text-gray-400 font-medium">{year}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex justify-center space-x-6 mt-4">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                        <span className="text-xs text-gray-400">Residential</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 bg-green-500 rounded"></div>
+                        <span className="text-xs text-gray-400">Commercial</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-3 h-3 bg-purple-500 rounded"></div>
+                        <span className="text-xs text-gray-400">Industrial</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <div className="mt-6">
                   <p className="text-sm text-gray-400 text-center">
-                    The data above displays comprehensive power plant information including technology types, operational capacity, and geographic location.
-                    Data sourced from EIA.gov and state regulatory filings.
+                    Complete supply and demand data for comprehensive market intelligence.
+                    Data sourced from EIA.gov, state regulatory filings, and utility reports.
                   </p>
-                </div>
-              </>
-            )}
-
-            {activeSection === 3 && (
-              <>
-                {/* Demand Overview - Now in Section 3 */}
-                <div className="bg-gray-700 border border-gray-600 rounded-lg p-4 mb-6">
-                  <div className="grid grid-cols-4 gap-4">
-                    <div className="text-center">
-                      <p className="text-sm text-gray-400">Total Customers</p>
-                      <p className="text-xl font-bold text-white">2.4M</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-gray-400">Annual Sales</p>
-                      <p className="text-xl font-bold text-white">45,600 GWh</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-gray-400">Peak Demand</p>
-                      <p className="text-xl font-bold text-white">8.5 GW</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm text-gray-400">Load Factor</p>
-                      <p className="text-xl font-bold text-white">61%</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Customer Class Breakdown */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Load by Customer Class</h3>
-                  <div className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-600">
-                      <thead className="bg-gray-600">
-                        <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Customer Class</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Customers</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Annual Sales (GWh)</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">% of Total</th>
-                          <th className="px-4 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Avg. Usage per Customer</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-gray-700 divide-y divide-gray-600">
-                        <tr>
-                          <td className="px-4 py-3 text-sm font-medium text-white">Residential</td>
-                          <td className="px-4 py-3 text-sm text-white text-right">2,150,000</td>
-                          <td className="px-4 py-3 text-sm text-white text-right">15,960</td>
-                          <td className="px-4 py-3 text-sm text-white text-right">35%</td>
-                          <td className="px-4 py-3 text-sm text-gray-400 text-right">7,420 kWh/yr</td>
-                        </tr>
-                        <tr className="bg-gray-600">
-                          <td className="px-4 py-3 text-sm font-medium text-white">Commercial</td>
-                          <td className="px-4 py-3 text-sm text-white text-right">245,000</td>
-                          <td className="px-4 py-3 text-sm text-white text-right">13,680</td>
-                          <td className="px-4 py-3 text-sm text-white text-right">30%</td>
-                          <td className="px-4 py-3 text-sm text-gray-400 text-right">55,840 kWh/yr</td>
-                        </tr>
-                        <tr>
-                          <td className="px-4 py-3 text-sm font-medium text-white">Industrial</td>
-                          <td className="px-4 py-3 text-sm text-white text-right">5,200</td>
-                          <td className="px-4 py-3 text-sm text-white text-right">15,960</td>
-                          <td className="px-4 py-3 text-sm text-white text-right">35%</td>
-                          <td className="px-4 py-3 text-sm text-gray-400 text-right">3.07 GWh/yr</td>
-                        </tr>
-                      </tbody>
-                      <tfoot className="bg-gray-700">
-                        <tr>
-                          <td className="px-4 py-3 text-sm font-bold text-white">Total</td>
-                          <td className="px-4 py-3 text-sm font-bold text-white text-right">2,400,200</td>
-                          <td className="px-4 py-3 text-sm font-bold text-white text-right">45,600</td>
-                          <td className="px-4 py-3 text-sm font-bold text-white text-right">100%</td>
-                          <td className="px-4 py-3 text-sm text-gray-400 text-right">-</td>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Load Profile by Customer Class */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Customer Class Contribution</h3>
-                  <div className="space-y-3">
-                    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-4 h-4 bg-blue-500 rounded"></div>
-                          <span className="font-medium text-white">Residential</span>
-                        </div>
-                        <span className="font-bold text-white">35%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-3">
-                        <div className="bg-blue-500 h-3 rounded-full" style={{width: '35%'}}></div>
-                      </div>
-                      <div className="mt-2 text-sm text-gray-400">
-                        2.15M customers | 15,960 GWh annual sales
-                      </div>
-                    </div>
-
-                    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-4 h-4 bg-green-500 rounded"></div>
-                          <span className="font-medium text-white">Commercial</span>
-                        </div>
-                        <span className="font-bold text-white">30%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-3">
-                        <div className="bg-green-500 h-3 rounded-full" style={{width: '30%'}}></div>
-                      </div>
-                      <div className="mt-2 text-sm text-gray-400">
-                        245K customers | 13,680 GWh annual sales
-                      </div>
-                    </div>
-
-                    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-4 h-4 bg-purple-500 rounded"></div>
-                          <span className="font-medium text-white">Industrial</span>
-                        </div>
-                        <span className="font-bold text-white">35%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-3">
-                        <div className="bg-purple-500 h-3 rounded-full" style={{width: '35%'}}></div>
-                      </div>
-                      <div className="mt-2 text-sm text-gray-400">
-                        5.2K customers | 15,960 GWh annual sales
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Demand Trends */}
-                <div className="bg-gray-700 border border-gray-600 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Historical Demand Growth by Class</h3>
-                  <div className="h-64 bg-gray-800 rounded-lg p-4 flex items-end justify-between border border-gray-700">
-                    {[2020, 2021, 2022, 2023, 2024].map((year) => (
-                      <div key={year} className="flex flex-col items-center space-y-2 flex-1">
-                        <div className="w-full max-w-[60px] space-y-0.5">
-                          <div
-                            className="w-full bg-blue-500 rounded-t"
-                            style={{ height: `${Math.random() * 40 + 30}px` }}
-                            title="Residential"
-                          />
-                          <div
-                            className="w-full bg-green-500"
-                            style={{ height: `${Math.random() * 35 + 25}px` }}
-                            title="Commercial"
-                          />
-                          <div
-                            className="w-full bg-purple-500"
-                            style={{ height: `${Math.random() * 40 + 30}px` }}
-                            title="Industrial"
-                          />
-                        </div>
-                        <span className="text-xs text-gray-400 font-medium">{year}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-center space-x-6 mt-4">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                      <span className="text-xs text-gray-400">Residential</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 bg-green-500 rounded"></div>
-                      <span className="text-xs text-gray-400">Commercial</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 bg-purple-500 rounded"></div>
-                      <span className="text-xs text-gray-400">Industrial</span>
-                    </div>
-                  </div>
                 </div>
               </>
             )}
@@ -3019,8 +3223,8 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
               </>
             )}
 
-            {/* Section 4: Key Contacts */}
-            {activeSection === 4 && (
+            {/* Section 3: Key Contacts */}
+            {activeSection === 3 && (
               <>
                 <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
                   <h3 className="text-xl font-bold text-white mb-4">Decision Makers & Key Stakeholders</h3>
