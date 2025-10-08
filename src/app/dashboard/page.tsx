@@ -108,6 +108,8 @@ export default function DashboardPage() {
   const [portfolioData, setPortfolioData] = useState<any>(null)
   const [portfolioLoading, setPortfolioLoading] = useState(false)
   const [energyBuyersTab, setEnergyBuyersTab] = useState<'utilities' | 'corporates'>('utilities')
+  const [buyerViewMode, setbuyerViewMode] = useState<'all' | 'utilities' | 'corporates'>('all')
+  const [buyerSortBy, setBuyerSortBy] = useState<'load' | 'name' | 'recent'>('load')
   const [selectedCorporate, setSelectedCorporate] = useState<any>(null)
   const [selectedStateFilter, setSelectedStateFilter] = useState<string | null>(null)
   const [showMapModal, setShowMapModal] = useState(false)
@@ -1165,43 +1167,306 @@ export default function DashboardPage() {
         {/* Energy Buyers Section */}
         <div className="bg-gray-900 rounded-lg px-6 py-12">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-3">
-                {region} Energy Buyers
-              </h2>
-              <p className="text-gray-400 max-w-2xl mx-auto">
-                Discover the largest energy consumers in the {region} region across {selectedStates.length} states, ranked by peak load demand from highest to lowest capacity requirements.
-              </p>
-            </div>
+            {/* Header with Stats */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-3xl font-bold text-white mb-2">
+                    {region} Energy Buyers
+                  </h2>
+                  <p className="text-gray-400">
+                    Track key utilities and corporate energy buyers across {selectedStates.length} states
+                  </p>
+                </div>
 
-            {/* Tab Navigation */}
-            <div className="flex justify-center mb-6">
-              <div className="inline-flex gap-3">
-                <button
-                  onClick={() => setEnergyBuyersTab('utilities')}
-                  className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
-                    energyBuyersTab === 'utilities'
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
-                  }`}
-                >
-                  Utilities
-                </button>
-                <button
-                  onClick={() => setEnergyBuyersTab('corporates')}
-                  className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
-                    energyBuyersTab === 'corporates'
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-200 hover:shadow-md'
-                  }`}
-                >
-                  Corporates
-                </button>
+                {/* Quick Stats */}
+                <div className="flex gap-4">
+                  <div className="bg-gray-800 rounded-lg px-4 py-3 border border-gray-700">
+                    <div className="text-2xl font-bold text-blue-500">{stateUtilities.length}</div>
+                    <div className="text-xs text-gray-400">Utilities</div>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg px-4 py-3 border border-gray-700">
+                    <div className="text-2xl font-bold text-purple-500">{corporatesByRegion[region]?.length || 0}</div>
+                    <div className="text-xs text-gray-400">Corporates</div>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg px-4 py-3 border border-gray-700">
+                    <div className="text-2xl font-bold text-green-500">{favorites.size}</div>
+                    <div className="text-xs text-gray-400">Watching</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filters and Controls */}
+              <div className="flex items-center justify-between bg-gray-800 rounded-lg p-4 border border-gray-700">
+                {/* View Mode Toggle */}
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-400">Show:</span>
+                  <div className="inline-flex rounded-lg bg-gray-700 p-1">
+                    <button
+                      onClick={() => {
+                        setbuyerViewMode('all')
+                        setEnergyBuyersTab('utilities')
+                      }}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                        buyerViewMode === 'all'
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'text-gray-300 hover:text-white'
+                      }`}
+                    >
+                      All Buyers
+                    </button>
+                    <button
+                      onClick={() => {
+                        setbuyerViewMode('utilities')
+                        setEnergyBuyersTab('utilities')
+                      }}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                        buyerViewMode === 'utilities'
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'text-gray-300 hover:text-white'
+                      }`}
+                    >
+                      Utilities Only
+                    </button>
+                    <button
+                      onClick={() => {
+                        setbuyerViewMode('corporates')
+                        setEnergyBuyersTab('corporates')
+                      }}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                        buyerViewMode === 'corporates'
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'text-gray-300 hover:text-white'
+                      }`}
+                    >
+                      Corporates Only
+                    </button>
+                  </div>
+                </div>
+
+                {/* Sort Options */}
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-400">Sort by:</span>
+                  <select
+                    value={buyerSortBy}
+                    onChange={(e) => setBuyerSortBy(e.target.value as any)}
+                    className="bg-gray-700 text-white rounded-lg px-4 py-2 text-sm border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="load">Energy Load (High to Low)</option>
+                    <option value="name">Company Name (A-Z)</option>
+                    <option value="recent">Recently Added</option>
+                  </select>
+                </div>
               </div>
             </div>
 
+            {/* Unified "All Buyers" View */}
+            {buyerViewMode === 'all' && (
+              <div className="mb-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Utilities Column */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                        <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        Utilities ({stateUtilities.length})
+                      </h3>
+                    </div>
+                    <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                      {stateUtilities.slice(0, 10).map((utility, index) => {
+                        const utilityId = `utility-${utility.id || utility.utility_number || utility.utilityNumber || index}`
+                        const isFavorited = favorites.has(utilityId)
+
+                        return (
+                          <div
+                            key={utility.id || index}
+                            onClick={() => {
+                              setSelectedUtilityForAnalysis(utility)
+                              setEnergyBuyersTab('utilities')
+                              setbuyerViewMode('utilities')
+                            }}
+                            className={`bg-gray-800 rounded-lg p-4 border-2 transition-all cursor-pointer hover:border-blue-500 ${
+                              selectedUtilityForAnalysis?.id === utility.id
+                                ? 'border-blue-500 ring-2 ring-blue-500/30'
+                                : 'border-gray-700'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h4 className="font-semibold text-white">
+                                    {utility.name || utility.utility_name || `Utility ${index + 1}`}
+                                  </h4>
+                                  {isFavorited && (
+                                    <svg className="w-4 h-4 text-yellow-500 fill-current" viewBox="0 0 20 20">
+                                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                    </svg>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-4 text-sm text-gray-400">
+                                  <span className="flex items-center gap-1">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    {utility.states?.[0] || utility.state || 'N/A'}
+                                  </span>
+                                  {utility.ownership_type && (
+                                    <span className="px-2 py-0.5 bg-gray-700 rounded text-xs">
+                                      {utility.ownership_type}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggleFavorite(utilityId)
+
+                                  const savedCompanies = localStorage.getItem('allEnergyBuyerCompanies')
+                                  const companies = savedCompanies ? JSON.parse(savedCompanies) : []
+                                  const companyData = {
+                                    id: utilityId,
+                                    name: utility.name || utility.utility_name || `Utility ${index + 1}`,
+                                    type: 'utility',
+                                    states: utility.states || [],
+                                    ...utility
+                                  }
+                                  const existingIndex = companies.findIndex((c: any) => c.id === utilityId)
+                                  if (existingIndex >= 0) {
+                                    companies[existingIndex] = companyData
+                                  } else {
+                                    companies.push(companyData)
+                                  }
+                                  localStorage.setItem('allEnergyBuyerCompanies', JSON.stringify(companies))
+                                }}
+                                className="text-gray-400 hover:text-yellow-500 transition-colors"
+                              >
+                                <svg className={`w-5 h-5 ${isFavorited ? 'fill-current text-yellow-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        )
+                      })}
+                      {stateUtilities.length > 10 && (
+                        <button
+                          onClick={() => {
+                            setbuyerViewMode('utilities')
+                            setEnergyBuyersTab('utilities')
+                          }}
+                          className="w-full py-3 text-blue-500 hover:text-blue-400 font-medium text-sm"
+                        >
+                          View all {stateUtilities.length} utilities →
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Corporates Column */}
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-semibold text-white flex items-center gap-2">
+                        <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        Corporates ({corporatesByRegion[region]?.length || 0})
+                      </h3>
+                    </div>
+                    <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                      {(corporatesByRegion[region] || []).slice(0, 10).map((corporate, index) => {
+                        const corporateId = `corporate-${corporate.id || index}`
+                        const isFavorited = favorites.has(corporateId)
+
+                        return (
+                          <div
+                            key={corporate.id || index}
+                            onClick={() => {
+                              setSelectedCorporate(corporate)
+                              setEnergyBuyersTab('corporates')
+                              setbuyerViewMode('corporates')
+                            }}
+                            className={`bg-gray-800 rounded-lg p-4 border-2 transition-all cursor-pointer hover:border-purple-500 ${
+                              selectedCorporate?.id === corporate.id
+                                ? 'border-purple-500 ring-2 ring-purple-500/30'
+                                : 'border-gray-700'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h4 className="font-semibold text-white">{corporate.name}</h4>
+                                  {isFavorited && (
+                                    <svg className="w-4 h-4 text-yellow-500 fill-current" viewBox="0 0 20 20">
+                                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                    </svg>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-4 text-sm text-gray-400">
+                                  <span className="flex items-center gap-1">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                                    </svg>
+                                    {corporate.facilities} facilities
+                                  </span>
+                                  <span className="px-2 py-0.5 bg-gray-700 rounded text-xs">
+                                    {corporate.type}
+                                  </span>
+                                </div>
+                              </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  toggleFavorite(corporateId)
+
+                                  const savedCompanies = localStorage.getItem('allEnergyBuyerCompanies')
+                                  const companies = savedCompanies ? JSON.parse(savedCompanies) : []
+                                  const companyData = {
+                                    id: corporateId,
+                                    name: corporate.name,
+                                    type: 'corporate',
+                                    ...corporate
+                                  }
+                                  const existingIndex = companies.findIndex((c: any) => c.id === corporateId)
+                                  if (existingIndex >= 0) {
+                                    companies[existingIndex] = companyData
+                                  } else {
+                                    companies.push(companyData)
+                                  }
+                                  localStorage.setItem('allEnergyBuyerCompanies', JSON.stringify(companies))
+                                }}
+                                className="text-gray-400 hover:text-yellow-500 transition-colors"
+                              >
+                                <svg className={`w-5 h-5 ${isFavorited ? 'fill-current text-yellow-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        )
+                      })}
+                      {(corporatesByRegion[region]?.length || 0) > 10 && (
+                        <button
+                          onClick={() => {
+                            setbuyerViewMode('corporates')
+                            setEnergyBuyersTab('corporates')
+                          }}
+                          className="w-full py-3 text-purple-500 hover:text-purple-400 font-medium text-sm"
+                        >
+                          View all {corporatesByRegion[region]?.length} corporates →
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Ownership Type Filter - Only show for Utilities tab */}
-            {energyBuyersTab === 'utilities' && selectedStates.length > 0 && (
+            {buyerViewMode === 'utilities' && energyBuyersTab === 'utilities' && selectedStates.length > 0 && (
               <div className="flex justify-center mb-6">
                 <div className="inline-flex rounded-lg bg-gray-700 p-1">
                   <button
@@ -1259,7 +1524,7 @@ export default function DashboardPage() {
             )}
 
             {/* Utilities Tab Content */}
-            {energyBuyersTab === 'utilities' && (
+            {buyerViewMode === 'utilities' && energyBuyersTab === 'utilities' && (
               <>
                 {/* Utilities Count */}
                 {selectedStates.length > 0 && (
@@ -1452,7 +1717,7 @@ export default function DashboardPage() {
             )}
 
             {/* Corporates Tab Content */}
-            {energyBuyersTab === 'corporates' && (
+            {buyerViewMode === 'corporates' && energyBuyersTab === 'corporates' && (
               <>
                 {/* Corporates Count */}
                 <div className="text-center mb-6">
