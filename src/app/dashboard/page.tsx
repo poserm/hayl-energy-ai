@@ -124,6 +124,7 @@ export default function DashboardPage() {
   const [pricesExpanded, setPricesExpanded] = useState(false)
   const [selectedTechnology, setSelectedTechnology] = useState<string>('All Technologies')
   const [supplyView, setSupplyView] = useState<'current' | 'pipeline' | 'retirements' | 'all'>('current')
+  const [showSupplyMapModal, setShowSupplyMapModal] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [showChat, setShowChat] = useState(false)
   const [chatMessage, setChatMessage] = useState('')
@@ -1011,768 +1012,572 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                {/* View Toggle */}
-                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-5">
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3">View</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { key: 'current' as const, label: 'Current Capacity', color: 'blue' },
-                      { key: 'pipeline' as const, label: 'Pipeline', color: 'green' },
-                      { key: 'retirements' as const, label: 'Retirements', color: 'red' },
-                      { key: 'all' as const, label: 'Complete View', color: 'purple' }
-                    ].map((view) => (
-                      <button
-                        key={view.key}
-                        onClick={() => setSupplyView(view.key)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                          supplyView === view.key
-                            ? view.color === 'blue' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' :
-                              view.color === 'green' ? 'bg-green-500 text-white shadow-lg shadow-green-500/30' :
-                              view.color === 'red' ? 'bg-red-500 text-white shadow-lg shadow-red-500/30' :
-                              'bg-purple-500 text-white shadow-lg shadow-purple-500/30'
-                            : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700 border border-gray-700'
-                        }`}
-                      >
-                        {view.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Visualization Area */}
+                {/* Chart Area */}
                 <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
-                  {/* Title based on selection */}
-                  <div className="mb-6">
-                    <h4 className="text-lg font-bold text-white mb-1">
-                      {selectedTechnology === 'All Technologies'
-                        ? supplyView === 'current' ? 'Current Capacity by Technology' :
-                          supplyView === 'pipeline' ? 'Pipeline Projects by Technology' :
-                          supplyView === 'retirements' ? 'Planned Retirements by Technology' :
-                          'Complete Supply Overview'
-                        : `${selectedTechnology} - ${
-                          supplyView === 'current' ? 'Current Capacity' :
-                          supplyView === 'pipeline' ? 'Pipeline Projects' :
-                          supplyView === 'retirements' ? 'Planned Retirements' :
-                          'Complete View'
-                        }`
-                      }
-                    </h4>
-                    <p className="text-xs text-gray-400">
-                      {selectedTechnology === 'All Technologies' ? 'Regional' : 'Technology-specific'} capacity breakdown
-                    </p>
+                  {/* Chart Header with View Controls */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h4 className="text-lg font-bold text-white mb-1">
+                        {selectedTechnology === 'All Technologies'
+                          ? 'Regional Supply Capacity Trends'
+                          : `${selectedTechnology} Capacity Trends`
+                        }
+                      </h4>
+                      <p className="text-xs text-gray-400">3-year capacity evolution</p>
+                    </div>
+
+                    {/* View Controls + Map Button */}
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1 bg-gray-800/50 rounded-lg p-1">
+                        {[
+                          { key: 'current' as const, label: 'Current', icon: '📊' },
+                          { key: 'pipeline' as const, label: 'Pipeline', icon: '🔨' },
+                          { key: 'retirements' as const, label: 'Retiring', icon: '🔻' },
+                          { key: 'all' as const, label: 'All', icon: '📈' }
+                        ].map((view) => (
+                          <button
+                            key={view.key}
+                            onClick={() => setSupplyView(view.key)}
+                            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                              supplyView === view.key
+                                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20'
+                                : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700/50'
+                            }`}
+                            title={view.label}
+                          >
+                            <span className="mr-1">{view.icon}</span>
+                            {view.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      <button
+                        onClick={() => setShowSupplyMapModal(true)}
+                        className="flex items-center gap-2 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-all shadow-lg shadow-emerald-600/20"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
+                        View Map
+                      </button>
+                    </div>
                   </div>
 
-                  {/* ALL TECHNOLOGIES VIEWS */}
-                  {selectedTechnology === 'All Technologies' && supplyView === 'current' && (
-                    <div className="space-y-4">
-                      <div className="flex h-20 rounded-lg overflow-hidden border border-gray-700">
-                        <div className="bg-blue-500 flex items-center justify-center" style={{ width: '53%' }} title="Natural Gas: 45.2 GW">
-                          <div className="text-center text-white">
-                            <p className="text-sm font-bold">Natural Gas</p>
-                            <p className="text-xs">45.2 GW (53%)</p>
-                          </div>
-                        </div>
-                        <div className="bg-gray-600 flex items-center justify-center" style={{ width: '14%' }} title="Coal: 12.0 GW">
-                          <div className="text-center text-white">
-                            <p className="text-xs font-bold">Coal</p>
-                            <p className="text-xs">12.0 GW</p>
-                          </div>
-                        </div>
-                        <div className="bg-purple-500 flex items-center justify-center" style={{ width: '12%' }} title="Nuclear: 10.2 GW">
-                          <div className="text-center text-white">
-                            <p className="text-xs font-bold">Nuclear</p>
-                            <p className="text-xs">10.2 GW</p>
-                          </div>
-                        </div>
-                        <div className="bg-yellow-500 flex items-center justify-center" style={{ width: '9%' }} title="Solar: 8.0 GW">
-                          <div className="text-center text-white">
-                            <p className="text-xs font-bold">Solar</p>
-                            <p className="text-xs">8.0 GW</p>
-                          </div>
-                        </div>
-                        <div className="bg-green-500 flex items-center justify-center" style={{ width: '7%' }} title="Wind: 6.0 GW">
-                          <div className="text-center text-white">
-                            <p className="text-xs font-bold">Wind</p>
-                            <p className="text-xs">6.0 GW</p>
-                          </div>
-                        </div>
-                        <div className="bg-indigo-500 flex items-center justify-center" style={{ width: '2%' }} title="Storage: 2.0 GW">
-                          <span className="text-xs text-white font-bold">S</span>
-                        </div>
-                        <div className="bg-cyan-500 flex items-center justify-center" style={{ width: '2%' }} title="Hydro: 1.6 GW">
-                          <span className="text-xs text-white font-bold">H</span>
-                        </div>
-                        <div className="bg-orange-500 flex items-center justify-center" style={{ width: '1%' }} title="Other: 0.8 GW">
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-white">85.0 GW</p>
-                        <p className="text-xs text-gray-400">Total Current Capacity</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedTechnology === 'All Technologies' && supplyView === 'pipeline' && (
-                    <div className="space-y-4">
-                      <div className="flex h-20 rounded-lg overflow-hidden border border-green-700">
-                        <div className="bg-yellow-500 flex items-center justify-center" style={{ width: '41%' }} title="Solar Pipeline: 5.2 GW">
-                          <div className="text-center text-white">
-                            <p className="text-sm font-bold">Solar</p>
-                            <p className="text-xs">5.2 GW (41%)</p>
-                          </div>
-                        </div>
-                        <div className="bg-green-500 flex items-center justify-center" style={{ width: '30%' }} title="Wind Pipeline: 3.8 GW">
-                          <div className="text-center text-white">
-                            <p className="text-sm font-bold">Wind</p>
-                            <p className="text-xs">3.8 GW (30%)</p>
-                          </div>
-                        </div>
-                        <div className="bg-indigo-500 flex items-center justify-center" style={{ width: '19%' }} title="Storage Pipeline: 2.4 GW">
-                          <div className="text-center text-white">
-                            <p className="text-xs font-bold">Storage</p>
-                            <p className="text-xs">2.4 GW</p>
-                          </div>
-                        </div>
-                        <div className="bg-blue-500 flex items-center justify-center" style={{ width: '10%' }} title="Natural Gas Pipeline: 1.4 GW">
-                          <div className="text-center text-white">
-                            <p className="text-xs font-bold">Gas</p>
-                            <p className="text-xs">1.4 GW</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-green-400">+12.8 GW</p>
-                        <p className="text-xs text-gray-400">Total Pipeline Capacity</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedTechnology === 'All Technologies' && supplyView === 'retirements' && (
-                    <div className="space-y-4">
-                      <div className="flex h-20 rounded-lg overflow-hidden border border-red-700">
-                        <div className="bg-gray-600 flex items-center justify-center" style={{ width: '67%' }} title="Coal Retirements: 2.8 GW">
-                          <div className="text-center text-white">
-                            <p className="text-sm font-bold">Coal</p>
-                            <p className="text-xs">2.8 GW (67%)</p>
-                          </div>
-                        </div>
-                        <div className="bg-blue-500 flex items-center justify-center" style={{ width: '26%' }} title="Gas Retirements: 1.1 GW">
-                          <div className="text-center text-white">
-                            <p className="text-sm font-bold">Gas Peakers</p>
-                            <p className="text-xs">1.1 GW (26%)</p>
-                          </div>
-                        </div>
-                        <div className="bg-cyan-500 flex items-center justify-center" style={{ width: '7%' }} title="Hydro Retirements: 0.3 GW">
-                          <div className="text-center text-white">
-                            <p className="text-xs font-bold">Hydro</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-red-400">-4.2 GW</p>
-                        <p className="text-xs text-gray-400">Total Planned Retirements by 2030</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedTechnology === 'All Technologies' && supplyView === 'all' && (
-                    <div className="space-y-6">
-                      <div className="space-y-3">
+                  {/* Vertical Stacked Bar Chart - 2023, 2024, 2025 */}
+                  <div className="space-y-4">
+                    {/* ALL TECHNOLOGIES - CURRENT VIEW */}
+                    {selectedTechnology === 'All Technologies' && supplyView === 'current' && (
+                      <div className="grid grid-cols-3 gap-6">
+                        {/* 2023 */}
                         <div>
-                          <p className="text-xs text-gray-400 mb-2">Current Capacity</p>
-                          <div className="flex h-16 rounded-lg overflow-hidden border border-gray-700">
-                            <div className="bg-blue-500 flex items-center justify-center" style={{ width: '53%' }}>
-                              <span className="text-xs font-bold text-white">Gas 45.2</span>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2023</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-gray-700">
+                            <div className="bg-blue-500 flex items-center justify-center" style={{ height: '50%' }} title="Natural Gas: 43.8 GW">
+                              <span className="text-xs font-bold text-white rotate-0">Gas 43.8</span>
                             </div>
-                            <div className="bg-gray-600 flex items-center justify-center" style={{ width: '14%' }}>
-                              <span className="text-xs font-bold text-white">Coal 12.0</span>
+                            <div className="bg-gray-600 flex items-center justify-center" style={{ height: '16%' }}>
+                              <span className="text-xs font-bold text-white">Coal 13.5</span>
                             </div>
-                            <div className="bg-purple-500 flex items-center justify-center" style={{ width: '12%' }}>
+                            <div className="bg-purple-500 flex items-center justify-center" style={{ height: '12%' }}>
                               <span className="text-xs font-bold text-white">Nuclear 10.2</span>
                             </div>
-                            <div className="bg-yellow-500 flex items-center justify-center" style={{ width: '9%' }}>
-                              <span className="text-xs font-bold text-white">Solar 8.0</span>
+                            <div className="bg-yellow-500 flex items-center justify-center" style={{ height: '8%' }}>
+                              <span className="text-xs font-bold text-white">Solar 6.2</span>
                             </div>
-                            <div className="bg-green-500 flex items-center justify-center" style={{ width: '7%' }}>
-                              <span className="text-xs font-bold text-white">Wind 6.0</span>
+                            <div className="bg-green-500 flex items-center justify-center" style={{ height: '6%' }}>
+                              <span className="text-xs font-bold text-white">Wind 4.8</span>
                             </div>
-                            <div className="bg-indigo-500 flex items-center justify-center" style={{ width: '2%' }}>
+                            <div className="bg-indigo-500 flex items-center justify-center" style={{ height: '2%' }}>
                               <span className="text-xs text-white">S</span>
                             </div>
-                            <div className="bg-cyan-500 flex items-center justify-center" style={{ width: '2%' }}>
+                            <div className="bg-cyan-500 flex items-center justify-center" style={{ height: '3%' }}>
                               <span className="text-xs text-white">H</span>
                             </div>
-                            <div className="bg-orange-500 flex items-center justify-center" style={{ width: '1%' }}></div>
-                          </div>
-                          <p className="text-right text-sm font-bold text-white mt-1">85.0 GW</p>
-                        </div>
-
-                        <div>
-                          <p className="text-xs text-gray-400 mb-2">Pipeline Projects</p>
-                          <div className="flex h-16 rounded-lg overflow-hidden border border-green-700">
-                            <div className="bg-yellow-500 flex items-center justify-center" style={{ width: '41%' }}>
-                              <span className="text-xs font-bold text-white">Solar 5.2 GW</span>
-                            </div>
-                            <div className="bg-green-500 flex items-center justify-center" style={{ width: '30%' }}>
-                              <span className="text-xs font-bold text-white">Wind 3.8 GW</span>
-                            </div>
-                            <div className="bg-indigo-500 flex items-center justify-center" style={{ width: '19%' }}>
-                              <span className="text-xs font-bold text-white">Storage 2.4</span>
-                            </div>
-                            <div className="bg-blue-500 flex items-center justify-center" style={{ width: '10%' }}>
-                              <span className="text-xs font-bold text-white">Gas 1.4</span>
+                            <div className="bg-orange-500 flex items-center justify-center" style={{ height: '3%' }}>
+                              <span className="text-xs text-white">O</span>
                             </div>
                           </div>
-                          <p className="text-right text-sm font-bold text-green-400 mt-1">+12.8 GW</p>
+                          <p className="text-center text-sm font-bold text-white mt-2">82.0 GW</p>
                         </div>
 
+                        {/* 2024 */}
                         <div>
-                          <p className="text-xs text-gray-400 mb-2">Planned Retirements</p>
-                          <div className="flex h-16 rounded-lg overflow-hidden border border-red-700">
-                            <div className="bg-gray-600 flex items-center justify-center" style={{ width: '67%' }}>
-                              <span className="text-xs font-bold text-white">Coal 2.8 GW</span>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2024</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-gray-700">
+                            <div className="bg-blue-500 flex items-center justify-center" style={{ height: '52%' }}>
+                              <span className="text-xs font-bold text-white">Gas 44.5</span>
                             </div>
-                            <div className="bg-blue-500 flex items-center justify-center" style={{ width: '26%' }}>
-                              <span className="text-xs font-bold text-white">Gas 1.1 GW</span>
+                            <div className="bg-gray-600 flex items-center justify-center" style={{ height: '15%' }}>
+                              <span className="text-xs font-bold text-white">Coal 12.8</span>
                             </div>
-                            <div className="bg-cyan-500 flex items-center justify-center" style={{ width: '7%' }}>
+                            <div className="bg-purple-500 flex items-center justify-center" style={{ height: '12%' }}>
+                              <span className="text-xs font-bold text-white">Nuclear 10.2</span>
+                            </div>
+                            <div className="bg-yellow-500 flex items-center justify-center" style={{ height: '8.5%' }}>
+                              <span className="text-xs font-bold text-white">Solar 7.2</span>
+                            </div>
+                            <div className="bg-green-500 flex items-center justify-center" style={{ height: '6.5%' }}>
+                              <span className="text-xs font-bold text-white">Wind 5.5</span>
+                            </div>
+                            <div className="bg-indigo-500 flex items-center justify-center" style={{ height: '2%' }}>
+                              <span className="text-xs text-white">S</span>
+                            </div>
+                            <div className="bg-cyan-500 flex items-center justify-center" style={{ height: '2%' }}>
+                              <span className="text-xs text-white">H</span>
+                            </div>
+                            <div className="bg-orange-500 flex items-center justify-center" style={{ height: '2%' }}>
+                              <span className="text-xs text-white">O</span>
+                            </div>
+                          </div>
+                          <p className="text-center text-sm font-bold text-white mt-2">83.5 GW</p>
+                        </div>
+
+                        {/* 2025 */}
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2025</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-gray-700 ring-2 ring-blue-500">
+                            <div className="bg-blue-500 flex items-center justify-center" style={{ height: '53%' }}>
+                              <span className="text-xs font-bold text-white">Gas 45.2</span>
+                            </div>
+                            <div className="bg-gray-600 flex items-center justify-center" style={{ height: '14%' }}>
+                              <span className="text-xs font-bold text-white">Coal 12.0</span>
+                            </div>
+                            <div className="bg-purple-500 flex items-center justify-center" style={{ height: '12%' }}>
+                              <span className="text-xs font-bold text-white">Nuclear 10.2</span>
+                            </div>
+                            <div className="bg-yellow-500 flex items-center justify-center" style={{ height: '9%' }}>
+                              <span className="text-xs font-bold text-white">Solar 8.0</span>
+                            </div>
+                            <div className="bg-green-500 flex items-center justify-center" style={{ height: '7%' }}>
+                              <span className="text-xs font-bold text-white">Wind 6.0</span>
+                            </div>
+                            <div className="bg-indigo-500 flex items-center justify-center" style={{ height: '2%' }}>
+                              <span className="text-xs text-white">S 2.0</span>
+                            </div>
+                            <div className="bg-cyan-500 flex items-center justify-center" style={{ height: '2%' }}>
+                              <span className="text-xs text-white">H</span>
+                            </div>
+                            <div className="bg-orange-500 flex items-center justify-center" style={{ height: '1%' }}>
+                              <span className="text-xs text-white">O</span>
+                            </div>
+                          </div>
+                          <p className="text-center text-sm font-bold text-white mt-2">85.0 GW</p>
+                          <p className="text-center text-xs text-blue-400 mt-1">Current</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* ALL TECHNOLOGIES - PIPELINE VIEW */}
+                    {selectedTechnology === 'All Technologies' && supplyView === 'pipeline' && (
+                      <div className="grid grid-cols-3 gap-6">
+                        {/* 2023-2024 */}
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2023-2024</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-green-700">
+                            <div className="bg-yellow-500 flex items-center justify-center" style={{ height: '35%' }}>
+                              <span className="text-xs font-bold text-white">Solar 1.0 GW</span>
+                            </div>
+                            <div className="bg-green-500 flex items-center justify-center" style={{ height: '25%' }}>
+                              <span className="text-xs font-bold text-white">Wind 0.7 GW</span>
+                            </div>
+                            <div className="bg-blue-500 flex items-center justify-center" style={{ height: '25%' }}>
+                              <span className="text-xs font-bold text-white">Gas 0.7 GW</span>
+                            </div>
+                            <div className="bg-indigo-500 flex items-center justify-center" style={{ height: '15%' }}>
+                              <span className="text-xs font-bold text-white">Storage 0.4</span>
+                            </div>
+                          </div>
+                          <p className="text-center text-sm font-bold text-green-400 mt-2">+2.8 GW</p>
+                        </div>
+
+                        {/* 2024-2025 */}
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2024-2025</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-green-700">
+                            <div className="bg-yellow-500 flex items-center justify-center" style={{ height: '30%' }}>
+                              <span className="text-xs font-bold text-white">Solar 0.8 GW</span>
+                            </div>
+                            <div className="bg-green-500 flex items-center justify-center" style={{ height: '20%' }}>
+                              <span className="text-xs font-bold text-white">Wind 0.5 GW</span>
+                            </div>
+                            <div className="bg-blue-500 flex items-center justify-center" style={{ height: '28%' }}>
+                              <span className="text-xs font-bold text-white">Gas 0.7 GW</span>
+                            </div>
+                            <div className="bg-indigo-500 flex items-center justify-center" style={{ height: '22%' }}>
+                              <span className="text-xs font-bold text-white">Storage 0.5</span>
+                            </div>
+                          </div>
+                          <p className="text-center text-sm font-bold text-green-400 mt-2">+2.5 GW</p>
+                        </div>
+
+                        {/* 2026-2030 Pipeline */}
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2026-2030</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-green-700 ring-2 ring-green-500">
+                            <div className="bg-yellow-500 flex items-center justify-center" style={{ height: '55%' }}>
+                              <span className="text-xs font-bold text-white">Solar 4.4 GW</span>
+                            </div>
+                            <div className="bg-green-500 flex items-center justify-center" style={{ height: '27%' }}>
+                              <span className="text-xs font-bold text-white">Wind 3.3 GW</span>
+                            </div>
+                            <div className="bg-indigo-500 flex items-center justify-center" style={{ height: '15%' }}>
+                              <span className="text-xs font-bold text-white">Storage 1.5</span>
+                            </div>
+                            <div className="bg-purple-500 flex items-center justify-center" style={{ height: '3%' }}>
+                              <span className="text-xs text-white">SMR</span>
+                            </div>
+                          </div>
+                          <p className="text-center text-sm font-bold text-green-400 mt-2">+9.5 GW</p>
+                          <p className="text-center text-xs text-green-400 mt-1">Future Pipeline</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* ALL TECHNOLOGIES - RETIREMENTS VIEW */}
+                    {selectedTechnology === 'All Technologies' && supplyView === 'retirements' && (
+                      <div className="grid grid-cols-3 gap-6">
+                        {/* 2023-2024 */}
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2023-2024</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-red-700">
+                            <div className="bg-gray-600 flex items-center justify-center" style={{ height: '65%' }}>
+                              <span className="text-xs font-bold text-white">Coal 0.7 GW</span>
+                            </div>
+                            <div className="bg-blue-500 flex items-center justify-center" style={{ height: '35%' }}>
+                              <span className="text-xs font-bold text-white">Gas Peakers 0.3 GW</span>
+                            </div>
+                          </div>
+                          <p className="text-center text-sm font-bold text-red-400 mt-2">-1.0 GW</p>
+                        </div>
+
+                        {/* 2025-2027 */}
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2025-2027</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-red-700">
+                            <div className="bg-gray-600 flex items-center justify-center" style={{ height: '60%' }}>
+                              <span className="text-xs font-bold text-white">Coal 1.2 GW</span>
+                            </div>
+                            <div className="bg-blue-500 flex items-center justify-center" style={{ height: '30%' }}>
+                              <span className="text-xs font-bold text-white">Gas 0.5 GW</span>
+                            </div>
+                            <div className="bg-cyan-500 flex items-center justify-center" style={{ height: '10%' }}>
                               <span className="text-xs font-bold text-white">Hydro</span>
                             </div>
                           </div>
-                          <p className="text-right text-sm font-bold text-red-400 mt-1">-4.2 GW</p>
+                          <p className="text-center text-sm font-bold text-red-400 mt-2">-1.8 GW</p>
+                        </div>
+
+                        {/* 2028-2030 */}
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2028-2030</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-red-700 ring-2 ring-red-500">
+                            <div className="bg-gray-600 flex items-center justify-center" style={{ height: '65%' }}>
+                              <span className="text-xs font-bold text-white">Coal 0.9 GW</span>
+                            </div>
+                            <div className="bg-blue-500 flex items-center justify-center" style={{ height: '22%' }}>
+                              <span className="text-xs font-bold text-white">Gas 0.3 GW</span>
+                            </div>
+                            <div className="bg-cyan-500 flex items-center justify-center" style={{ height: '13%' }}>
+                              <span className="text-xs font-bold text-white">Hydro</span>
+                            </div>
+                          </div>
+                          <p className="text-center text-sm font-bold text-red-400 mt-2">-1.4 GW</p>
+                          <p className="text-center text-xs text-red-400 mt-1">Future Retirements</p>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* NATURAL GAS */}
-                  {selectedTechnology === 'Natural Gas' && (
-                    <div className="space-y-6">
-                      {supplyView === 'current' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-blue-700 bg-blue-500">
-                            <div className="flex items-center justify-center w-full">
+                    {/* ALL TECHNOLOGIES - COMPLETE VIEW */}
+                    {selectedTechnology === 'All Technologies' && supplyView === 'all' && (
+                      <div className="space-y-6">
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4">
+                            <p className="text-xs text-gray-400 mb-2">Current Capacity (2025)</p>
+                            <p className="text-2xl font-bold text-white">85.0 GW</p>
+                            <p className="text-xs text-blue-400 mt-1">+3.0 GW from 2023</p>
+                          </div>
+                          <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
+                            <p className="text-xs text-gray-400 mb-2">Pipeline (2026-2030)</p>
+                            <p className="text-2xl font-bold text-green-400">+12.8 GW</p>
+                            <p className="text-xs text-gray-400 mt-1">Solar, Wind, Storage led</p>
+                          </div>
+                          <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+                            <p className="text-xs text-gray-400 mb-2">Retirements (by 2030)</p>
+                            <p className="text-2xl font-bold text-red-400">-4.2 GW</p>
+                            <p className="text-xs text-gray-400 mt-1">Coal & Gas peakers</p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-6">
+                          <div>
+                            <p className="text-sm font-semibold text-blue-400 mb-3 text-center">Current (2023-2025)</p>
+                            <div className="h-64 flex items-end gap-2">
+                              <div className="flex-1 flex flex-col-reverse gap-1">
+                                <div className="bg-blue-500 rounded-t" style={{ height: '90%' }}></div>
+                                <p className="text-xs text-center text-gray-400">2023</p>
+                              </div>
+                              <div className="flex-1 flex flex-col-reverse gap-1">
+                                <div className="bg-blue-500 rounded-t" style={{ height: '95%' }}></div>
+                                <p className="text-xs text-center text-gray-400">2024</p>
+                              </div>
+                              <div className="flex-1 flex flex-col-reverse gap-1">
+                                <div className="bg-blue-500 rounded-t ring-2 ring-blue-400" style={{ height: '100%' }}></div>
+                                <p className="text-xs text-center text-blue-400 font-bold">2025</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="text-sm font-semibold text-green-400 mb-3 text-center">Pipeline (by period)</p>
+                            <div className="h-64 flex items-end gap-2">
+                              <div className="flex-1 flex flex-col-reverse gap-1">
+                                <div className="bg-green-500 rounded-t" style={{ height: '30%' }}></div>
+                                <p className="text-xs text-center text-gray-400">23-24</p>
+                              </div>
+                              <div className="flex-1 flex flex-col-reverse gap-1">
+                                <div className="bg-green-500 rounded-t" style={{ height: '27%' }}></div>
+                                <p className="text-xs text-center text-gray-400">24-25</p>
+                              </div>
+                              <div className="flex-1 flex flex-col-reverse gap-1">
+                                <div className="bg-green-500 rounded-t ring-2 ring-green-400" style={{ height: '100%' }}></div>
+                                <p className="text-xs text-center text-green-400 font-bold">26-30</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="text-sm font-semibold text-red-400 mb-3 text-center">Retirements (by period)</p>
+                            <div className="h-64 flex items-end gap-2">
+                              <div className="flex-1 flex flex-col-reverse gap-1">
+                                <div className="bg-red-500 rounded-t" style={{ height: '25%' }}></div>
+                                <p className="text-xs text-center text-gray-400">23-24</p>
+                              </div>
+                              <div className="flex-1 flex flex-col-reverse gap-1">
+                                <div className="bg-red-500 rounded-t" style={{ height: '45%' }}></div>
+                                <p className="text-xs text-center text-gray-400">25-27</p>
+                              </div>
+                              <div className="flex-1 flex flex-col-reverse gap-1">
+                                <div className="bg-red-500 rounded-t ring-2 ring-red-400" style={{ height: '35%' }}></div>
+                                <p className="text-xs text-center text-red-400 font-bold">28-30</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* SINGLE TECHNOLOGY VIEWS - NATURAL GAS EXAMPLE */}
+                    {selectedTechnology === 'Natural Gas' && supplyView === 'current' && (
+                      <div className="grid grid-cols-3 gap-6">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2023</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-blue-700 bg-blue-500">
+                            <div className="flex items-center justify-center h-full">
+                              <div className="text-center text-white">
+                                <p className="text-3xl font-bold">43.8 GW</p>
+                                <p className="text-sm mt-2">53.4% of region</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2024</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-blue-700 bg-blue-500">
+                            <div className="flex items-center justify-center h-full">
+                              <div className="text-center text-white">
+                                <p className="text-3xl font-bold">44.5 GW</p>
+                                <p className="text-sm mt-2">53.3% of region</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2025</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-blue-700 bg-blue-500 ring-2 ring-blue-400">
+                            <div className="flex items-center justify-center h-full">
                               <div className="text-center text-white">
                                 <p className="text-3xl font-bold">45.2 GW</p>
-                                <p className="text-sm">53% of total regional capacity</p>
-                                <p className="text-xs text-blue-200 mt-1">Baseload & Peaking</p>
+                                <p className="text-sm mt-2">53.2% of region</p>
+                                <p className="text-xs text-blue-200 mt-3">+1.4 GW from 2023</p>
                               </div>
                             </div>
                           </div>
                         </div>
-                      )}
-                      {supplyView === 'pipeline' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-green-700">
-                            <div className="bg-green-500 flex items-center justify-center" style={{ width: '57%' }}>
-                              <span className="text-sm font-bold text-white">Under Construction: 0.8 GW</span>
-                            </div>
-                            <div className="bg-green-600 flex items-center justify-center" style={{ width: '43%' }}>
-                              <span className="text-sm font-bold text-white">Permitted: 0.6 GW</span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-2xl font-bold text-green-400">+1.4 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">Expected COD: Q4 2025</p>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'retirements' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-red-700 bg-red-500">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-white">
-                                <p className="text-3xl font-bold">1.1 GW</p>
-                                <p className="text-sm">12 peaker facilities retiring</p>
-                                <p className="text-xs text-red-200 mt-1">2026-2029 • Avg. age: 38 years</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'all' && (
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Current</p>
-                            <p className="text-2xl font-bold text-white">45.2 GW</p>
-                            <p className="text-xs text-blue-400 mt-1">53% of region</p>
-                          </div>
-                          <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Pipeline</p>
-                            <p className="text-2xl font-bold text-green-400">+1.4 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">0.8 GW construction</p>
-                          </div>
-                          <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Retirements</p>
-                            <p className="text-2xl font-bold text-red-400">-1.1 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">12 facilities</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                      </div>
+                    )}
 
-                  {/* COAL */}
-                  {selectedTechnology === 'Coal' && (
-                    <div className="space-y-6">
-                      {supplyView === 'current' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-600">
-                            <div className="flex items-center justify-center w-full">
+                    {selectedTechnology === 'Natural Gas' && supplyView === 'pipeline' && (
+                      <div className="grid grid-cols-3 gap-6">
+                        <div className="opacity-50">
+                          <p className="text-sm font-semibold text-gray-500 mb-3 text-center">2023-2024</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-gray-700 bg-gray-800">
+                            <div className="flex items-center justify-center h-full">
+                              <div className="text-center text-gray-500">
+                                <p className="text-xl font-bold">0.7 GW</p>
+                                <p className="text-xs mt-2">Added</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="opacity-50">
+                          <p className="text-sm font-semibold text-gray-500 mb-3 text-center">2024-2025</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-gray-700 bg-gray-800">
+                            <div className="flex items-center justify-center h-full">
+                              <div className="text-center text-gray-500">
+                                <p className="text-xl font-bold">0.7 GW</p>
+                                <p className="text-xs mt-2">Added</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2026-2030</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-green-700 bg-green-500 ring-2 ring-green-400">
+                            <div className="flex items-center justify-center h-full">
                               <div className="text-center text-white">
-                                <p className="text-3xl font-bold">12.0 GW</p>
-                                <p className="text-sm">14% of total regional capacity</p>
-                                <p className="text-xs text-gray-200 mt-1">Legacy Baseload</p>
+                                <p className="text-3xl font-bold">+0 GW</p>
+                                <p className="text-sm mt-2">No new builds planned</p>
+                                <p className="text-xs text-green-200 mt-3">Pipeline complete</p>
                               </div>
                             </div>
                           </div>
                         </div>
-                      )}
-                      {supplyView === 'pipeline' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-800/50">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-gray-400">
-                                <p className="text-2xl font-bold">0 GW</p>
-                                <p className="text-sm">No new coal projects planned</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'retirements' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-red-700 bg-red-500">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-white">
-                                <p className="text-3xl font-bold">2.8 GW</p>
-                                <p className="text-sm">8 facilities retiring</p>
-                                <p className="text-xs text-red-200 mt-1">2025-2028 • Avg. age: 52 years</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'all' && (
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Current</p>
-                            <p className="text-2xl font-bold text-white">12.0 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">14% of region</p>
-                          </div>
-                          <div className="bg-gray-800/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-500 mb-2">Pipeline</p>
-                            <p className="text-2xl font-bold text-gray-500">0 GW</p>
-                            <p className="text-xs text-gray-500 mt-1">No new builds</p>
-                          </div>
-                          <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Retirements</p>
-                            <p className="text-2xl font-bold text-red-400">-2.8 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">8 facilities</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                      </div>
+                    )}
 
-                  {/* SOLAR */}
-                  {selectedTechnology === 'Solar' && (
-                    <div className="space-y-6">
-                      {supplyView === 'current' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-yellow-700 bg-yellow-500">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-white">
-                                <p className="text-3xl font-bold">8.0 GW</p>
-                                <p className="text-sm">9% of total regional capacity</p>
-                                <p className="text-xs text-yellow-200 mt-1">Renewable Energy</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'pipeline' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-green-700">
-                            <div className="bg-yellow-500 flex items-center justify-center" style={{ width: '40%' }}>
-                              <span className="text-sm font-bold text-white">Construction: 2.1 GW</span>
-                            </div>
-                            <div className="bg-yellow-600 flex items-center justify-center" style={{ width: '35%' }}>
-                              <span className="text-sm font-bold text-white">Permitted: 1.8 GW</span>
-                            </div>
-                            <div className="bg-yellow-700 flex items-center justify-center" style={{ width: '25%' }}>
-                              <span className="text-sm font-bold text-white">Proposed: 1.3 GW</span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-2xl font-bold text-green-400">+5.2 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">Expected COD: Q3 2026</p>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'retirements' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-800/50">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-gray-400">
-                                <p className="text-2xl font-bold">0 GW</p>
-                                <p className="text-sm">No retirements planned</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'all' && (
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-yellow-900/30 border border-yellow-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Current</p>
-                            <p className="text-2xl font-bold text-white">8.0 GW</p>
-                            <p className="text-xs text-yellow-400 mt-1">9% of region</p>
-                          </div>
-                          <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Pipeline</p>
-                            <p className="text-2xl font-bold text-green-400">+5.2 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">2.1 GW construction</p>
-                          </div>
-                          <div className="bg-gray-800/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-500 mb-2">Retirements</p>
-                            <p className="text-2xl font-bold text-gray-500">0 GW</p>
-                            <p className="text-xs text-gray-500 mt-1">None planned</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* WIND */}
-                  {selectedTechnology === 'Wind' && (
-                    <div className="space-y-6">
-                      {supplyView === 'current' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-green-700 bg-green-500">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-white">
-                                <p className="text-3xl font-bold">6.0 GW</p>
-                                <p className="text-sm">7% of total regional capacity</p>
-                                <p className="text-xs text-green-200 mt-1">Renewable Energy</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'pipeline' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-green-700">
-                            <div className="bg-green-500 flex items-center justify-center" style={{ width: '39%' }}>
-                              <span className="text-sm font-bold text-white">Construction: 1.5 GW</span>
-                            </div>
-                            <div className="bg-green-600 flex items-center justify-center" style={{ width: '37%' }}>
-                              <span className="text-sm font-bold text-white">Permitted: 1.4 GW</span>
-                            </div>
-                            <div className="bg-green-700 flex items-center justify-center" style={{ width: '24%' }}>
-                              <span className="text-sm font-bold text-white">Proposed: 0.9 GW</span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-2xl font-bold text-green-400">+3.8 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">Expected COD: Q1 2027</p>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'retirements' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-800/50">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-gray-400">
-                                <p className="text-2xl font-bold">0 GW</p>
-                                <p className="text-sm">No retirements planned</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'all' && (
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Current</p>
-                            <p className="text-2xl font-bold text-white">6.0 GW</p>
-                            <p className="text-xs text-green-400 mt-1">7% of region</p>
-                          </div>
-                          <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Pipeline</p>
-                            <p className="text-2xl font-bold text-green-400">+3.8 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">1.5 GW construction</p>
-                          </div>
-                          <div className="bg-gray-800/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-500 mb-2">Retirements</p>
-                            <p className="text-2xl font-bold text-gray-500">0 GW</p>
-                            <p className="text-xs text-gray-500 mt-1">None planned</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* NUCLEAR */}
-                  {selectedTechnology === 'Nuclear' && (
-                    <div className="space-y-6">
-                      {supplyView === 'current' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-purple-700 bg-purple-500">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-white">
-                                <p className="text-3xl font-bold">10.2 GW</p>
-                                <p className="text-sm">12% of total regional capacity</p>
-                                <p className="text-xs text-purple-200 mt-1">Carbon-Free Baseload</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'pipeline' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-800/50">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-gray-400">
-                                <p className="text-2xl font-bold">0 GW</p>
-                                <p className="text-sm">No new nuclear projects</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'retirements' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-800/50">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-gray-400">
-                                <p className="text-2xl font-bold">0 GW</p>
-                                <p className="text-sm">No retirements planned</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'all' && (
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-purple-900/30 border border-purple-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Current</p>
-                            <p className="text-2xl font-bold text-white">10.2 GW</p>
-                            <p className="text-xs text-purple-400 mt-1">12% of region</p>
-                          </div>
-                          <div className="bg-gray-800/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-500 mb-2">Pipeline</p>
-                            <p className="text-2xl font-bold text-gray-500">0 GW</p>
-                            <p className="text-xs text-gray-500 mt-1">No new builds</p>
-                          </div>
-                          <div className="bg-gray-800/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-500 mb-2">Retirements</p>
-                            <p className="text-2xl font-bold text-gray-500">0 GW</p>
-                            <p className="text-xs text-gray-500 mt-1">None planned</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* STORAGE */}
-                  {selectedTechnology === 'Storage' && (
-                    <div className="space-y-6">
-                      {supplyView === 'current' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-indigo-700 bg-indigo-500">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-white">
-                                <p className="text-3xl font-bold">2.0 GW</p>
-                                <p className="text-sm">2% of total regional capacity</p>
-                                <p className="text-xs text-indigo-200 mt-1">Battery Storage</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'pipeline' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-green-700">
-                            <div className="bg-indigo-500 flex items-center justify-center" style={{ width: '50%' }}>
-                              <span className="text-sm font-bold text-white">Construction: 1.2 GW</span>
-                            </div>
-                            <div className="bg-indigo-600 flex items-center justify-center" style={{ width: '33%' }}>
-                              <span className="text-sm font-bold text-white">Permitted: 0.8 GW</span>
-                            </div>
-                            <div className="bg-indigo-700 flex items-center justify-center" style={{ width: '17%' }}>
-                              <span className="text-sm font-bold text-white">Proposed: 0.4</span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-2xl font-bold text-green-400">+2.4 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">Expected COD: Q2 2026</p>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'retirements' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-800/50">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-gray-400">
-                                <p className="text-2xl font-bold">0 GW</p>
-                                <p className="text-sm">No retirements planned</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'all' && (
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-indigo-900/30 border border-indigo-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Current</p>
-                            <p className="text-2xl font-bold text-white">2.0 GW</p>
-                            <p className="text-xs text-indigo-400 mt-1">2% of region</p>
-                          </div>
-                          <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Pipeline</p>
-                            <p className="text-2xl font-bold text-green-400">+2.4 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">1.2 GW construction</p>
-                          </div>
-                          <div className="bg-gray-800/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-500 mb-2">Retirements</p>
-                            <p className="text-2xl font-bold text-gray-500">0 GW</p>
-                            <p className="text-xs text-gray-500 mt-1">None planned</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* HYDRO */}
-                  {selectedTechnology === 'Hydro' && (
-                    <div className="space-y-6">
-                      {supplyView === 'current' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-cyan-700 bg-cyan-500">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-white">
-                                <p className="text-3xl font-bold">1.6 GW</p>
-                                <p className="text-sm">2% of total regional capacity</p>
-                                <p className="text-xs text-cyan-200 mt-1">Hydroelectric</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'pipeline' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-800/50">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-gray-400">
-                                <p className="text-2xl font-bold">0 GW</p>
-                                <p className="text-sm">No new hydro projects</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'retirements' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-red-700 bg-red-500/50">
-                            <div className="flex items-center justify-center w-full">
+                    {selectedTechnology === 'Natural Gas' && supplyView === 'retirements' && (
+                      <div className="grid grid-cols-3 gap-6">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2023-2025</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-red-700 bg-red-500">
+                            <div className="flex items-center justify-center h-full">
                               <div className="text-center text-white">
                                 <p className="text-3xl font-bold">0.3 GW</p>
-                                <p className="text-sm">2 facilities retiring</p>
-                                <p className="text-xs text-red-200 mt-1">2027-2030 • Relicensing issues</p>
+                                <p className="text-sm mt-2">3 peaker units</p>
                               </div>
                             </div>
                           </div>
                         </div>
-                      )}
-                      {supplyView === 'all' && (
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-cyan-900/30 border border-cyan-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Current</p>
-                            <p className="text-2xl font-bold text-white">1.6 GW</p>
-                            <p className="text-xs text-cyan-400 mt-1">2% of region</p>
-                          </div>
-                          <div className="bg-gray-800/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-500 mb-2">Pipeline</p>
-                            <p className="text-2xl font-bold text-gray-500">0 GW</p>
-                            <p className="text-xs text-gray-500 mt-1">No new builds</p>
-                          </div>
-                          <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Retirements</p>
-                            <p className="text-2xl font-bold text-red-400">-0.3 GW</p>
-                            <p className="text-xs text-gray-400 mt-1">2 facilities</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* OTHER */}
-                  {selectedTechnology === 'Other' && (
-                    <div className="space-y-6">
-                      {supplyView === 'current' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-orange-700 bg-orange-500">
-                            <div className="flex items-center justify-center w-full">
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2026-2028</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-red-700 bg-red-500">
+                            <div className="flex items-center justify-center h-full">
                               <div className="text-center text-white">
-                                <p className="text-3xl font-bold">0.8 GW</p>
-                                <p className="text-sm">1% of total regional capacity</p>
-                                <p className="text-xs text-orange-200 mt-1">Biomass, Geothermal, etc.</p>
+                                <p className="text-3xl font-bold">0.5 GW</p>
+                                <p className="text-sm mt-2">6 peaker units</p>
                               </div>
                             </div>
                           </div>
                         </div>
-                      )}
-                      {supplyView === 'pipeline' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-800/50">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-gray-400">
-                                <p className="text-2xl font-bold">0 GW</p>
-                                <p className="text-sm">No pipeline projects</p>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-300 mb-3 text-center">2029-2030</p>
+                          <div className="flex flex-col h-80 rounded-lg overflow-hidden border border-red-700 bg-red-500 ring-2 ring-red-400">
+                            <div className="flex items-center justify-center h-full">
+                              <div className="text-center text-white">
+                                <p className="text-3xl font-bold">0.3 GW</p>
+                                <p className="text-sm mt-2">3 peaker units</p>
+                                <p className="text-xs text-red-200 mt-3">Total: 1.1 GW by 2030</p>
                               </div>
                             </div>
                           </div>
                         </div>
-                      )}
-                      {supplyView === 'retirements' && (
-                        <div className="space-y-4">
-                          <div className="flex h-24 rounded-lg overflow-hidden border border-gray-700 bg-gray-800/50">
-                            <div className="flex items-center justify-center w-full">
-                              <div className="text-center text-gray-400">
-                                <p className="text-2xl font-bold">0 GW</p>
-                                <p className="text-sm">No retirements planned</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {supplyView === 'all' && (
-                        <div className="grid grid-cols-3 gap-4">
-                          <div className="bg-orange-900/30 border border-orange-500/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-400 mb-2">Current</p>
-                            <p className="text-2xl font-bold text-white">0.8 GW</p>
-                            <p className="text-xs text-orange-400 mt-1">1% of region</p>
-                          </div>
-                          <div className="bg-gray-800/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-500 mb-2">Pipeline</p>
-                            <p className="text-2xl font-bold text-gray-500">0 GW</p>
-                            <p className="text-xs text-gray-500 mt-1">No pipeline</p>
-                          </div>
-                          <div className="bg-gray-800/30 rounded-lg p-4">
-                            <p className="text-xs text-gray-500 mb-2">Retirements</p>
-                            <p className="text-2xl font-bold text-gray-500">0 GW</p>
-                            <p className="text-xs text-gray-500 mt-1">None planned</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                      </div>
+                    )}
 
+                    {selectedTechnology === 'Natural Gas' && supplyView === 'all' && (
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-6">
+                          <p className="text-xs text-gray-400 mb-2">Current (2025)</p>
+                          <p className="text-3xl font-bold text-white mb-3">45.2 GW</p>
+                          <p className="text-xs text-blue-400">53% of total capacity</p>
+                          <p className="text-xs text-gray-400 mt-2">+1.4 GW from 2023</p>
+                        </div>
+                        <div className="bg-green-900/30 border border-green-500/30 rounded-lg p-6">
+                          <p className="text-xs text-gray-400 mb-2">Pipeline (2026-2030)</p>
+                          <p className="text-3xl font-bold text-green-400 mb-3">0 GW</p>
+                          <p className="text-xs text-gray-400">No new builds planned</p>
+                          <p className="text-xs text-gray-500 mt-2">Existing fleet sufficient</p>
+                        </div>
+                        <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-6">
+                          <p className="text-xs text-gray-400 mb-2">Retirements (by 2030)</p>
+                          <p className="text-3xl font-bold text-red-400 mb-3">-1.1 GW</p>
+                          <p className="text-xs text-gray-400">12 peaker facilities</p>
+                          <p className="text-xs text-gray-500 mt-2">Avg. age: 38 years</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Placeholder for other technologies - Similar pattern */}
+                    {selectedTechnology !== 'All Technologies' && selectedTechnology !== 'Natural Gas' && (
+                      <div className="text-center py-12">
+                        <p className="text-gray-400 mb-2">📊 {selectedTechnology} Capacity Trends</p>
+                        <p className="text-xs text-gray-500">Detailed 3-year visualization for {selectedTechnology}</p>
+                        <p className="text-xs text-gray-600 mt-4">(View: {supplyView})</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
 
+            {/* Supply Map Modal */}
+            {showSupplyMapModal && (
+              <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-gray-900 border border-gray-700 rounded-xl w-full max-w-6xl max-h-[90vh] overflow-hidden shadow-2xl">
+                  {/* Modal Header */}
+                  <div className="flex items-center justify-between p-6 border-b border-gray-700">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1">
+                        {selectedTechnology === 'All Technologies'
+                          ? `Regional ${supplyView === 'current' ? 'Current Capacity' : supplyView === 'pipeline' ? 'Pipeline Projects' : supplyView === 'retirements' ? 'Planned Retirements' : 'Supply'} Map`
+                          : `${selectedTechnology} ${supplyView === 'current' ? 'Current Capacity' : supplyView === 'pipeline' ? 'Pipeline Projects' : supplyView === 'retirements' ? 'Retirements' : 'Supply'} Map`
+                        }
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        Geographic distribution •
+                        {selectedTechnology === 'All Technologies' ? ' All Technologies' : ` ${selectedTechnology}`} •
+                        {supplyView === 'current' ? ' Current' : supplyView === 'pipeline' ? ' Pipeline' : supplyView === 'retirements' ? ' Retiring' : ' Complete'}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setShowSupplyMapModal(false)}
+                      className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                    >
+                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Modal Content */}
+                  <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+                    <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-8 text-center">
+                      <svg className="w-16 h-16 text-emerald-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                      <p className="text-xl font-semibold text-white mb-2">
+                        {selectedTechnology === 'All Technologies'
+                          ? 'Regional Power Market Map'
+                          : `${selectedTechnology} Geographic Distribution`
+                        }
+                      </p>
+                      <p className="text-sm text-gray-400 mb-4">
+                        Showing {supplyView === 'current' ? 'current capacity' : supplyView === 'pipeline' ? 'pipeline projects' : supplyView === 'retirements' ? 'planned retirements' : 'complete supply overview'}
+                      </p>
+                      <div className="bg-gray-900/50 rounded-lg p-4 text-left max-w-md mx-auto">
+                        <p className="text-xs text-gray-400 mb-2">Map will display:</p>
+                        <ul className="text-xs text-gray-500 space-y-1">
+                          <li>• Technology: {selectedTechnology}</li>
+                          <li>• View: {supplyView === 'current' ? 'Current Capacity (2025)' : supplyView === 'pipeline' ? 'Pipeline Projects (2026-2030)' : supplyView === 'retirements' ? 'Planned Retirements (by 2030)' : 'Complete Overview'}</li>
+                          <li>• Region: PJM Service Territory</li>
+                          <li>• Interactive markers and heatmaps</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             {/* Demand Content */}
             {demandExpanded && (
               <div className="mb-6 mt-6 space-y-6">
