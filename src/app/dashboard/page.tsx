@@ -123,8 +123,7 @@ export default function DashboardPage() {
   const [demandExpanded, setDemandExpanded] = useState(false)
   const [pricesExpanded, setPricesExpanded] = useState(false)
   const [selectedTechnology, setSelectedTechnology] = useState<string>('All Technologies')
-  const [supplyView, setSupplyView] = useState<'current' | 'pipeline' | 'retirements' | 'all'>('current')
-  const [showSupplyMapModal, setShowSupplyMapModal] = useState(false)
+  const [supplyView, setSupplyView] = useState<'current' | 'pipeline' | 'retirements'>('current')
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [showChat, setShowChat] = useState(false)
   const [chatMessage, setChatMessage] = useState('')
@@ -996,17 +995,27 @@ export default function DashboardPage() {
                 <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-5">
                   <h4 className="text-sm font-semibold text-gray-400 mb-3">Filter by Technology</h4>
                   <div className="flex flex-wrap gap-2">
-                    {['All Technologies', 'Natural Gas', 'Coal', 'Solar', 'Wind', 'Nuclear', 'Storage', 'Hydro', 'Other'].map((tech) => (
+                    {[
+                      { name: 'All Technologies', color: 'bg-gray-700', hoverColor: 'hover:bg-gray-600', activeColor: 'bg-gray-600' },
+                      { name: 'Natural Gas', color: 'bg-blue-500', hoverColor: 'hover:bg-blue-600', activeColor: 'bg-blue-600' },
+                      { name: 'Coal', color: 'bg-gray-600', hoverColor: 'hover:bg-gray-700', activeColor: 'bg-gray-700' },
+                      { name: 'Solar', color: 'bg-yellow-500', hoverColor: 'hover:bg-yellow-600', activeColor: 'bg-yellow-600' },
+                      { name: 'Wind', color: 'bg-green-500', hoverColor: 'hover:bg-green-600', activeColor: 'bg-green-600' },
+                      { name: 'Nuclear', color: 'bg-purple-500', hoverColor: 'hover:bg-purple-600', activeColor: 'bg-purple-600' },
+                      { name: 'Storage', color: 'bg-indigo-500', hoverColor: 'hover:bg-indigo-600', activeColor: 'bg-indigo-600' },
+                      { name: 'Hydro', color: 'bg-cyan-500', hoverColor: 'hover:bg-cyan-600', activeColor: 'bg-cyan-600' },
+                      { name: 'Other', color: 'bg-orange-500', hoverColor: 'hover:bg-orange-600', activeColor: 'bg-orange-600' }
+                    ].map((tech) => (
                       <button
-                        key={tech}
-                        onClick={() => setSelectedTechnology(tech)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                          selectedTechnology === tech
-                            ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
-                            : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700 border border-gray-700'
+                        key={tech.name}
+                        onClick={() => setSelectedTechnology(tech.name)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium text-white transition-all ${
+                          selectedTechnology === tech.name
+                            ? `${tech.activeColor} shadow-lg ring-2 ring-white/30`
+                            : `${tech.color} ${tech.hoverColor} opacity-80 hover:opacity-100`
                         }`}
                       >
-                        {tech}
+                        {tech.name}
                       </button>
                     ))}
                   </div>
@@ -1017,43 +1026,40 @@ export default function DashboardPage() {
                   {/* Chart Header with View Controls */}
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <h4 className="text-lg font-bold text-white mb-1">
+                      <h4 className="text-lg font-bold text-white">
                         {selectedTechnology === 'All Technologies'
                           ? 'Regional Supply Capacity Trends'
                           : `${selectedTechnology} Capacity Trends`
                         }
                       </h4>
-                      <p className="text-xs text-gray-400">3-year capacity evolution</p>
                     </div>
 
                     {/* View Controls + Map Button */}
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1 bg-gray-800/50 rounded-lg p-1">
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-2 bg-gray-800/50 rounded-lg p-1.5">
                         {[
                           { key: 'current' as const, label: 'Current', icon: '📊' },
                           { key: 'pipeline' as const, label: 'Pipeline', icon: '🔨' },
-                          { key: 'retirements' as const, label: 'Retiring', icon: '🔻' },
-                          { key: 'all' as const, label: 'All', icon: '📈' }
+                          { key: 'retirements' as const, label: 'Retiring', icon: '🔻' }
                         ].map((view) => (
                           <button
                             key={view.key}
                             onClick={() => setSupplyView(view.key)}
-                            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                            className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
                               supplyView === view.key
                                 ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20'
-                                : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700/50'
+                                : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
                             }`}
-                            title={view.label}
                           >
-                            <span className="mr-1">{view.icon}</span>
+                            <span className="mr-1.5">{view.icon}</span>
                             {view.label}
                           </button>
                         ))}
                       </div>
 
                       <button
-                        onClick={() => setShowSupplyMapModal(true)}
-                        className="flex items-center gap-2 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-all shadow-lg shadow-emerald-600/20"
+                        onClick={() => setShowMapModal(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-gray-700/50 hover:bg-gray-600 text-gray-300 hover:text-white rounded-xl transition-all border border-gray-600 hover:border-gray-500"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -1090,24 +1096,6 @@ export default function DashboardPage() {
                             </div>
                           ))}
                         </div>
-                        {/* Legend */}
-                        <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center">
-                          {[
-                            { tech: 'Natural Gas', capacity: 45.2, color: 'bg-blue-500', percent: 53 },
-                            { tech: 'Coal', capacity: 12.0, color: 'bg-gray-600', percent: 14 },
-                            { tech: 'Nuclear', capacity: 10.2, color: 'bg-purple-500', percent: 12 },
-                            { tech: 'Solar', capacity: 8.0, color: 'bg-yellow-500', percent: 9 },
-                            { tech: 'Wind', capacity: 6.0, color: 'bg-green-500', percent: 7 },
-                            { tech: 'Storage', capacity: 2.0, color: 'bg-indigo-500', percent: 2 },
-                            { tech: 'Hydro', capacity: 1.6, color: 'bg-cyan-500', percent: 2 },
-                            { tech: 'Other', capacity: 0.8, color: 'bg-orange-500', percent: 1 }
-                          ].map((item) => (
-                            <div key={item.tech} className="flex items-center gap-2">
-                              <div className={`w-3 h-3 rounded ${item.color}`}></div>
-                              <span className="text-xs text-gray-300">{item.tech}: <span className="font-medium text-white">{item.capacity} GW</span> ({item.percent}%)</span>
-                            </div>
-                          ))}
-                        </div>
                       </div>
                     )}
 
@@ -1132,24 +1120,6 @@ export default function DashboardPage() {
                             </div>
                           ))}
                         </div>
-                        {/* Legend */}
-                        <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center">
-                          {[
-                            { tech: 'Solar', capacity: 5.2, color: 'bg-yellow-500', percent: 41 },
-                            { tech: 'Wind', capacity: 3.8, color: 'bg-green-500', percent: 30 },
-                            { tech: 'Storage', capacity: 2.4, color: 'bg-indigo-500', percent: 19 },
-                            { tech: 'Natural Gas', capacity: 1.4, color: 'bg-blue-500', percent: 10 }
-                          ].map((item) => (
-                            <div key={item.tech} className="flex items-center gap-2">
-                              <div className={`w-3 h-3 rounded ${item.color}`}></div>
-                              <span className="text-xs text-gray-300">{item.tech}: <span className="font-medium text-white">{item.capacity} GW</span> ({item.percent}%)</span>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="text-center mt-3">
-                          <p className="text-2xl font-bold text-green-400">+12.8 GW</p>
-                          <p className="text-xs text-gray-400">Total Pipeline Capacity (2026-2030)</p>
-                        </div>
                       </div>
                     )}
 
@@ -1173,23 +1143,6 @@ export default function DashboardPage() {
                             </div>
                           ))}
                         </div>
-                        {/* Legend */}
-                        <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center">
-                          {[
-                            { tech: 'Coal', capacity: 2.8, color: 'bg-gray-600', percent: 67 },
-                            { tech: 'Gas Peakers', capacity: 1.1, color: 'bg-blue-500', percent: 26 },
-                            { tech: 'Hydro', capacity: 0.3, color: 'bg-cyan-500', percent: 7 }
-                          ].map((item) => (
-                            <div key={item.tech} className="flex items-center gap-2">
-                              <div className={`w-3 h-3 rounded ${item.color}`}></div>
-                              <span className="text-xs text-gray-300">{item.tech}: <span className="font-medium text-white">{item.capacity} GW</span> ({item.percent}%)</span>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="text-center mt-3">
-                          <p className="text-2xl font-bold text-red-400">-4.2 GW</p>
-                          <p className="text-xs text-gray-400">Total Planned Retirements (by 2030)</p>
-                        </div>
                       </div>
                     )}
 
@@ -1207,7 +1160,7 @@ export default function DashboardPage() {
                             {supplyView === 'current' && '53% of total regional capacity'}
                             {supplyView === 'pipeline' && 'Under construction: 0.8 GW | Permitted: 0.6 GW'}
                             {supplyView === 'retirements' && '12 peaker facilities • Avg. age: 38 years'}
-                            {supplyView === 'all' && 'Current: 45.2 GW | Pipeline: +1.4 GW | Retirements: -1.1 GW'}
+                            
                           </p>
                         </div>
                       </div>
@@ -1225,7 +1178,7 @@ export default function DashboardPage() {
                             {supplyView === 'current' && '14% of total regional capacity'}
                             {supplyView === 'pipeline' && 'No new coal projects planned'}
                             {supplyView === 'retirements' && '8 facilities retiring • Avg. age: 52 years'}
-                            {supplyView === 'all' && 'Current: 12.0 GW | Pipeline: 0 GW | Retirements: -2.8 GW'}
+                            
                           </p>
                         </div>
                       </div>
@@ -1243,7 +1196,7 @@ export default function DashboardPage() {
                             {supplyView === 'current' && '9% of total regional capacity'}
                             {supplyView === 'pipeline' && 'Construction: 2.1 GW | Permitted: 1.8 GW | Proposed: 1.3 GW'}
                             {supplyView === 'retirements' && 'No retirements planned'}
-                            {supplyView === 'all' && 'Current: 8.0 GW | Pipeline: +5.2 GW | Retirements: 0 GW'}
+                            
                           </p>
                         </div>
                       </div>
@@ -1261,7 +1214,7 @@ export default function DashboardPage() {
                             {supplyView === 'current' && '7% of total regional capacity'}
                             {supplyView === 'pipeline' && 'Construction: 1.5 GW | Permitted: 1.4 GW | Proposed: 0.9 GW'}
                             {supplyView === 'retirements' && 'No retirements planned'}
-                            {supplyView === 'all' && 'Current: 6.0 GW | Pipeline: +3.8 GW | Retirements: 0 GW'}
+                            
                           </p>
                         </div>
                       </div>
@@ -1279,7 +1232,7 @@ export default function DashboardPage() {
                             {supplyView === 'current' && '12% of total regional capacity • Carbon-free baseload'}
                             {supplyView === 'pipeline' && 'No new nuclear projects'}
                             {supplyView === 'retirements' && 'No retirements planned'}
-                            {supplyView === 'all' && 'Current: 10.2 GW | Pipeline: 0 GW | Retirements: 0 GW'}
+                            
                           </p>
                         </div>
                       </div>
@@ -1297,7 +1250,7 @@ export default function DashboardPage() {
                             {supplyView === 'current' && '2% of total regional capacity • Battery storage'}
                             {supplyView === 'pipeline' && 'Construction: 1.2 GW | Permitted: 0.8 GW | Proposed: 0.4 GW'}
                             {supplyView === 'retirements' && 'No retirements planned'}
-                            {supplyView === 'all' && 'Current: 2.0 GW | Pipeline: +2.4 GW | Retirements: 0 GW'}
+                            
                           </p>
                         </div>
                       </div>
@@ -1315,7 +1268,7 @@ export default function DashboardPage() {
                             {supplyView === 'current' && '2% of total regional capacity'}
                             {supplyView === 'pipeline' && 'No new hydro projects'}
                             {supplyView === 'retirements' && '2 facilities retiring • Relicensing issues'}
-                            {supplyView === 'all' && 'Current: 1.6 GW | Pipeline: 0 GW | Retirements: -0.3 GW'}
+                            
                           </p>
                         </div>
                       </div>
@@ -1333,7 +1286,7 @@ export default function DashboardPage() {
                             {supplyView === 'current' && '1% of total regional capacity • Biomass, Geothermal, etc.'}
                             {supplyView === 'pipeline' && 'No pipeline projects'}
                             {supplyView === 'retirements' && 'No retirements planned'}
-                            {supplyView === 'all' && 'Current: 0.8 GW | Pipeline: 0 GW | Retirements: 0 GW'}
+                            
                           </p>
                         </div>
                       </div>
@@ -1343,64 +1296,6 @@ export default function DashboardPage() {
               </div>
             )}
 
-            {/* Supply Map Modal */}
-            {showSupplyMapModal && (
-              <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                <div className="bg-gray-900 border border-gray-700 rounded-xl w-full max-w-6xl max-h-[90vh] overflow-hidden shadow-2xl">
-                  {/* Modal Header */}
-                  <div className="flex items-center justify-between p-6 border-b border-gray-700">
-                    <div>
-                      <h3 className="text-xl font-bold text-white mb-1">
-                        {selectedTechnology === 'All Technologies'
-                          ? `Regional ${supplyView === 'current' ? 'Current Capacity' : supplyView === 'pipeline' ? 'Pipeline Projects' : supplyView === 'retirements' ? 'Planned Retirements' : 'Supply'} Map`
-                          : `${selectedTechnology} ${supplyView === 'current' ? 'Current Capacity' : supplyView === 'pipeline' ? 'Pipeline Projects' : supplyView === 'retirements' ? 'Retirements' : 'Supply'} Map`
-                        }
-                      </h3>
-                      <p className="text-sm text-gray-400">
-                        Geographic distribution •
-                        {selectedTechnology === 'All Technologies' ? ' All Technologies' : ` ${selectedTechnology}`} •
-                        {supplyView === 'current' ? ' Current' : supplyView === 'pipeline' ? ' Pipeline' : supplyView === 'retirements' ? ' Retiring' : ' Complete'}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => setShowSupplyMapModal(false)}
-                      className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-                    >
-                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-
-                  {/* Modal Content */}
-                  <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-                    <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-8 text-center">
-                      <svg className="w-16 h-16 text-emerald-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                      </svg>
-                      <p className="text-xl font-semibold text-white mb-2">
-                        {selectedTechnology === 'All Technologies'
-                          ? 'Regional Power Market Map'
-                          : `${selectedTechnology} Geographic Distribution`
-                        }
-                      </p>
-                      <p className="text-sm text-gray-400 mb-4">
-                        Showing {supplyView === 'current' ? 'current capacity' : supplyView === 'pipeline' ? 'pipeline projects' : supplyView === 'retirements' ? 'planned retirements' : 'complete supply overview'}
-                      </p>
-                      <div className="bg-gray-900/50 rounded-lg p-4 text-left max-w-md mx-auto">
-                        <p className="text-xs text-gray-400 mb-2">Map will display:</p>
-                        <ul className="text-xs text-gray-500 space-y-1">
-                          <li>• Technology: {selectedTechnology}</li>
-                          <li>• View: {supplyView === 'current' ? 'Current Capacity (2025)' : supplyView === 'pipeline' ? 'Pipeline Projects (2026-2030)' : supplyView === 'retirements' ? 'Planned Retirements (by 2030)' : 'Complete Overview'}</li>
-                          <li>• Region: PJM Service Territory</li>
-                          <li>• Interactive markers and heatmaps</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
             {/* Demand Content */}
             {demandExpanded && (
               <div className="mb-6 mt-6 space-y-6">
@@ -3441,22 +3336,6 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
                               title={`${item.tech}: ${item.capacity} MW (${item.percent}%)`}
                             >
                               {item.percent >= 10 && <span>{item.percent}%</span>}
-                            </div>
-                          ))}
-                        </div>
-                        {/* Legend */}
-                        <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center">
-                          {[
-                            { tech: 'Natural Gas', capacity: 3200, color: 'bg-blue-500', percent: 45 },
-                            { tech: 'Coal', capacity: 2100, color: 'bg-gray-600', percent: 29 },
-                            { tech: 'Nuclear', capacity: 900, color: 'bg-purple-500', percent: 13 },
-                            { tech: 'Solar', capacity: 450, color: 'bg-yellow-500', percent: 6 },
-                            { tech: 'Wind', capacity: 350, color: 'bg-green-500', percent: 5 },
-                            { tech: 'Hydro', capacity: 150, color: 'bg-cyan-500', percent: 2 }
-                          ].map((item) => (
-                            <div key={item.tech} className="flex items-center gap-2">
-                              <div className={`w-3 h-3 rounded ${item.color}`}></div>
-                              <span className="text-xs text-gray-300">{item.tech}: <span className="font-medium text-white">{item.capacity} MW</span> ({item.percent}%)</span>
                             </div>
                           ))}
                         </div>
