@@ -36,10 +36,6 @@ export class EIAAPIClient {
   constructor(apiKey?: string, baseURL?: string) {
     this.apiKey = apiKey || process.env.EIA_API_KEY || ''
     this.baseURL = baseURL || process.env.NEXT_PUBLIC_EIA_API_URL || 'https://api.eia.gov/v2'
-
-    if (!this.apiKey) {
-      throw new Error('EIA_API_KEY is required. Please set it in your .env.local file.')
-    }
   }
 
   /**
@@ -49,6 +45,11 @@ export class EIAAPIClient {
     endpoint: string,
     params: Record<string, any> = {}
   ): Promise<EIAResponse<T>> {
+    // Check for API key at request time, not construction time
+    if (!this.apiKey) {
+      throw new Error('EIA_API_KEY is required. Please set it in your environment variables.')
+    }
+
     const url = new URL(`${this.baseURL}${endpoint}`)
 
     // Add API key and additional parameters
