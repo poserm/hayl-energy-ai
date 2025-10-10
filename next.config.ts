@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://vitals.vercel-insights.com; style-src 'self' 'unsafe-inline' https://api.mapbox.com; img-src 'self' data: blob: https: https://api.mapbox.com https://*.tiles.mapbox.com; font-src 'self' data:; connect-src 'self' https://vercel.live https://vitals.vercel-insights.com https://api.mapbox.com https://events.mapbox.com; worker-src 'self' blob:; child-src 'self' blob:; frame-ancestors 'none';"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://vitals.vercel-insights.com; style-src 'self' 'unsafe-inline' https://api.mapbox.com; img-src 'self' data: blob: https: https://api.mapbox.com https://*.tiles.mapbox.com; font-src 'self' data:; connect-src 'self' https://vercel.live https://vitals.vercel-insights.com https://api.mapbox.com https://events.mapbox.com https://api.eia.gov; worker-src 'self' blob:; child-src 'self' blob:; frame-ancestors 'none';"
           },
           {
             key: 'Permissions-Policy',
