@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { eiaClient } from '@/lib/services/eia-api'
+import { EIAAPIClient } from '@/lib/services/eia-api'
 
 /**
  * GET /api/eia/generators
@@ -25,13 +25,38 @@ export async function GET(request: NextRequest) {
     console.log(`[EIA Generators] State: ${state}`)
     console.log(`[EIA Generators] Technology: ${technology}`)
     console.log(`[EIA Generators] Limit: ${limit}`)
-    console.log(`[EIA Generators] API Key set: ${!!process.env.EIA_API_KEY}`)
-    console.log(`[EIA Generators] API Key length: ${process.env.EIA_API_KEY?.length || 0}`)
+    console.log(`[EIA Generators] Environment check:`)
+    console.log(`[EIA Generators]   - EIA_API_KEY exists: ${!!process.env.EIA_API_KEY}`)
+    console.log(`[EIA Generators]   - EIA_API_KEY length: ${process.env.EIA_API_KEY?.length || 0}`)
+    console.log(`[EIA Generators]   - EIA_API_KEY prefix: ${process.env.EIA_API_KEY?.substring(0, 8) || 'NOT_SET'}`)
+    console.log(`[EIA Generators]   - NODE_ENV: ${process.env.NODE_ENV}`)
+    console.log(`[EIA Generators]   - VERCEL_ENV: ${process.env.VERCEL_ENV}`)
     console.log(`[EIA Generators] ========================================`)
+
+    // Create a fresh client instance with explicit API key at request time
+    // This ensures we get the env var when the request is made, not at module load time
+    const apiKey = process.env.EIA_API_KEY
+    if (!apiKey) {
+      console.error(`[EIA Generators] CRITICAL: EIA_API_KEY is not set in environment`)
+      console.error(`[EIA Generators] All env vars with 'EIA':`, Object.keys(process.env).filter(k => k.includes('EIA')))
+      return NextResponse.json({
+        success: false,
+        error: 'EIA_API_KEY environment variable is not configured',
+        debug: {
+          hasApiKey: false,
+          nodeEnv: process.env.NODE_ENV,
+          vercelEnv: process.env.VERCEL_ENV,
+          envKeysWithEIA: Object.keys(process.env).filter(k => k.includes('EIA'))
+        }
+      }, { status: 500 })
+    }
+
+    const client = new EIAAPIClient(apiKey)
+    console.log(`[EIA Generators] Created EIA client with API key`)
 
     // Get generators from EIA
     console.log(`[EIA Generators] Calling EIA API...`)
-    const result = await eiaClient.getOperatingGenerators({
+    const result = await client.getOperatingGenerators({
       frequency: 'monthly',
       balancing_authority: region || undefined,
       stateid: state || undefined,
