@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { EIAAPIClient } from '@/lib/services/eia-api'
+import { EIA_CONFIG } from '@/lib/eia-config'
 
 /**
  * GET /api/eia/generators
@@ -25,34 +26,18 @@ export async function GET(request: NextRequest) {
     console.log(`[EIA Generators] State: ${state}`)
     console.log(`[EIA Generators] Technology: ${technology}`)
     console.log(`[EIA Generators] Limit: ${limit}`)
-    console.log(`[EIA Generators] Environment check:`)
-    console.log(`[EIA Generators]   - EIA_API_KEY exists: ${!!process.env.EIA_API_KEY}`)
-    console.log(`[EIA Generators]   - EIA_API_KEY length: ${process.env.EIA_API_KEY?.length || 0}`)
-    console.log(`[EIA Generators]   - EIA_API_KEY prefix: ${process.env.EIA_API_KEY?.substring(0, 8) || 'NOT_SET'}`)
-    console.log(`[EIA Generators]   - NODE_ENV: ${process.env.NODE_ENV}`)
-    console.log(`[EIA Generators]   - VERCEL_ENV: ${process.env.VERCEL_ENV}`)
+    console.log(`[EIA Generators] Using hardcoded config (temporary workaround)`)
     console.log(`[EIA Generators] ========================================`)
 
-    // Create a fresh client instance with explicit API key at request time
-    // This ensures we get the env var when the request is made, not at module load time
-    const apiKey = process.env.EIA_API_KEY
-    if (!apiKey) {
-      console.error(`[EIA Generators] CRITICAL: EIA_API_KEY is not set in environment`)
-      console.error(`[EIA Generators] All env vars with 'EIA':`, Object.keys(process.env).filter(k => k.includes('EIA')))
-      return NextResponse.json({
-        success: false,
-        error: 'EIA_API_KEY environment variable is not configured',
-        debug: {
-          hasApiKey: false,
-          nodeEnv: process.env.NODE_ENV,
-          vercelEnv: process.env.VERCEL_ENV,
-          envKeysWithEIA: Object.keys(process.env).filter(k => k.includes('EIA'))
-        }
-      }, { status: 500 })
-    }
+    // TEMPORARY WORKAROUND: Use hardcoded config
+    // Try env var first, fall back to config file
+    const apiKey = process.env.EIA_API_KEY || EIA_CONFIG.apiKey
+
+    console.log(`[EIA Generators] API key source: ${process.env.EIA_API_KEY ? 'environment' : 'config file'}`)
+    console.log(`[EIA Generators] API key available: ${!!apiKey}`)
 
     const client = new EIAAPIClient(apiKey)
-    console.log(`[EIA Generators] Created EIA client with API key`)
+    console.log(`[EIA Generators] Created EIA client`)
 
     // Get generators from EIA
     console.log(`[EIA Generators] Calling EIA API...`)
