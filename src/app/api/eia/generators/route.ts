@@ -19,9 +19,18 @@ export async function GET(request: NextRequest) {
     const technology = searchParams.get('technology')
     const limit = parseInt(searchParams.get('limit') || '5000')
 
-    console.log(`[EIA Generators] Fetching generators - Region: ${region}, State: ${state}, Tech: ${technology}`)
+    console.log(`[EIA Generators] ========================================`)
+    console.log(`[EIA Generators] Request received`)
+    console.log(`[EIA Generators] Region: ${region}`)
+    console.log(`[EIA Generators] State: ${state}`)
+    console.log(`[EIA Generators] Technology: ${technology}`)
+    console.log(`[EIA Generators] Limit: ${limit}`)
+    console.log(`[EIA Generators] API Key set: ${!!process.env.EIA_API_KEY}`)
+    console.log(`[EIA Generators] API Key length: ${process.env.EIA_API_KEY?.length || 0}`)
+    console.log(`[EIA Generators] ========================================`)
 
     // Get generators from EIA
+    console.log(`[EIA Generators] Calling EIA API...`)
     const result = await eiaClient.getOperatingGenerators({
       frequency: 'monthly',
       balancing_authority: region || undefined,
@@ -32,17 +41,27 @@ export async function GET(request: NextRequest) {
       // Get latest available data
       start: '2024-01'
     })
+    console.log(`[EIA Generators] EIA API response received`)
+    console.log(`[EIA Generators] Response has data: ${!!result.response?.data}`)
+    console.log(`[EIA Generators] Data count: ${result.response?.data?.length || 0}`)
 
     if (!result.response?.data) {
+      console.log(`[EIA Generators] ERROR: No data in response`)
+      console.log(`[EIA Generators] Full response:`, JSON.stringify(result, null, 2))
       return NextResponse.json({
         success: false,
         error: 'No data returned from EIA API',
         generators: [],
-        total: 0
+        total: 0,
+        debug: {
+          hasResponse: !!result.response,
+          responseKeys: result.response ? Object.keys(result.response) : []
+        }
       })
     }
 
     // Process and deduplicate generators by plantId
+    console.log(`[EIA Generators] Processing ${result.response.data.length} generators...`)
     const plantMap = new Map()
 
     result.response.data.forEach((gen: any) => {
@@ -94,6 +113,9 @@ export async function GET(request: NextRequest) {
       .filter(plant => plant.latitude && plant.longitude) // Only plants with coordinates
       .sort((a, b) => b.capacity - a.capacity) // Sort by capacity descending
 
+    console.log(`[EIA Generators] Processed ${generators.length} unique plants`)
+    console.log(`[EIA Generators] Plants with coordinates: ${generators.length}`)
+
     // Calculate statistics
     const stats = {
       totalPlants: generators.length,
@@ -133,15 +155,25 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('[EIA Generators] Error:', error)
+    console.error('[EIA Generators] ========================================')
+    console.error('[EIA Generators] ERROR occurred:')
+    console.error('[EIA Generators] Error type:', error instanceof Error ? 'Error' : typeof error)
+    console.error('[EIA Generators] Error message:', error instanceof Error ? error.message : String(error))
+    console.error('[EIA Generators] Error stack:', error instanceof Error ? error.stack : 'N/A')
+    console.error('[EIA Generators] ========================================')
 
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
       generators: [],
       total: 0,
+      debug: {
+        hasApiKey: !!process.env.EIA_API_KEY,
+        apiKeyLength: process.env.EIA_API_KEY?.length || 0,
+        errorType: error instanceof Error ? error.constructor.name : typeof error
+      },
       help: {
-        message: 'Make sure EIA_API_KEY is set in .env.local',
+        message: 'Make sure EIA_API_KEY is set in environment variables',
         example: 'GET /api/eia/generators?region=PJM&state=VA'
       }
     }, { status: 500 })

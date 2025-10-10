@@ -376,8 +376,27 @@ export default function DashboardPage() {
           params.append('technology', selectedTechnology)
         }
 
-        const response = await fetch(`/api/eia/generators?${params.toString()}`)
+        const url = `/api/eia/generators?${params.toString()}`
+        console.log('[Dashboard] ========================================')
+        console.log('[Dashboard] Fetching EIA generators')
+        console.log('[Dashboard] URL:', url)
+        console.log('[Dashboard] Region:', region)
+        console.log('[Dashboard] State Filter:', selectedStateFilter)
+        console.log('[Dashboard] Technology:', selectedTechnology)
+        console.log('[Dashboard] ========================================')
+
+        const response = await fetch(url)
+        console.log('[Dashboard] Response status:', response.status)
+        console.log('[Dashboard] Response OK:', response.ok)
+
         const data = await response.json()
+        console.log('[Dashboard] Response data:', {
+          success: data.success,
+          generatorsCount: data.generators?.length || 0,
+          total: data.total,
+          error: data.error,
+          debug: data.debug
+        })
 
         if (data.success) {
           // Transform EIA data to Plant format for MapboxMap
@@ -391,10 +410,22 @@ export default function DashboardPage() {
             entity_name: gen.entityName,
             generator_count: gen.generatorCount
           }))
+          console.log('[Dashboard] Transformed plants:', plants.length)
+          console.log('[Dashboard] Sample plant:', plants[0])
           setEiaGenerators(plants)
+        } else {
+          console.error('[Dashboard] API returned success: false')
+          console.error('[Dashboard] Error:', data.error)
+          console.error('[Dashboard] Debug info:', data.debug)
+          setEiaGenerators([])
         }
       } catch (error) {
-        console.error('[Dashboard] Failed to fetch EIA generators:', error)
+        console.error('[Dashboard] ========================================')
+        console.error('[Dashboard] Exception during fetch:')
+        console.error('[Dashboard] Error:', error)
+        console.error('[Dashboard] Error type:', error instanceof Error ? error.constructor.name : typeof error)
+        console.error('[Dashboard] Error message:', error instanceof Error ? error.message : String(error))
+        console.error('[Dashboard] ========================================')
         setEiaGenerators([])
       } finally {
         setEiaLoading(false)
