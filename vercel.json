@@ -9,9 +9,6 @@
     }
   },
   "regions": ["iad1"],
-  "env": {
-    "NODE_ENV": "production"
-  },
   "build": {
     "env": {
       "NEXT_TELEMETRY_DISABLED": "1"
