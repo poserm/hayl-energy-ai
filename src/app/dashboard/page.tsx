@@ -18,6 +18,8 @@ import dynamic from 'next/dynamic'
 const MapboxMap = dynamic(() => import('@/components/MapboxMap'), { ssr: false })
 // Dynamically import OpportunitiesSection
 const OpportunitiesSection = dynamic(() => import('@/components/OpportunitiesSection'), { ssr: false })
+// Dynamically import EIA Supply Charts
+const EIASupplyCharts = dynamic(() => import('@/components/EIASupplyCharts'), { ssr: false })
 
 // Plants Table Rows Component
 function PlantsTableRows({ plants, loading, error }: { plants: any[], loading?: boolean, error?: string | null }) {
@@ -95,6 +97,8 @@ export default function DashboardPage() {
   const [detailPanelOpen, setDetailPanelOpen] = useState(false)
   const [generators, setGenerators] = useState<any[]>([])
   const [generatorsLoading, setGeneratorsLoading] = useState(false)
+  const [eiaGenerators, setEiaGenerators] = useState<any[]>([])
+  const [eiaLoading, setEiaLoading] = useState(false)
   const [focusArea, setFocusArea] = useState('Project Sales')
   const [region, setRegion] = useState('PJM')
   const [activeView, setActiveView] = useState<'dashboard' | 'utility-analysis'>('dashboard')
@@ -347,6 +351,58 @@ export default function DashboardPage() {
     
     return () => clearTimeout(timeoutId)
   }, [selectedStates])
+
+  // Fetch EIA generators for map display
+  useEffect(() => {
+    const fetchEIAGenerators = async () => {
+      setEiaLoading(true)
+      try {
+        const params = new URLSearchParams()
+        params.append('region', region)
+        if (selectedStateFilter) {
+          // Map full state name to abbreviation
+          const stateMap: { [key: string]: string } = {
+            'Virginia': 'VA', 'Maryland': 'MD', 'Pennsylvania': 'PA',
+            'Delaware': 'DE', 'New Jersey': 'NJ', 'West Virginia': 'WV',
+            'North Carolina': 'NC', 'Ohio': 'OH', 'Illinois': 'IL',
+            'Indiana': 'IN', 'Kentucky': 'KY', 'Michigan': 'MI',
+            'Tennessee': 'TN', 'District of Columbia': 'DC',
+            'California': 'CA', 'Texas': 'TX', 'New York': 'NY'
+          }
+          const stateCode = stateMap[selectedStateFilter] || selectedStateFilter
+          params.append('state', stateCode)
+        }
+        if (selectedTechnology !== 'All Technologies') {
+          params.append('technology', selectedTechnology)
+        }
+
+        const response = await fetch(`/api/eia/generators?${params.toString()}`)
+        const data = await response.json()
+
+        if (data.success) {
+          // Transform EIA data to Plant format for MapboxMap
+          const plants = data.generators.map((gen: any) => ({
+            plant_name: gen.plantName,
+            technology: gen.technology,
+            nameplate_capacity_mw: gen.capacity,
+            plant_state: gen.state,
+            latitude: gen.latitude,
+            longitude: gen.longitude,
+            entity_name: gen.entityName,
+            generator_count: gen.generatorCount
+          }))
+          setEiaGenerators(plants)
+        }
+      } catch (error) {
+        console.error('[Dashboard] Failed to fetch EIA generators:', error)
+        setEiaGenerators([])
+      } finally {
+        setEiaLoading(false)
+      }
+    }
+
+    fetchEIAGenerators()
+  }, [region, selectedStateFilter, selectedTechnology])
 
   // Fetch state utilities data for all states in region with debouncing
   useEffect(() => {
@@ -1069,229 +1125,13 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  {/* Horizontal Stacked Bar Chart */}
-                  <div className="space-y-4">
-                    {/* ALL TECHNOLOGIES - CURRENT VIEW */}
-                    {selectedTechnology === 'All Technologies' && supplyView === 'current' && (
-                      <div>
-                        {/* Stacked Bar Chart */}
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4">
-                          {[
-                            { tech: 'Natural Gas', capacity: 45.2, color: 'bg-blue-500', percent: 53 },
-                            { tech: 'Coal', capacity: 12.0, color: 'bg-gray-600', percent: 14 },
-                            { tech: 'Nuclear', capacity: 10.2, color: 'bg-purple-500', percent: 12 },
-                            { tech: 'Solar', capacity: 8.0, color: 'bg-yellow-500', percent: 9 },
-                            { tech: 'Wind', capacity: 6.0, color: 'bg-green-500', percent: 7 },
-                            { tech: 'Storage', capacity: 2.0, color: 'bg-indigo-500', percent: 2 },
-                            { tech: 'Hydro', capacity: 1.6, color: 'bg-cyan-500', percent: 2 },
-                            { tech: 'Other', capacity: 0.8, color: 'bg-orange-500', percent: 1 }
-                          ].map((item) => (
-                            <div
-                              key={item.tech}
-                              className={`${item.color} flex items-center justify-center text-white text-xs font-semibold hover:opacity-80 transition-opacity cursor-pointer`}
-                              style={{ width: `${item.percent}%` }}
-                              title={`${item.tech}: ${item.capacity} GW (${item.percent}%)`}
-                            >
-                              {item.percent >= 10 && <span>{item.percent}%</span>}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* ALL TECHNOLOGIES - PIPELINE VIEW */}
-                    {selectedTechnology === 'All Technologies' && supplyView === 'pipeline' && (
-                      <div>
-                        {/* Stacked Bar Chart */}
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-green-700">
-                          {[
-                            { tech: 'Solar', capacity: 5.2, color: 'bg-yellow-500', percent: 41 },
-                            { tech: 'Wind', capacity: 3.8, color: 'bg-green-500', percent: 30 },
-                            { tech: 'Storage', capacity: 2.4, color: 'bg-indigo-500', percent: 19 },
-                            { tech: 'Natural Gas', capacity: 1.4, color: 'bg-blue-500', percent: 10 }
-                          ].map((item) => (
-                            <div
-                              key={item.tech}
-                              className={`${item.color} flex items-center justify-center text-white text-xs font-semibold hover:opacity-80 transition-opacity cursor-pointer`}
-                              style={{ width: `${item.percent}%` }}
-                              title={`${item.tech}: ${item.capacity} GW (${item.percent}%)`}
-                            >
-                              {item.percent >= 10 && <span>{item.percent}%</span>}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* ALL TECHNOLOGIES - RETIREMENTS VIEW */}
-                    {selectedTechnology === 'All Technologies' && supplyView === 'retirements' && (
-                      <div>
-                        {/* Stacked Bar Chart */}
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-red-700">
-                          {[
-                            { tech: 'Coal', capacity: 2.8, color: 'bg-gray-600', percent: 67 },
-                            { tech: 'Gas Peakers', capacity: 1.1, color: 'bg-blue-500', percent: 26 },
-                            { tech: 'Hydro', capacity: 0.3, color: 'bg-cyan-500', percent: 7 }
-                          ].map((item) => (
-                            <div
-                              key={item.tech}
-                              className={`${item.color} flex items-center justify-center text-white text-xs font-semibold hover:opacity-80 transition-opacity cursor-pointer`}
-                              style={{ width: `${item.percent}%` }}
-                              title={`${item.tech}: ${item.capacity} GW (${item.percent}%)`}
-                            >
-                              {item.percent >= 10 && <span>{item.percent}%</span>}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* ALL TECHNOLOGIES - COMPLETE VIEW */}
-                    {/* SINGLE TECHNOLOGY VIEWS */}
-                    {selectedTechnology === 'Natural Gas' && (
-                      <div>
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-blue-700">
-                          <div className="bg-blue-500 flex items-center justify-center text-white text-sm font-semibold w-full">
-                            Natural Gas: {supplyView === 'current' ? '45.2 GW' : supplyView === 'pipeline' ? '1.4 GW Pipeline' : supplyView === 'retirements' ? '1.1 GW Retiring' : '45.2 GW Current'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-400">
-                            {supplyView === 'current' && '53% of total regional capacity'}
-                            {supplyView === 'pipeline' && 'Under construction: 0.8 GW | Permitted: 0.6 GW'}
-                            {supplyView === 'retirements' && '12 peaker facilities • Avg. age: 38 years'}
-                            
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedTechnology === 'Coal' && (
-                      <div>
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-gray-700">
-                          <div className="bg-gray-600 flex items-center justify-center text-white text-sm font-semibold w-full">
-                            Coal: {supplyView === 'current' ? '12.0 GW' : supplyView === 'pipeline' ? '0 GW Pipeline' : supplyView === 'retirements' ? '2.8 GW Retiring' : '12.0 GW Current'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-400">
-                            {supplyView === 'current' && '14% of total regional capacity'}
-                            {supplyView === 'pipeline' && 'No new coal projects planned'}
-                            {supplyView === 'retirements' && '8 facilities retiring • Avg. age: 52 years'}
-                            
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedTechnology === 'Solar' && (
-                      <div>
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-yellow-700">
-                          <div className="bg-yellow-500 flex items-center justify-center text-white text-sm font-semibold w-full">
-                            Solar: {supplyView === 'current' ? '8.0 GW' : supplyView === 'pipeline' ? '5.2 GW Pipeline' : supplyView === 'retirements' ? '0 GW Retiring' : '8.0 GW Current'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-400">
-                            {supplyView === 'current' && '9% of total regional capacity'}
-                            {supplyView === 'pipeline' && 'Construction: 2.1 GW | Permitted: 1.8 GW | Proposed: 1.3 GW'}
-                            {supplyView === 'retirements' && 'No retirements planned'}
-                            
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedTechnology === 'Wind' && (
-                      <div>
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-green-700">
-                          <div className="bg-green-500 flex items-center justify-center text-white text-sm font-semibold w-full">
-                            Wind: {supplyView === 'current' ? '6.0 GW' : supplyView === 'pipeline' ? '3.8 GW Pipeline' : supplyView === 'retirements' ? '0 GW Retiring' : '6.0 GW Current'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-400">
-                            {supplyView === 'current' && '7% of total regional capacity'}
-                            {supplyView === 'pipeline' && 'Construction: 1.5 GW | Permitted: 1.4 GW | Proposed: 0.9 GW'}
-                            {supplyView === 'retirements' && 'No retirements planned'}
-                            
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedTechnology === 'Nuclear' && (
-                      <div>
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-purple-700">
-                          <div className="bg-purple-500 flex items-center justify-center text-white text-sm font-semibold w-full">
-                            Nuclear: {supplyView === 'current' ? '10.2 GW' : supplyView === 'pipeline' ? '0 GW Pipeline' : supplyView === 'retirements' ? '0 GW Retiring' : '10.2 GW Current'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-400">
-                            {supplyView === 'current' && '12% of total regional capacity • Carbon-free baseload'}
-                            {supplyView === 'pipeline' && 'No new nuclear projects'}
-                            {supplyView === 'retirements' && 'No retirements planned'}
-                            
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedTechnology === 'Storage' && (
-                      <div>
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-indigo-700">
-                          <div className="bg-indigo-500 flex items-center justify-center text-white text-sm font-semibold w-full">
-                            Storage: {supplyView === 'current' ? '2.0 GW' : supplyView === 'pipeline' ? '2.4 GW Pipeline' : supplyView === 'retirements' ? '0 GW Retiring' : '2.0 GW Current'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-400">
-                            {supplyView === 'current' && '2% of total regional capacity • Battery storage'}
-                            {supplyView === 'pipeline' && 'Construction: 1.2 GW | Permitted: 0.8 GW | Proposed: 0.4 GW'}
-                            {supplyView === 'retirements' && 'No retirements planned'}
-                            
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedTechnology === 'Hydro' && (
-                      <div>
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-cyan-700">
-                          <div className="bg-cyan-500 flex items-center justify-center text-white text-sm font-semibold w-full">
-                            Hydro: {supplyView === 'current' ? '1.6 GW' : supplyView === 'pipeline' ? '0 GW Pipeline' : supplyView === 'retirements' ? '0.3 GW Retiring' : '1.6 GW Current'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-400">
-                            {supplyView === 'current' && '2% of total regional capacity'}
-                            {supplyView === 'pipeline' && 'No new hydro projects'}
-                            {supplyView === 'retirements' && '2 facilities retiring • Relicensing issues'}
-                            
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedTechnology === 'Other' && (
-                      <div>
-                        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border border-orange-700">
-                          <div className="bg-orange-500 flex items-center justify-center text-white text-sm font-semibold w-full">
-                            Other: {supplyView === 'current' ? '0.8 GW' : supplyView === 'pipeline' ? '0 GW Pipeline' : supplyView === 'retirements' ? '0 GW Retiring' : '0.8 GW Current'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-gray-400">
-                            {supplyView === 'current' && '1% of total regional capacity • Biomass, Geothermal, etc.'}
-                            {supplyView === 'pipeline' && 'No pipeline projects'}
-                            {supplyView === 'retirements' && 'No retirements planned'}
-                            
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  {/* EIA Supply Charts - Real-time data */}
+                  <EIASupplyCharts
+                    region={region}
+                    state={selectedStateFilter || undefined}
+                    selectedTechnology={selectedTechnology}
+                    supplyView={supplyView}
+                  />
                 </div>
               </div>
             )}
@@ -2859,16 +2699,40 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            {/* Interactive Map */}
+            {/* Interactive Map with EIA Generator Data */}
             <div className="bg-gray-900 rounded-lg h-[calc(100%-80px)] overflow-hidden border border-gray-600 relative">
-              <MapboxMap containerId="power-infrastructure-map" />
+              <MapboxMap
+                containerId="power-infrastructure-map"
+                plants={eiaGenerators}
+              />
+
+              {/* Loading overlay */}
+              {eiaLoading && (
+                <div className="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                    <div className="text-white text-sm">Loading generators...</div>
+                  </div>
+                </div>
+              )}
 
               {/* Info overlay */}
               <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur-sm rounded-lg p-3 border border-gray-600 z-[1000]">
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-gray-300 font-semibold mb-1">
+                  {region} Region
+                </p>
+                <p className="text-xs text-gray-400">
                   {selectedStateFilter
                     ? `Viewing: ${selectedStateFilter}`
-                    : 'Viewing: United States'}
+                    : 'All states in region'}
+                </p>
+                {selectedTechnology !== 'All Technologies' && (
+                  <p className="text-xs text-gray-400">
+                    Filter: {selectedTechnology}
+                  </p>
+                )}
+                <p className="text-xs text-blue-400 mt-2">
+                  {eiaGenerators.length.toLocaleString()} plants shown
                 </p>
               </div>
             </div>

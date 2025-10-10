@@ -11,6 +11,10 @@ interface Plant {
   operating_year?: string
   county?: string
   plant_state?: string
+  latitude?: number
+  longitude?: number
+  entity_name?: string
+  generator_count?: number
 }
 
 interface MapboxMapProps {
@@ -39,14 +43,20 @@ const STATE_COORDS: { [key: string]: [number, number] } = {
   'WI': [-89.6165, 44.2685], 'WY': [-107.3025, 42.7559], 'DC': [-77.0369, 38.9072]
 }
 
-// Technology color mapping
+// Technology color mapping (matching dashboard theme)
 const TECH_COLORS: { [key: string]: string } = {
-  'Natural Gas': '#3b82f6',
-  'Coal': '#6b7280',
-  'Nuclear': '#a855f7',
-  'Solar': '#eab308',
-  'Wind': '#22c55e',
-  'Hydro': '#06b6d4',
+  'Coal': '#8B4513',
+  'Natural Gas': '#4169E1',
+  'Nuclear': '#FFD700',
+  'Solar': '#FFA500',
+  'Wind': '#00CED1',
+  'Hydroelectric': '#0000FF',
+  'Hydro': '#0000FF',
+  'Battery Storage': '#9932CC',
+  'Storage': '#9932CC',
+  'Biomass': '#228B22',
+  'Geothermal': '#DC143C',
+  'Other': '#808080'
 }
 
 export default function MapboxMap({ containerId, plants }: MapboxMapProps) {
@@ -110,15 +120,24 @@ export default function MapboxMap({ containerId, plants }: MapboxMapProps) {
 
       // Add new markers for each plant
       plants.forEach(plant => {
-        if (!plant.plant_state) return
+        // Use actual coordinates if available, otherwise use state center with offset
+        let lng: number, lat: number
 
-        const stateCoords = STATE_COORDS[plant.plant_state]
-        if (!stateCoords) return
+        if (plant.latitude && plant.longitude) {
+          // Use actual plant coordinates from EIA data
+          lng = plant.longitude
+          lat = plant.latitude
+        } else if (plant.plant_state) {
+          // Fall back to state center with random offset
+          const stateCoords = STATE_COORDS[plant.plant_state]
+          if (!stateCoords) return
 
-        // Add small random offset so plants in same state don't overlap perfectly
-        const randomOffset = () => (Math.random() - 0.5) * 1.5
-        const lng = stateCoords[0] + randomOffset()
-        const lat = stateCoords[1] + randomOffset()
+          const randomOffset = () => (Math.random() - 0.5) * 1.5
+          lng = stateCoords[0] + randomOffset()
+          lat = stateCoords[1] + randomOffset()
+        } else {
+          return // Skip if no location data available
+        }
 
         // Calculate circle size based on capacity (min 8px, max 40px)
         const capacity = typeof plant.nameplate_capacity_mw === 'string'
@@ -154,8 +173,10 @@ export default function MapboxMap({ containerId, plants }: MapboxMapProps) {
         const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
           <div style="color: #1f2937; padding: 8px;">
             <h3 style="font-weight: bold; margin-bottom: 4px;">${plant.plant_name || 'Unknown Plant'}</h3>
+            ${plant.entity_name ? `<p style="margin: 2px 0; font-size: 12px; color: #6b7280;">${plant.entity_name}</p>` : ''}
             <p style="margin: 2px 0;"><strong>Technology:</strong> ${plant.technology || 'Unknown'}</p>
             <p style="margin: 2px 0;"><strong>Capacity:</strong> ${capacity.toLocaleString()} MW</p>
+            ${plant.generator_count ? `<p style="margin: 2px 0;"><strong>Generators:</strong> ${plant.generator_count} units</p>` : ''}
             <p style="margin: 2px 0;"><strong>Location:</strong> ${plant.county ? `${plant.county}, ` : ''}${plant.plant_state}</p>
             ${plant.operating_year ? `<p style="margin: 2px 0;"><strong>Operating Since:</strong> ${plant.operating_year}</p>` : ''}
           </div>
