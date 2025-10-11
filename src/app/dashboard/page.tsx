@@ -1079,69 +1079,39 @@ export default function DashboardPage() {
             {/* Supply Content */}
             {supplyExpanded && (
               <div className="mb-6 mt-6 space-y-6">
+                {/* Side-by-side subsections */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Installed Capacity */}
+                  <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                    <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                      <span className="w-1 h-6 bg-blue-500 rounded-full"></span>
+                      Installed Capacity
+                    </h4>
 
-                {/* Technology Filters */}
-                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-5">
-                  <h4 className="text-sm font-semibold text-gray-400 mb-3">Filter by Technology</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { name: 'All Technologies', color: 'bg-gray-700', hoverColor: 'hover:bg-gray-600', activeColor: 'bg-gray-600' },
-                      { name: 'Natural Gas', color: 'bg-blue-500', hoverColor: 'hover:bg-blue-600', activeColor: 'bg-blue-600' },
-                      { name: 'Coal', color: 'bg-gray-600', hoverColor: 'hover:bg-gray-700', activeColor: 'bg-gray-700' },
-                      { name: 'Solar', color: 'bg-yellow-500', hoverColor: 'hover:bg-yellow-600', activeColor: 'bg-yellow-600' },
-                      { name: 'Wind', color: 'bg-green-500', hoverColor: 'hover:bg-green-600', activeColor: 'bg-green-600' },
-                      { name: 'Nuclear', color: 'bg-purple-500', hoverColor: 'hover:bg-purple-600', activeColor: 'bg-purple-600' },
-                      { name: 'Storage', color: 'bg-indigo-500', hoverColor: 'hover:bg-indigo-600', activeColor: 'bg-indigo-600' },
-                      { name: 'Hydro', color: 'bg-cyan-500', hoverColor: 'hover:bg-cyan-600', activeColor: 'bg-cyan-600' },
-                      { name: 'Other', color: 'bg-orange-500', hoverColor: 'hover:bg-orange-600', activeColor: 'bg-orange-600' }
-                    ].map((tech) => (
-                      <button
-                        key={tech.name}
-                        onClick={() => setSelectedTechnology(tech.name)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium text-white transition-all ${
-                          selectedTechnology === tech.name
-                            ? `${tech.activeColor} shadow-lg ring-2 ring-white/30`
-                            : `${tech.color} ${tech.hoverColor} opacity-80 hover:opacity-100`
-                        }`}
-                      >
-                        {tech.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Chart Area */}
-                <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
-                  {/* Chart Header with View Controls */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div>
-                      <h4 className="text-lg font-bold text-white">
-                        {selectedTechnology === 'All Technologies'
-                          ? 'Regional Supply Capacity Trends'
-                          : `${selectedTechnology} Capacity Trends`
-                        }
-                      </h4>
-                    </div>
-
-                    {/* Map Button */}
-                    <button
-                      onClick={() => setShowMapModal(true)}
-                      className="flex items-center gap-2 px-4 py-2 bg-gray-700/50 hover:bg-gray-600 text-gray-300 hover:text-white rounded-xl transition-all border border-gray-600 hover:border-gray-500"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                      </svg>
-                      View Map
-                    </button>
+                    <EIASupplyCharts
+                      region={region}
+                      state={selectedStateFilter || undefined}
+                      selectedTechnology="All Technologies"
+                      supplyView={supplyView}
+                      chartType="capacity"
+                    />
                   </div>
 
-                  {/* EIA Supply Charts - Real-time data */}
-                  <EIASupplyCharts
-                    region={region}
-                    state={selectedStateFilter || undefined}
-                    selectedTechnology={selectedTechnology}
-                    supplyView={supplyView}
-                  />
+                  {/* Generation */}
+                  <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
+                    <h4 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                      <span className="w-1 h-6 bg-emerald-500 rounded-full"></span>
+                      Generation
+                    </h4>
+
+                    <EIASupplyCharts
+                      region={region}
+                      state={selectedStateFilter || undefined}
+                      selectedTechnology="All Technologies"
+                      supplyView={supplyView}
+                      chartType="generation"
+                    />
+                  </div>
                 </div>
               </div>
             )}
