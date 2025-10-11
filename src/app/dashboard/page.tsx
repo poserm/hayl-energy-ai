@@ -759,77 +759,72 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Latest News Ticker - State Tailored */}
-        <div className="bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-700 mb-6 overflow-hidden">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 bg-blue-600 px-3 py-1.5 rounded-md flex-shrink-0">
-              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+        {/* Latest News - Top Headlines */}
+        <div className="bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-700 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-2">
+              <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
               </svg>
-              <span className="text-white text-sm font-semibold">
-                {region} NEWS
-              </span>
+              <span className="text-white text-base font-semibold">{region} Market News</span>
             </div>
-            <div className="flex-1 overflow-hidden">
-              <div className="flex animate-scroll space-x-8">
-                {[
-                  {
-                    title: 'Virginia Clean Energy Act Implementation Update',
-                    source: 'Energy Wire',
-                    date: 'Dec 15'
-                  },
-                  {
-                    title: 'Dominion Energy Announces Major Solar Investment - $2.5B Commitment',
-                    source: 'Bloomberg Energy',
-                    date: 'Dec 14'
-                  },
-                  {
-                    title: 'Power Grid Modernization Bill Passes Committee',
-                    source: 'Reuters Energy',
-                    date: 'Dec 13'
-                  },
-                  {
-                    title: 'Energy Storage Project Approved for Northern Region - 300 MWh',
-                    source: 'Power Magazine',
-                    date: 'Dec 12'
-                  },
-                  {
-                    title: 'Utility Rate Review Scheduled for Early 2025',
-                    source: 'Local Energy Report',
-                    date: 'Dec 11'
-                  }
-                ].concat([
-                  {
-                    title: 'Virginia Clean Energy Act Implementation Update',
-                    source: 'Energy Wire',
-                    date: 'Dec 15'
-                  },
-                  {
-                    title: 'Dominion Energy Announces Major Solar Investment - $2.5B Commitment',
-                    source: 'Bloomberg Energy',
-                    date: 'Dec 14'
-                  },
-                  {
-                    title: 'Power Grid Modernization Bill Passes Committee',
-                    source: 'Reuters Energy',
-                    date: 'Dec 13'
-                  }
-                ]).map((news, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center space-x-3 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-                  >
-                    <span className="text-white font-medium text-sm whitespace-nowrap">
+            <span className="text-xs text-gray-400">Today's Top Stories</span>
+          </div>
+
+          <div className="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+            {[
+              {
+                title: 'PJM Capacity Auction Results: Prices Rise 10% for 2025/2026',
+                source: 'S&P Global',
+                time: '2h ago',
+                category: 'Markets'
+              },
+              {
+                title: 'Dominion Energy Secures $3.2B for Offshore Wind Expansion',
+                source: 'Bloomberg',
+                time: '4h ago',
+                category: 'Investment'
+              },
+              {
+                title: 'Grid Reliability Concerns as Heat Wave Approaches Mid-Atlantic',
+                source: 'Reuters',
+                time: '5h ago',
+                category: 'Operations'
+              },
+              {
+                title: 'Natural Gas Prices Surge 15% on Supply Constraints',
+                source: 'Energy Wire',
+                time: '6h ago',
+                category: 'Commodities'
+              },
+              {
+                title: 'VA Legislature Approves Fast-Track for Battery Storage Projects',
+                source: 'Utility Dive',
+                time: '7h ago',
+                category: 'Policy'
+              }
+            ].map((news, index) => (
+              <div
+                key={index}
+                className="group bg-gray-750 hover:bg-gray-700 p-3 rounded-lg cursor-pointer transition-all border border-gray-700 hover:border-blue-500"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-white text-sm font-medium group-hover:text-blue-400 transition-colors line-clamp-2">
                       {news.title}
-                    </span>
-                    <span className="text-gray-400 text-xs whitespace-nowrap">
-                      {news.source} • {news.date}
-                    </span>
-                    <span className="text-blue-600 text-xl">•</span>
+                    </h4>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="text-xs text-gray-400">{news.source}</span>
+                      <span className="text-gray-600">•</span>
+                      <span className="text-xs text-gray-500">{news.time}</span>
+                    </div>
                   </div>
-                ))}
+                  <span className="text-xs px-2 py-1 bg-blue-600/20 text-blue-400 rounded flex-shrink-0">
+                    {news.category}
+                  </span>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
 
@@ -4456,7 +4451,10 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
 
               {/* Current RFP/Partnership Opportunities */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Active Opportunities</h3>
+                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <span className="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
+                  {region} Active Opportunities
+                </h3>
                 <div className="space-y-4">
                   {[
                     {
