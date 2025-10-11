@@ -70,15 +70,22 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Process and deduplicate generators by plant NAME (not ID)
-    // This properly sums all units/generators for plants with the same name
+    // Process and deduplicate generators by plant ID
+    // Each unique plantId represents a distinct physical plant location
+    // We sum all generator units (generator IDs) for each plant
     console.log(`[EIA Generators] Processing ${result.response.data.length} generators...`)
     const plantMap = new Map()
 
     result.response.data.forEach((gen: any) => {
-      // Use plant name as the key for aggregation
-      const plantKey = gen.plantName || `unknown-${gen.plantid}`
+      // Use plantId as the key - this is unique per physical plant location
+      const plantKey = gen.plantid
       const capacity = parseFloat(gen['nameplate-capacity-mw'] || 0)
+
+      // Skip if no valid plant ID
+      if (!plantKey) {
+        console.log(`[EIA Generators] Skipping generator with no plantId:`, gen.generatorid)
+        return
+      }
 
       if (!plantMap.has(plantKey)) {
         // First generator for this plant
@@ -121,12 +128,28 @@ export async function GET(request: NextRequest) {
       }
     })
 
-    const generators = Array.from(plantMap.values())
-      .filter(plant => plant.latitude && plant.longitude) // Only plants with coordinates
-      .sort((a, b) => b.capacity - a.capacity) // Sort by capacity descending
+    const allPlants = Array.from(plantMap.values())
+    const plantsWithCoords = allPlants.filter(plant => {
+      const hasLat = plant.latitude && !isNaN(plant.latitude)
+      const hasLng = plant.longitude && !isNaN(plant.longitude)
+      return hasLat && hasLng
+    })
+    const generators = plantsWithCoords.sort((a, b) => b.capacity - a.capacity)
 
-    console.log(`[EIA Generators] Processed ${generators.length} unique plants`)
-    console.log(`[EIA Generators] Plants with coordinates: ${generators.length}`)
+    console.log(`[EIA Generators] Aggregation results:`)
+    console.log(`  - Total generators processed: ${result.response.data.length}`)
+    console.log(`  - Unique plants (by plantId): ${allPlants.length}`)
+    console.log(`  - Plants with valid coordinates: ${generators.length}`)
+    console.log(`  - Plants filtered out (no coords): ${allPlants.length - generators.length}`)
+    if (generators.length > 0) {
+      console.log(`  - Sample plant:`, {
+        name: generators[0].plantName,
+        capacity: generators[0].capacity,
+        generatorCount: generators[0].generatorCount,
+        lat: generators[0].latitude,
+        lng: generators[0].longitude
+      })
+    }
 
     // Calculate statistics
     const stats = {
@@ -163,7 +186,13 @@ export async function GET(request: NextRequest) {
         limit
       },
       total: generators.length,
-      rawTotal: result.response.total
+      rawTotal: result.response.total,
+      debug: {
+        generatorsReceived: result.response.data.length,
+        uniquePlants: allPlants.length,
+        plantsWithCoords: generators.length,
+        plantsFiltered: allPlants.length - generators.length
+      }
     })
 
   } catch (error) {
