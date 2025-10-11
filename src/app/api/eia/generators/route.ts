@@ -70,17 +70,19 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Process and deduplicate generators by plantId
+    // Process and deduplicate generators by plant NAME (not ID)
+    // This properly sums all units/generators for plants with the same name
     console.log(`[EIA Generators] Processing ${result.response.data.length} generators...`)
     const plantMap = new Map()
 
     result.response.data.forEach((gen: any) => {
-      const plantId = gen.plantid
+      // Use plant name as the key for aggregation
+      const plantKey = gen.plantName || `unknown-${gen.plantid}`
       const capacity = parseFloat(gen['nameplate-capacity-mw'] || 0)
 
-      if (!plantMap.has(plantId)) {
+      if (!plantMap.has(plantKey)) {
         // First generator for this plant
-        plantMap.set(plantId, {
+        plantMap.set(plantKey, {
           plantId: gen.plantid,
           plantName: gen.plantName,
           entityId: gen.entityid,
@@ -107,8 +109,8 @@ export async function GET(request: NextRequest) {
           }]
         })
       } else {
-        // Add generator to existing plant
-        const plant = plantMap.get(plantId)
+        // Add generator to existing plant - SUM THE CAPACITY
+        const plant = plantMap.get(plantKey)
         plant.capacity += capacity
         plant.generatorCount += 1
         plant.generators.push({

@@ -157,15 +157,20 @@ export default function MapboxMap({ containerId, plants }: MapboxMapProps) {
         el.style.border = '2px solid rgba(255, 255, 255, 0.5)'
         el.style.cursor = 'pointer'
         el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4)'
-        el.style.transition = 'transform 0.2s'
+        el.style.transition = 'all 0.2s ease'
+        el.style.position = 'relative'
 
-        // Hover effects
+        // Hover effects - use opacity/shadow instead of transform to prevent "flying"
         el.addEventListener('mouseenter', () => {
-          el.style.transform = 'scale(1.2)'
+          el.style.opacity = '0.85'
+          el.style.boxShadow = '0 4px 16px rgba(255,255,255,0.6), 0 0 20px rgba(255,255,255,0.3)'
+          el.style.border = '3px solid rgba(255, 255, 255, 0.9)'
           el.style.zIndex = '1000'
         })
         el.addEventListener('mouseleave', () => {
-          el.style.transform = 'scale(1)'
+          el.style.opacity = '1'
+          el.style.boxShadow = '0 2px 8px rgba(0,0,0,0.4)'
+          el.style.border = '2px solid rgba(255, 255, 255, 0.5)'
           el.style.zIndex = '1'
         })
 
