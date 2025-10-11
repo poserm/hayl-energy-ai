@@ -79,7 +79,6 @@ export async function GET(request: NextRequest) {
     result.response.data.forEach((gen: any) => {
       const plantId = gen.plantid
       const capacity = parseFloat(gen['nameplate-capacity-mw'] || 0)
-      const generation = parseFloat(gen['net-generation-mwh'] || 0)
 
       if (!plantId) return
 
@@ -105,25 +104,21 @@ export async function GET(request: NextRequest) {
           status: gen.status,
           statusDesc: gen.statusDescription,
           capacity: capacity,
-          generation: generation,
           generatorCount: 1,
           generators: [{
             id: gen.generatorid,
             capacity: capacity,
-            generation: generation,
             technology: gen.technology
           }]
         })
       } else {
-        // Add generator to existing plant - SUM THE CAPACITY AND GENERATION
+        // Add generator to existing plant - SUM THE CAPACITY
         const plant = plantMap.get(plantId)
         plant.capacity += capacity
-        plant.generation += generation
         plant.generatorCount += 1
         plant.generators.push({
           id: gen.generatorid,
           capacity: capacity,
-          generation: generation,
           technology: gen.technology
         })
       }
@@ -156,35 +151,31 @@ export async function GET(request: NextRequest) {
     const stats = {
       totalPlants: generators.length,
       totalCapacity: generators.reduce((sum, gen) => sum + gen.capacity, 0),
-      totalGeneration: generators.reduce((sum, gen) => sum + (gen.generation || 0), 0),
       byTechnology: generators.reduce((acc: any, gen) => {
         const tech = gen.technology || 'Other'
         if (!acc[tech]) {
-          acc[tech] = { count: 0, capacity: 0, generation: 0 }
+          acc[tech] = { count: 0, capacity: 0 }
         }
         acc[tech].count += 1
         acc[tech].capacity += gen.capacity
-        acc[tech].generation += (gen.generation || 0)
         return acc
       }, {}),
       byFuelType: generators.reduce((acc: any, gen) => {
         const fuel = gen.fuelType || gen.energySourceDesc || 'Other'
         if (!acc[fuel]) {
-          acc[fuel] = { count: 0, capacity: 0, generation: 0 }
+          acc[fuel] = { count: 0, capacity: 0 }
         }
         acc[fuel].count += 1
         acc[fuel].capacity += gen.capacity
-        acc[fuel].generation += (gen.generation || 0)
         return acc
       }, {}),
       byState: generators.reduce((acc: any, gen) => {
         const state = gen.state || 'Unknown'
         if (!acc[state]) {
-          acc[state] = { count: 0, capacity: 0, generation: 0 }
+          acc[state] = { count: 0, capacity: 0 }
         }
         acc[state].count += 1
         acc[state].capacity += gen.capacity
-        acc[state].generation += (gen.generation || 0)
         return acc
       }, {})
     }

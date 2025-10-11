@@ -60,7 +60,6 @@ export default function EIASupplyCharts({
               .map(([fuel, stats]: [string, any]) => ({
                 technology: fuel,
                 capacity: stats.capacity,
-                generation: stats.generation || 0,
                 count: stats.count,
                 color: technologyColors[fuel as keyof typeof technologyColors] || '#808080'
               }))
@@ -72,25 +71,54 @@ export default function EIASupplyCharts({
               .map(([tech, stats]: [string, any]) => ({
                 technology: tech,
                 capacity: stats.capacity,
-                generation: stats.generation || 0,
                 count: stats.count,
                 color: technologyColors[tech as keyof typeof technologyColors] || '#808080'
               }))
               .sort((a, b) => b.capacity - a.capacity)
             setTotalCapacity(data.stats.totalCapacity || 0)
           } else if (chartType === 'generation') {
-            // Show generation by technology
-            techArray = Object.entries(data.stats.byTechnology || {})
-              .map(([tech, stats]: [string, any]) => ({
-                technology: tech,
-                capacity: 0,
-                generation: stats.generation || 0,
-                count: 0,
-                color: technologyColors[tech as keyof typeof technologyColors] || '#808080'
-              }))
+            // Generate placeholder data based on capacity with realistic generation factors
+            const capacityByTech = Object.entries(data.stats.byTechnology || {})
+            const totalCap = data.stats.totalCapacity || 0
+
+            // Typical capacity factors for different technologies
+            const capacityFactors: { [key: string]: number } = {
+              'Nuclear': 0.92,
+              'Natural Gas Combined Cycle': 0.57,
+              'Natural Gas Steam Turbine': 0.12,
+              'Natural Gas Combustion Turbine': 0.11,
+              'Natural Gas Internal Combustion Engine': 0.08,
+              'Coal': 0.48,
+              'Hydro': 0.42,
+              'Solar': 0.25,
+              'Wind': 0.35,
+              'Biomass': 0.53,
+              'Petroleum': 0.05,
+              'Geothermal': 0.74,
+              'Storage': 0.15
+            }
+
+            techArray = capacityByTech
+              .map(([tech, stats]: [string, any]) => {
+                const capacity = stats.capacity
+                // Get capacity factor, default to 0.4 if not specified
+                const factor = capacityFactors[tech] || 0.4
+                // Calculate approximate annual generation (MW * hours * factor)
+                const generation = capacity * 8760 * factor // MWh per year
+
+                return {
+                  technology: tech,
+                  capacity: 0,
+                  generation: generation,
+                  count: 0,
+                  color: technologyColors[tech as keyof typeof technologyColors] || '#808080'
+                }
+              })
               .filter(item => item.generation > 0)
               .sort((a, b) => (b.generation || 0) - (a.generation || 0))
-            setTotalGeneration(data.stats.totalGeneration || 0)
+
+            const totalGen = techArray.reduce((sum, item) => sum + (item.generation || 0), 0)
+            setTotalGeneration(totalGen)
           }
 
           setTechnologies(techArray)
@@ -156,7 +184,7 @@ export default function EIASupplyCharts({
       </div>
     )
   } else {
-    // Generation Pie Chart
+    // Generation Pie Chart (estimated from capacity)
     const pieData = technologies.map(tech => ({
       technology: tech.technology,
       value: tech.generation || 0,
@@ -171,7 +199,7 @@ export default function EIASupplyCharts({
           unit="GWh"
         />
         <p className="text-xs text-gray-500 text-center mt-4">
-          By Technology • EIA Operating Data
+          Estimated Annual Generation • Based on Typical Capacity Factors
         </p>
       </div>
     )
