@@ -1093,7 +1093,7 @@ export default function DashboardPage() {
                       state={selectedStateFilter || undefined}
                       selectedTechnology="All Technologies"
                       supplyView={supplyView}
-                      chartType="capacity"
+                      chartType="capacity-fuel"
                     />
                   </div>
 

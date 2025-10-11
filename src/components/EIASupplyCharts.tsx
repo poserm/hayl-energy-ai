@@ -17,7 +17,7 @@ interface EIASupplyChartsProps {
   state?: string
   selectedTechnology?: string
   supplyView?: 'current' | 'pipeline' | 'retirements'
-  chartType?: 'capacity' | 'generation'
+  chartType?: 'capacity-fuel' | 'capacity-tech' | 'generation'
 }
 
 export default function EIASupplyCharts({
@@ -25,7 +25,7 @@ export default function EIASupplyCharts({
   state,
   selectedTechnology = 'All Technologies',
   supplyView = 'current',
-  chartType = 'capacity'
+  chartType = 'capacity-fuel'
 }: EIASupplyChartsProps) {
   const [technologies, setTechnologies] = useState<TechnologyData[]>([])
   const [loading, setLoading] = useState(true)
@@ -47,14 +47,40 @@ export default function EIASupplyCharts({
           params.append('technology', selectedTechnology)
         }
 
-        // Fetch both capacity and generation data if needed
-        if (chartType === 'generation') {
-          const generationResponse = await fetch(`/api/eia/generation?${params.toString()}`)
-          const generationData = await generationResponse.json()
+        // Fetch from generators endpoint (has both capacity and generation)
+        const response = await fetch(`/api/eia/generators?${params.toString()}`)
+        const data = await response.json()
 
-          if (generationData.success && generationData.stats) {
-            // Convert stats to technology array for generation
-            const techArray: TechnologyData[] = Object.entries(generationData.stats.byTechnology || {})
+        if (data.success && data.stats) {
+          let techArray: TechnologyData[] = []
+
+          if (chartType === 'capacity-fuel') {
+            // Show capacity by fuel type (Natural Gas, Nuclear, etc.)
+            techArray = Object.entries(data.stats.byFuelType || {})
+              .map(([fuel, stats]: [string, any]) => ({
+                technology: fuel,
+                capacity: stats.capacity,
+                generation: stats.generation || 0,
+                count: stats.count,
+                color: technologyColors[fuel as keyof typeof technologyColors] || '#808080'
+              }))
+              .sort((a, b) => b.capacity - a.capacity)
+            setTotalCapacity(data.stats.totalCapacity || 0)
+          } else if (chartType === 'capacity-tech') {
+            // Show capacity by detailed technology (Natural Gas Combined Cycle, etc.)
+            techArray = Object.entries(data.stats.byTechnology || {})
+              .map(([tech, stats]: [string, any]) => ({
+                technology: tech,
+                capacity: stats.capacity,
+                generation: stats.generation || 0,
+                count: stats.count,
+                color: technologyColors[tech as keyof typeof technologyColors] || '#808080'
+              }))
+              .sort((a, b) => b.capacity - a.capacity)
+            setTotalCapacity(data.stats.totalCapacity || 0)
+          } else if (chartType === 'generation') {
+            // Show generation by technology
+            techArray = Object.entries(data.stats.byTechnology || {})
               .map(([tech, stats]: [string, any]) => ({
                 technology: tech,
                 capacity: 0,
@@ -64,33 +90,12 @@ export default function EIASupplyCharts({
               }))
               .filter(item => item.generation > 0)
               .sort((a, b) => (b.generation || 0) - (a.generation || 0))
-
-            setTechnologies(techArray)
-            setTotalGeneration(generationData.stats.totalGeneration || 0)
-          } else {
-            setError(generationData.error || 'Failed to load generation data')
+            setTotalGeneration(data.stats.totalGeneration || 0)
           }
+
+          setTechnologies(techArray)
         } else {
-          // Fetch capacity data
-          const response = await fetch(`/api/eia/generators?${params.toString()}`)
-          const data = await response.json()
-
-          if (data.success && data.stats) {
-            // Convert stats to technology array
-            const techArray: TechnologyData[] = Object.entries(data.stats.byTechnology || {})
-              .map(([tech, stats]: [string, any]) => ({
-                technology: tech,
-                capacity: stats.capacity,
-                count: stats.count,
-                color: technologyColors[tech as keyof typeof technologyColors] || '#808080'
-              }))
-              .sort((a, b) => b.capacity - a.capacity)
-
-            setTechnologies(techArray)
-            setTotalCapacity(data.stats.totalCapacity || 0)
-          } else {
-            setError(data.error || 'Failed to load data')
-          }
+          setError(data.error || 'Failed to load data')
         }
       } catch (err) {
         console.error('[EIA Supply Charts] Error:', err)
@@ -130,8 +135,8 @@ export default function EIASupplyCharts({
   }
 
   // Render pie chart based on chart type
-  if (chartType === 'capacity') {
-    // Capacity Pie Chart
+  if (chartType === 'capacity-fuel' || chartType === 'capacity-tech') {
+    // Capacity Pie Chart (by fuel type or technology type)
     const pieData = technologies.map(tech => ({
       technology: tech.technology,
       value: tech.capacity,
@@ -146,7 +151,7 @@ export default function EIASupplyCharts({
           unit="GW"
         />
         <p className="text-xs text-gray-500 text-center mt-4">
-          Real-time capacity data from EIA Form 860
+          {chartType === 'capacity-fuel' ? 'By Fuel Type' : 'By Technology Type'} • EIA Form 860
         </p>
       </div>
     )
@@ -166,7 +171,7 @@ export default function EIASupplyCharts({
           unit="GWh"
         />
         <p className="text-xs text-gray-500 text-center mt-4">
-          Real-time generation data from EIA
+          By Technology • EIA Operating Data
         </p>
       </div>
     )

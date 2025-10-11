@@ -253,6 +253,7 @@ export class EIAAPIClient {
       'data[0]': 'nameplate-capacity-mw',
       'data[1]': 'latitude',
       'data[2]': 'longitude',
+      'data[3]': 'net-generation-mwh',
       length,
       offset,
       'sort[0][column]': 'nameplate-capacity-mw',
