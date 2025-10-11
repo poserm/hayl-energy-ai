@@ -101,29 +101,29 @@ export default function EIASupplyCharts({
   // Render All Technologies view
   if (selectedTechnology === 'All Technologies') {
     return (
-      <div className="space-y-4">
-        {/* Stacked Bar Chart */}
-        <div className="flex h-12 rounded-lg overflow-hidden mb-4">
+      <div className="space-y-6">
+        {/* Stacked Bar Chart - Larger */}
+        <div className="flex h-16 rounded-lg overflow-hidden shadow-lg">
           {technologies.map((tech, index) => {
             const percentage = (tech.capacity / totalCapacity) * 100
             return (
               <div
                 key={tech.technology}
-                className="flex items-center justify-center text-white text-xs font-semibold transition-all hover:opacity-90 cursor-pointer group relative"
+                className="flex items-center justify-center text-white text-sm font-bold transition-all hover:opacity-90 cursor-pointer group relative"
                 style={{
                   width: `${percentage}%`,
                   backgroundColor: tech.color
                 }}
                 title={`${tech.technology}: ${(tech.capacity / 1000).toFixed(1)} GW (${percentage.toFixed(1)}%)`}
               >
-                {percentage > 8 && (
-                  <span className="text-shadow">
+                {percentage > 5 && (
+                  <span className="text-shadow drop-shadow-lg">
                     {tech.technology.split(' ')[0]}
                   </span>
                 )}
 
                 {/* Tooltip on hover */}
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 shadow-xl">
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 shadow-xl border border-gray-700">
                   <div className="font-semibold">{tech.technology}</div>
                   <div className="text-gray-300">{(tech.capacity / 1000).toFixed(2)} GW ({percentage.toFixed(1)}%)</div>
                   <div className="text-gray-400">{tech.count} plants</div>
@@ -133,64 +133,20 @@ export default function EIASupplyCharts({
           })}
         </div>
 
-        {/* Technology Legend */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {technologies.map((tech) => {
-            const percentage = (tech.capacity / totalCapacity) * 100
-            return (
+        {/* Inline Legend - Compact */}
+        <div className="flex flex-wrap gap-4 justify-center">
+          {technologies.map((tech) => (
+            <div key={tech.technology} className="flex items-center gap-2">
               <div
-                key={tech.technology}
-                className="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg border border-gray-700/50 hover:border-gray-600 transition-all"
-              >
-                <div className="flex items-center gap-2 flex-1">
-                  <div
-                    className="w-3 h-3 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: tech.color }}
-                  />
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium text-gray-300 truncate">
-                      {tech.technology}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {tech.count} plant{tech.count !== 1 ? 's' : ''}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right ml-2">
-                  <p className="text-sm font-semibold text-white">
-                    {(tech.capacity / 1000).toFixed(1)} GW
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {percentage.toFixed(1)}%
-                  </p>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Total Summary */}
-        <div className="mt-6 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-400">Total Regional Capacity</p>
-              <p className="text-2xl font-bold text-white">
-                {(totalCapacity / 1000).toFixed(1)} GW
-              </p>
+                className="w-3 h-3 rounded-sm"
+                style={{ backgroundColor: tech.color }}
+              />
+              <span className="text-xs text-gray-300">
+                {tech.technology}: <span className="font-semibold text-white">{(tech.capacity / 1000).toFixed(1)} GW</span>
+              </span>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-400">Total Plants</p>
-              <p className="text-2xl font-bold text-blue-400">
-                {technologies.reduce((sum, t) => sum + t.count, 0).toLocaleString()}
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
-
-        {/* Note about data source */}
-        <p className="text-xs text-gray-500 text-center mt-4">
-          ℹ️ Real-time data from EIA Form 860 • Updated monthly •  Showing {supplyView} capacity
-        </p>
       </div>
     )
   }
