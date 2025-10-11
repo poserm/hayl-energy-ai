@@ -6,7 +6,6 @@ import { technologyColors } from '@/lib/energy-api'
 interface TechnologyData {
   technology: string
   capacity: number
-  generation?: number
   count: number
   color: string
 }
@@ -28,7 +27,6 @@ export default function EIASupplyCharts({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [totalCapacity, setTotalCapacity] = useState(0)
-  const [totalGeneration, setTotalGeneration] = useState(0)
 
   // Fetch data from EIA
   useEffect(() => {
@@ -44,42 +42,24 @@ export default function EIASupplyCharts({
           params.append('technology', selectedTechnology)
         }
 
-        // Fetch both capacity and generation data in parallel
-        const [capacityResponse, generationResponse] = await Promise.all([
-          fetch(`/api/eia/generators?${params.toString()}`),
-          fetch(`/api/eia/generation?${params.toString()}`)
-        ])
+        const response = await fetch(`/api/eia/generators?${params.toString()}`)
+        const data = await response.json()
 
-        const [capacityData, generationData] = await Promise.all([
-          capacityResponse.json(),
-          generationResponse.json()
-        ])
-
-        if (capacityData.success && capacityData.stats) {
-          // Build a map of generation by technology
-          const generationByTech: { [key: string]: number } = {}
-          if (generationData.success && generationData.stats?.byTechnology) {
-            Object.entries(generationData.stats.byTechnology).forEach(([tech, stats]: [string, any]) => {
-              generationByTech[tech] = stats.generation || 0
-            })
-          }
-
-          // Convert stats to technology array with both capacity and generation
-          const techArray: TechnologyData[] = Object.entries(capacityData.stats.byTechnology || {})
+        if (data.success && data.stats) {
+          // Convert stats to technology array
+          const techArray: TechnologyData[] = Object.entries(data.stats.byTechnology || {})
             .map(([tech, stats]: [string, any]) => ({
               technology: tech,
               capacity: stats.capacity,
-              generation: generationByTech[tech] || 0,
               count: stats.count,
               color: technologyColors[tech as keyof typeof technologyColors] || '#808080'
             }))
             .sort((a, b) => b.capacity - a.capacity)
 
           setTechnologies(techArray)
-          setTotalCapacity(capacityData.stats.totalCapacity || 0)
-          setTotalGeneration(generationData.stats?.totalGeneration || 0)
+          setTotalCapacity(data.stats.totalCapacity || 0)
         } else {
-          setError(capacityData.error || 'Failed to load capacity data')
+          setError(data.error || 'Failed to load data')
         }
       } catch (err) {
         console.error('[EIA Supply Charts] Error:', err)
@@ -122,85 +102,39 @@ export default function EIASupplyCharts({
   if (selectedTechnology === 'All Technologies') {
     return (
       <div className="space-y-6">
-        {/* Dual Bar Charts - Capacity and Generation */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Installed Capacity Chart */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold text-gray-300 text-center">Installed Capacity (MW)</h4>
-            <div className="flex h-12 rounded-lg overflow-hidden shadow-lg">
-              {technologies.map((tech) => {
-                const percentage = (tech.capacity / totalCapacity) * 100
-                return (
-                  <div
-                    key={tech.technology}
-                    className="flex items-center justify-center text-white text-xs font-bold transition-all hover:opacity-90 cursor-pointer group relative"
-                    style={{
-                      width: `${percentage}%`,
-                      backgroundColor: tech.color
-                    }}
-                    title={`${tech.technology}: ${(tech.capacity / 1000).toFixed(1)} GW (${percentage.toFixed(1)}%)`}
-                  >
-                    {percentage > 8 && (
-                      <span className="text-shadow drop-shadow-lg">
-                        {tech.technology.split(' ')[0]}
-                      </span>
-                    )}
+        {/* Stacked Bar Chart - Larger */}
+        <div className="flex h-16 rounded-lg overflow-hidden shadow-lg">
+          {technologies.map((tech, index) => {
+            const percentage = (tech.capacity / totalCapacity) * 100
+            return (
+              <div
+                key={tech.technology}
+                className="flex items-center justify-center text-white text-sm font-bold transition-all hover:opacity-90 cursor-pointer group relative"
+                style={{
+                  width: `${percentage}%`,
+                  backgroundColor: tech.color
+                }}
+                title={`${tech.technology}: ${(tech.capacity / 1000).toFixed(1)} GW (${percentage.toFixed(1)}%)`}
+              >
+                {percentage > 5 && (
+                  <span className="text-shadow drop-shadow-lg">
+                    {tech.technology.split(' ')[0]}
+                  </span>
+                )}
 
-                    {/* Tooltip on hover */}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 shadow-xl border border-gray-700">
-                      <div className="font-semibold">{tech.technology}</div>
-                      <div className="text-gray-300">{(tech.capacity / 1000).toFixed(2)} GW ({percentage.toFixed(1)}%)</div>
-                      <div className="text-gray-400">{tech.count} plants</div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            <p className="text-xs text-gray-400 text-center">
-              Total: {(totalCapacity / 1000).toFixed(1)} GW
-            </p>
-          </div>
-
-          {/* Generation Chart */}
-          <div className="space-y-3">
-            <h4 className="text-sm font-semibold text-gray-300 text-center">Generation (MWh)</h4>
-            <div className="flex h-12 rounded-lg overflow-hidden shadow-lg">
-              {technologies.map((tech) => {
-                const percentage = totalGeneration > 0 ? ((tech.generation || 0) / totalGeneration) * 100 : 0
-                return (
-                  <div
-                    key={tech.technology}
-                    className="flex items-center justify-center text-white text-xs font-bold transition-all hover:opacity-90 cursor-pointer group relative"
-                    style={{
-                      width: `${percentage}%`,
-                      backgroundColor: tech.color,
-                      display: percentage === 0 ? 'none' : 'flex'
-                    }}
-                    title={`${tech.technology}: ${((tech.generation || 0) / 1000).toFixed(1)} GWh (${percentage.toFixed(1)}%)`}
-                  >
-                    {percentage > 8 && (
-                      <span className="text-shadow drop-shadow-lg">
-                        {tech.technology.split(' ')[0]}
-                      </span>
-                    )}
-
-                    {/* Tooltip on hover */}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 shadow-xl border border-gray-700">
-                      <div className="font-semibold">{tech.technology}</div>
-                      <div className="text-gray-300">{((tech.generation || 0) / 1000).toFixed(2)} GWh ({percentage.toFixed(1)}%)</div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            <p className="text-xs text-gray-400 text-center">
-              {totalGeneration > 0 ? `Total: ${(totalGeneration / 1000).toFixed(1)} GWh` : 'Data not available'}
-            </p>
-          </div>
+                {/* Tooltip on hover */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 shadow-xl border border-gray-700">
+                  <div className="font-semibold">{tech.technology}</div>
+                  <div className="text-gray-300">{(tech.capacity / 1000).toFixed(2)} GW ({percentage.toFixed(1)}%)</div>
+                  <div className="text-gray-400">{tech.count} plants</div>
+                </div>
+              </div>
+            )
+          })}
         </div>
 
         {/* Inline Legend - Compact */}
-        <div className="flex flex-wrap gap-4 justify-center pt-2 border-t border-gray-700">
+        <div className="flex flex-wrap gap-4 justify-center">
           {technologies.map((tech) => (
             <div key={tech.technology} className="flex items-center gap-2">
               <div
@@ -208,7 +142,7 @@ export default function EIASupplyCharts({
                 style={{ backgroundColor: tech.color }}
               />
               <span className="text-xs text-gray-300">
-                {tech.technology}
+                {tech.technology}: <span className="font-semibold text-white">{(tech.capacity / 1000).toFixed(1)} GW</span>
               </span>
             </div>
           ))}
@@ -228,25 +162,32 @@ export default function EIASupplyCharts({
   }
 
   const percentage = (selectedTech.capacity / totalCapacity) * 100
-  const generationPercentage = totalGeneration > 0 ? ((selectedTech.generation || 0) / totalGeneration) * 100 : 0
 
   return (
     <div className="space-y-4">
-      {/* Detailed Stats - Now includes generation */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Single Technology Bar */}
+      <div>
+        <div className="flex h-12 rounded-lg overflow-hidden mb-4 border-2" style={{ borderColor: selectedTech.color }}>
+          <div
+            className="flex items-center justify-center text-white text-sm font-semibold w-full"
+            style={{ backgroundColor: selectedTech.color }}
+          >
+            {selectedTech.technology}: {(selectedTech.capacity / 1000).toFixed(1)} GW
+          </div>
+        </div>
+
+        <div className="text-center">
+          <p className="text-sm text-gray-400">
+            {percentage.toFixed(1)}% of total regional capacity • {selectedTech.count} facilities
+          </p>
+        </div>
+      </div>
+
+      {/* Detailed Stats */}
+      <div className="grid grid-cols-3 gap-4 mt-6">
         <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700">
           <p className="text-xs text-gray-500 mb-1">Capacity</p>
           <p className="text-xl font-bold text-white">{(selectedTech.capacity / 1000).toFixed(2)} GW</p>
-          <p className="text-xs text-gray-400 mt-1">{percentage.toFixed(1)}% of total</p>
-        </div>
-        <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700">
-          <p className="text-xs text-gray-500 mb-1">Generation</p>
-          <p className="text-xl font-bold text-white">
-            {selectedTech.generation ? `${((selectedTech.generation || 0) / 1000).toFixed(2)} GWh` : 'N/A'}
-          </p>
-          {selectedTech.generation && totalGeneration > 0 && (
-            <p className="text-xs text-gray-400 mt-1">{generationPercentage.toFixed(1)}% of total</p>
-          )}
         </div>
         <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700">
           <p className="text-xs text-gray-500 mb-1">Facilities</p>
