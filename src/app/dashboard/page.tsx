@@ -130,7 +130,8 @@ export default function DashboardPage() {
   const [demandDriversExpanded, setDemandDriversExpanded] = useState(false)
   const [pricesExpanded, setPricesExpanded] = useState(false)
   const [newsExpanded, setNewsExpanded] = useState(false)
-  const [showMoreNews, setShowMoreNews] = useState(false)
+  const [showNewsModal, setShowNewsModal] = useState(false)
+  const [selectedNewsItem, setSelectedNewsItem] = useState<any>(null)
   const [selectedTechnology, setSelectedTechnology] = useState<string>('All Technologies')
   const [supplyView, setSupplyView] = useState<'current' | 'pipeline' | 'retirements'>('current')
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
@@ -764,243 +765,144 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Market News - Magazine Style */}
-        <div className="bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800 rounded-2xl shadow-xl border-2 border-amber-500/30 mb-6 overflow-hidden">
-          {/* Header with unique styling */}
-          <div className="bg-gradient-to-r from-amber-600 to-orange-600 p-5">
-            <button
-              onClick={() => setNewsExpanded(!newsExpanded)}
-              className="w-full flex items-center justify-between group"
+        {/* Market News - Simple & Minimal */}
+        <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 mb-6 overflow-hidden">
+          <button
+            onClick={() => setNewsExpanded(!newsExpanded)}
+            className="w-full p-5 flex items-center justify-between hover:bg-gray-750 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
+              <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
+              <h3 className="text-lg font-bold text-white">Market News</h3>
+              <span className="text-xs text-gray-400 bg-blue-600/20 px-2 py-1 rounded">Today</span>
+            </div>
+            <svg
+              className={`w-5 h-5 text-gray-400 transition-transform ${newsExpanded ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-white/20 rounded-lg group-hover:bg-white/30 transition-all">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                  </svg>
-                </div>
-                <div className="text-left">
-                  <h3 className="text-xl font-bold text-white">Market News & Updates</h3>
-                  <p className="text-amber-100 text-xs">Latest energy market intelligence for {selectedStateFilter || region}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full">
-                  LIVE
-                </span>
-                <svg
-                  className={`w-5 h-5 text-white transition-transform ${newsExpanded ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </button>
-          </div>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
 
           {newsExpanded && (
-            <div className="p-6">
-              {/* Featured Top Story */}
-              <div className="mb-6">
-                <div className="bg-gradient-to-br from-amber-900/20 to-orange-900/20 border-2 border-amber-500/50 rounded-xl overflow-hidden hover:border-amber-400 transition-all group cursor-pointer">
-                  <div className="grid md:grid-cols-2 gap-6 p-6">
-                    {/* Image placeholder */}
-                    <div className="relative h-64 bg-gradient-to-br from-amber-900/50 to-orange-900/50 rounded-lg flex items-center justify-center overflow-hidden">
-                      <svg className="w-20 h-20 text-amber-500/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <div className="absolute top-3 left-3">
-                        <span className="px-3 py-1 bg-amber-500 text-white text-xs font-bold rounded-full uppercase tracking-wide">
-                          Breaking
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-semibold rounded uppercase">
-                            Regulation
-                          </span>
-                          <span className="text-xs text-gray-500">•</span>
-                          <span className="text-xs text-gray-400">2 hours ago</span>
-                        </div>
-                        <h4 className="text-2xl font-bold text-white mb-3 group-hover:text-amber-400 transition-colors">
-                          Virginia Clean Energy Act Amendments Proposed for 2025
-                        </h4>
-                        <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                          State legislators introduce comprehensive amendments to accelerate renewable energy targets and expand battery storage incentives. The proposal includes new provisions for offshore wind development and grid modernization funding.
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center">
-                            <span className="text-amber-400 text-xs font-bold">VA</span>
-                          </div>
-                          <div>
-                            <p className="text-white text-sm font-semibold">Virginia State Government</p>
-                            <p className="text-gray-400 text-xs">Official Source</p>
-                          </div>
-                        </div>
-                        <button className="px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded-lg transition-all text-sm font-medium">
-                          Read More →
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent News Grid */}
-              <div className="grid md:grid-cols-3 gap-4 mb-6">
-                {[
-                  {
-                    category: 'Market',
-                    categoryColor: 'emerald',
-                    headline: 'PJM Capacity Auction Clears at $269.92/MW-day',
-                    summary: 'Record-high capacity prices signal tight supply conditions across the Mid-Atlantic region.',
-                    source: 'PJM Interconnection',
-                    region: 'Regional',
-                    time: '4 hours ago'
-                  },
-                  {
-                    category: 'Investment',
-                    categoryColor: 'purple',
-                    headline: 'Dominion Energy Commits $3.2B to Offshore Wind',
-                    summary: '2.6 GW Coastal Virginia Offshore Wind project secures final financial approval.',
-                    source: 'Dominion Energy',
-                    region: 'VA',
-                    time: '6 hours ago'
-                  },
-                  {
-                    category: 'Technology',
-                    categoryColor: 'cyan',
-                    headline: 'AES Announces 500 MW Battery Storage Project',
-                    summary: 'Grid-scale lithium-ion facility to enhance regional reliability and renewable integration.',
-                    source: 'AES Corporation',
-                    region: 'VA',
-                    time: '1 day ago'
-                  }
-                ].map((news, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-900/50 border border-gray-700 rounded-xl p-5 hover:border-amber-500/50 hover:bg-gray-900 transition-all group cursor-pointer"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span className={`px-2 py-1 bg-${news.categoryColor}-500/20 text-${news.categoryColor}-400 text-xs font-semibold rounded uppercase`}>
-                        {news.category}
-                      </span>
-                      <span className="text-xs text-gray-500">{news.time}</span>
-                    </div>
-                    <h5 className="text-white text-base font-bold mb-2 group-hover:text-amber-400 transition-colors">
-                      {news.headline}
-                    </h5>
-                    <p className="text-gray-400 text-xs leading-relaxed mb-4">
-                      {news.summary}
-                    </p>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-500">{news.source}</span>
-                      <span className="px-2 py-0.5 bg-gray-800 text-gray-400 rounded font-semibold">
-                        {news.region}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Show More Button */}
-              {!showMoreNews && (
-                <button
-                  onClick={() => setShowMoreNews(true)}
-                  className="w-full py-3 bg-gradient-to-r from-amber-600/10 to-orange-600/10 hover:from-amber-600/20 hover:to-orange-600/20 border border-amber-500/30 hover:border-amber-500/50 text-amber-400 rounded-xl transition-all font-semibold flex items-center justify-center gap-2"
-                >
-                  <span>View More News</span>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              )}
-
-              {/* Additional News (Expanded View) */}
-              {showMoreNews && (
-                <div className="space-y-3 mb-4">
-                  <div className="border-t border-gray-700 pt-4 mb-4"></div>
-                  {[
+            <div className="border-t border-gray-700">
+              {/* Simple News List */}
+              <div className="divide-y divide-gray-700">
+                {(() => {
+                  const allNews = [
                     {
-                      category: 'Grid',
+                      id: 1,
+                      category: 'Regulation',
                       categoryColor: 'blue',
-                      headline: 'FERC Approves New Transmission Line for Renewable Integration',
-                      source: 'Federal Energy Regulatory Commission',
-                      region: 'Federal',
-                      time: '1 day ago'
+                      headline: 'Virginia Clean Energy Act Amendments Proposed for 2025',
+                      summary: 'State legislators introduce comprehensive amendments to accelerate renewable energy targets and expand battery storage incentives. The proposal includes new provisions for offshore wind development and grid modernization funding.',
+                      source: 'Virginia State Government',
+                      region: 'VA',
+                      time: '2 hours ago',
+                      isFeatured: true
                     },
                     {
-                      category: 'Policy',
-                      categoryColor: 'red',
-                      headline: 'EPA Finalizes Carbon Emission Standards for Power Plants',
-                      source: 'Environmental Protection Agency',
-                      region: 'Federal',
-                      time: '2 days ago'
-                    },
-                    {
+                      id: 2,
                       category: 'Market',
                       categoryColor: 'emerald',
-                      headline: 'Natural Gas Prices Drop 15% Amid Warm Weather Forecast',
-                      source: 'Energy Trading Desk',
+                      headline: 'PJM Capacity Auction Clears at $269.92/MW-day',
+                      summary: 'Record-high capacity prices signal tight supply conditions across the Mid-Atlantic region, reflecting growing demand and supply constraints.',
+                      source: 'PJM Interconnection',
                       region: 'Regional',
-                      time: '2 days ago'
+                      time: '4 hours ago',
+                      isFeatured: false
                     },
                     {
-                      category: 'Corporate',
-                      categoryColor: 'orange',
-                      headline: 'NextEra Energy Acquires 200 MW Solar Portfolio in Virginia',
-                      source: 'NextEra Energy',
+                      id: 3,
+                      category: 'Investment',
+                      categoryColor: 'purple',
+                      headline: 'Dominion Energy Commits $3.2B to Offshore Wind',
+                      summary: '2.6 GW Coastal Virginia Offshore Wind project secures final financial approval, marking major milestone for regional renewable development.',
+                      source: 'Dominion Energy',
                       region: 'VA',
-                      time: '3 days ago'
+                      time: '6 hours ago',
+                      isFeatured: false
+                    },
+                    {
+                      id: 4,
+                      category: 'Technology',
+                      categoryColor: 'cyan',
+                      headline: 'AES Announces 500 MW Battery Storage Project',
+                      summary: 'Grid-scale lithium-ion facility to enhance regional reliability and renewable integration across PJM territory.',
+                      source: 'AES Corporation',
+                      region: 'VA',
+                      time: '1 day ago',
+                      isFeatured: false
+                    },
+                    {
+                      id: 5,
+                      category: 'Grid',
+                      categoryColor: 'indigo',
+                      headline: 'FERC Approves New Transmission Line for Renewable Integration',
+                      summary: 'Federal regulators approve critical transmission infrastructure to support renewable energy interconnection and grid reliability.',
+                      source: 'Federal Energy Regulatory Commission',
+                      region: 'Federal',
+                      time: '1 day ago',
+                      isFeatured: false
                     }
-                  ].map((news, index) => (
+                  ]
+
+                  return allNews.map((news) => (
                     <div
-                      key={index}
-                      className="bg-gray-900/30 border border-gray-700/50 rounded-lg p-4 hover:bg-gray-900/50 hover:border-gray-600 transition-all group cursor-pointer"
+                      key={news.id}
+                      onClick={() => {
+                        setSelectedNewsItem(news)
+                        setShowNewsModal(true)
+                      }}
+                      className="p-4 hover:bg-gray-750 transition-colors cursor-pointer group"
                     >
                       <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className={`px-2 py-0.5 bg-${news.categoryColor}-500/20 text-${news.categoryColor}-400 text-xs font-semibold rounded uppercase`}>
+                            <span className={`px-2 py-0.5 bg-${news.categoryColor}-500/20 text-${news.categoryColor}-400 text-xs font-semibold rounded`}>
                               {news.category}
                             </span>
                             <span className="text-xs text-gray-500">•</span>
                             <span className="text-xs text-gray-500">{news.time}</span>
+                            {news.isFeatured && (
+                              <>
+                                <span className="text-xs text-gray-500">•</span>
+                                <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-semibold rounded">Featured</span>
+                              </>
+                            )}
                           </div>
-                          <h6 className="text-white text-sm font-semibold mb-1 group-hover:text-amber-400 transition-colors">
+                          <h4 className="text-white text-sm font-semibold mb-1 group-hover:text-blue-400 transition-colors">
                             {news.headline}
-                          </h6>
-                          <div className="flex items-center gap-2 text-xs">
-                            <span className="text-gray-500">{news.source}</span>
-                            <span className="text-gray-600">•</span>
-                            <span className="px-2 py-0.5 bg-gray-800 text-gray-400 rounded font-semibold">
-                              {news.region}
-                            </span>
-                          </div>
+                          </h4>
+                          <p className="text-gray-400 text-xs">
+                            {news.source} • {news.region}
+                          </p>
                         </div>
+                        <svg className="w-5 h-5 text-gray-600 group-hover:text-gray-400 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </div>
                     </div>
-                  ))}
+                  ))
+                })()}
+              </div>
 
-                  {/* Show Less Button */}
-                  <button
-                    onClick={() => setShowMoreNews(false)}
-                    className="w-full py-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 hover:border-gray-600 text-gray-400 hover:text-gray-300 rounded-xl transition-all font-medium flex items-center justify-center gap-2"
-                  >
-                    <span>Show Less</span>
-                    <svg className="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                </div>
-              )}
+              {/* View All News Button */}
+              <div className="p-4 border-t border-gray-700">
+                <button
+                  onClick={() => {
+                    setSelectedNewsItem(null)
+                    setShowNewsModal(true)
+                  }}
+                  className="w-full py-2.5 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/30 hover:border-blue-500/50 text-blue-400 rounded-lg transition-all text-sm font-medium"
+                >
+                  View All News
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -4761,6 +4663,219 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* News Modal */}
+      {showNewsModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowNewsModal(false)}>
+          <div className="bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-gray-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 border-b border-gray-700">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                  </svg>
+                  <h3 className="text-2xl font-bold text-white">
+                    {selectedNewsItem ? 'News Detail' : 'All Market News'}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowNewsModal(false)}
+                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                >
+                  <svg className="w-6 h-6 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+              {selectedNewsItem ? (
+                // Single News Detail View
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className={`px-3 py-1 bg-${selectedNewsItem.categoryColor}-500/20 text-${selectedNewsItem.categoryColor}-400 text-sm font-semibold rounded`}>
+                      {selectedNewsItem.category}
+                    </span>
+                    <span className="text-sm text-gray-500">•</span>
+                    <span className="text-sm text-gray-400">{selectedNewsItem.time}</span>
+                    <span className="text-sm text-gray-500">•</span>
+                    <span className="px-2 py-1 bg-gray-700 text-gray-300 text-sm font-semibold rounded">
+                      {selectedNewsItem.region}
+                    </span>
+                  </div>
+
+                  <h2 className="text-3xl font-bold text-white mb-4">
+                    {selectedNewsItem.headline}
+                  </h2>
+
+                  <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-700">
+                    <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+                      <span className="text-blue-400 text-sm font-bold">{selectedNewsItem.region}</span>
+                    </div>
+                    <div>
+                      <p className="text-white font-semibold">{selectedNewsItem.source}</p>
+                      <p className="text-gray-400 text-sm">{selectedNewsItem.time}</p>
+                    </div>
+                  </div>
+
+                  <div className="prose prose-invert max-w-none">
+                    <p className="text-gray-300 text-base leading-relaxed mb-4">
+                      {selectedNewsItem.summary}
+                    </p>
+                    <p className="text-gray-300 text-base leading-relaxed mb-4">
+                      This development represents a significant shift in the regional energy landscape. Industry experts suggest this could have far-reaching implications for market dynamics, infrastructure investment, and regulatory frameworks across the {selectedNewsItem.region} region.
+                    </p>
+                    <p className="text-gray-300 text-base leading-relaxed">
+                      Market participants are closely monitoring the situation as it develops, with potential impacts on capacity markets, energy pricing, and long-term supply contracts. Further updates are expected in the coming weeks as stakeholders assess the full scope of implications.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <p className="text-xs text-gray-400 mb-2">Related Topics</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Energy Policy</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Market Analysis</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">{selectedNewsItem.region} Region</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Infrastructure</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // All News List View
+                <div className="space-y-3">
+                  {[
+                    {
+                      id: 1,
+                      category: 'Regulation',
+                      categoryColor: 'blue',
+                      headline: 'Virginia Clean Energy Act Amendments Proposed for 2025',
+                      summary: 'State legislators introduce comprehensive amendments to accelerate renewable energy targets.',
+                      source: 'Virginia State Government',
+                      region: 'VA',
+                      time: '2 hours ago'
+                    },
+                    {
+                      id: 2,
+                      category: 'Market',
+                      categoryColor: 'emerald',
+                      headline: 'PJM Capacity Auction Clears at $269.92/MW-day',
+                      summary: 'Record-high capacity prices signal tight supply conditions across the Mid-Atlantic region.',
+                      source: 'PJM Interconnection',
+                      region: 'Regional',
+                      time: '4 hours ago'
+                    },
+                    {
+                      id: 3,
+                      category: 'Investment',
+                      categoryColor: 'purple',
+                      headline: 'Dominion Energy Commits $3.2B to Offshore Wind',
+                      summary: '2.6 GW Coastal Virginia Offshore Wind project secures final financial approval.',
+                      source: 'Dominion Energy',
+                      region: 'VA',
+                      time: '6 hours ago'
+                    },
+                    {
+                      id: 4,
+                      category: 'Technology',
+                      categoryColor: 'cyan',
+                      headline: 'AES Announces 500 MW Battery Storage Project',
+                      summary: 'Grid-scale lithium-ion facility to enhance regional reliability.',
+                      source: 'AES Corporation',
+                      region: 'VA',
+                      time: '1 day ago'
+                    },
+                    {
+                      id: 5,
+                      category: 'Grid',
+                      categoryColor: 'indigo',
+                      headline: 'FERC Approves New Transmission Line for Renewable Integration',
+                      summary: 'Federal regulators approve critical transmission infrastructure.',
+                      source: 'Federal Energy Regulatory Commission',
+                      region: 'Federal',
+                      time: '1 day ago'
+                    },
+                    {
+                      id: 6,
+                      category: 'Policy',
+                      categoryColor: 'red',
+                      headline: 'EPA Finalizes Carbon Emission Standards for Power Plants',
+                      summary: 'New federal regulations set stricter emissions limits for existing power facilities.',
+                      source: 'Environmental Protection Agency',
+                      region: 'Federal',
+                      time: '2 days ago'
+                    },
+                    {
+                      id: 7,
+                      category: 'Market',
+                      categoryColor: 'emerald',
+                      headline: 'Natural Gas Prices Drop 15% Amid Warm Weather Forecast',
+                      summary: 'Seasonal weather patterns contribute to significant price decline.',
+                      source: 'Energy Trading Desk',
+                      region: 'Regional',
+                      time: '2 days ago'
+                    },
+                    {
+                      id: 8,
+                      category: 'Corporate',
+                      categoryColor: 'orange',
+                      headline: 'NextEra Energy Acquires 200 MW Solar Portfolio in Virginia',
+                      summary: 'Strategic acquisition expands renewable generation capacity in the state.',
+                      source: 'NextEra Energy',
+                      region: 'VA',
+                      time: '3 days ago'
+                    }
+                  ].map((news) => (
+                    <div
+                      key={news.id}
+                      onClick={() => setSelectedNewsItem(news)}
+                      className="p-4 bg-gray-800/50 hover:bg-gray-800 rounded-lg border border-gray-700 hover:border-blue-500/50 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`px-2 py-0.5 bg-${news.categoryColor}-500/20 text-${news.categoryColor}-400 text-xs font-semibold rounded`}>
+                              {news.category}
+                            </span>
+                            <span className="text-xs text-gray-500">•</span>
+                            <span className="text-xs text-gray-500">{news.time}</span>
+                          </div>
+                          <h4 className="text-white text-base font-semibold mb-1 group-hover:text-blue-400 transition-colors">
+                            {news.headline}
+                          </h4>
+                          <p className="text-gray-400 text-sm mb-2">
+                            {news.summary}
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {news.source} • {news.region}
+                          </p>
+                        </div>
+                        <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-400 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            {selectedNewsItem && (
+              <div className="p-6 border-t border-gray-700 bg-gray-800/50">
+                <button
+                  onClick={() => setSelectedNewsItem(null)}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all text-sm font-medium"
+                >
+                  ← Back to All News
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
