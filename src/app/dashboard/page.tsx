@@ -2757,6 +2757,219 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+
+      {/* News Modal */}
+      {showNewsModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowNewsModal(false)}>
+          <div className="bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-gray-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 border-b border-gray-700">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                  </svg>
+                  <h3 className="text-2xl font-bold text-white">
+                    {selectedNewsItem ? 'News Detail' : 'All Market News'}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowNewsModal(false)}
+                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                >
+                  <svg className="w-6 h-6 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+              {selectedNewsItem ? (
+                // Single News Detail View
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className={`px-3 py-1 bg-${selectedNewsItem.categoryColor}-500/20 text-${selectedNewsItem.categoryColor}-400 text-sm font-semibold rounded`}>
+                      {selectedNewsItem.category}
+                    </span>
+                    <span className="text-sm text-gray-500">•</span>
+                    <span className="text-sm text-gray-400">{selectedNewsItem.time}</span>
+                    <span className="text-sm text-gray-500">•</span>
+                    <span className="px-2 py-1 bg-gray-700 text-gray-300 text-sm font-semibold rounded">
+                      {selectedNewsItem.region}
+                    </span>
+                  </div>
+
+                  <h2 className="text-3xl font-bold text-white mb-4">
+                    {selectedNewsItem.headline}
+                  </h2>
+
+                  <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-700">
+                    <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+                      <span className="text-blue-400 text-sm font-bold">{selectedNewsItem.region}</span>
+                    </div>
+                    <div>
+                      <p className="text-white font-semibold">{selectedNewsItem.source}</p>
+                      <p className="text-gray-400 text-sm">{selectedNewsItem.time}</p>
+                    </div>
+                  </div>
+
+                  <div className="prose prose-invert max-w-none">
+                    <p className="text-gray-300 text-base leading-relaxed mb-4">
+                      {selectedNewsItem.summary}
+                    </p>
+                    <p className="text-gray-300 text-base leading-relaxed mb-4">
+                      This development represents a significant shift in the regional energy landscape. Industry experts suggest this could have far-reaching implications for market dynamics, infrastructure investment, and regulatory frameworks across the {selectedNewsItem.region} region.
+                    </p>
+                    <p className="text-gray-300 text-base leading-relaxed">
+                      Market participants are closely monitoring the situation as it develops, with potential impacts on capacity markets, energy pricing, and long-term supply contracts. Further updates are expected in the coming weeks as stakeholders assess the full scope of implications.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <p className="text-xs text-gray-400 mb-2">Related Topics</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Energy Policy</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Market Analysis</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">{selectedNewsItem.region} Region</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Infrastructure</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // All News List View
+                <div className="space-y-3">
+                  {[
+                    {
+                      id: 1,
+                      category: 'Regulation',
+                      categoryColor: 'blue',
+                      headline: 'Virginia Clean Energy Act Amendments Proposed for 2025',
+                      summary: 'State legislators introduce comprehensive amendments to accelerate renewable energy targets.',
+                      source: 'Virginia State Government',
+                      region: 'VA',
+                      time: '2 hours ago'
+                    },
+                    {
+                      id: 2,
+                      category: 'Market',
+                      categoryColor: 'emerald',
+                      headline: 'PJM Capacity Auction Clears at $269.92/MW-day',
+                      summary: 'Record-high capacity prices signal tight supply conditions across the Mid-Atlantic region.',
+                      source: 'PJM Interconnection',
+                      region: 'Regional',
+                      time: '4 hours ago'
+                    },
+                    {
+                      id: 3,
+                      category: 'Investment',
+                      categoryColor: 'purple',
+                      headline: 'Dominion Energy Commits $3.2B to Offshore Wind',
+                      summary: '2.6 GW Coastal Virginia Offshore Wind project secures final financial approval.',
+                      source: 'Dominion Energy',
+                      region: 'VA',
+                      time: '6 hours ago'
+                    },
+                    {
+                      id: 4,
+                      category: 'Technology',
+                      categoryColor: 'cyan',
+                      headline: 'AES Announces 500 MW Battery Storage Project',
+                      summary: 'Grid-scale lithium-ion facility to enhance regional reliability.',
+                      source: 'AES Corporation',
+                      region: 'VA',
+                      time: '1 day ago'
+                    },
+                    {
+                      id: 5,
+                      category: 'Grid',
+                      categoryColor: 'indigo',
+                      headline: 'FERC Approves New Transmission Line for Renewable Integration',
+                      summary: 'Federal regulators approve critical transmission infrastructure.',
+                      source: 'Federal Energy Regulatory Commission',
+                      region: 'Federal',
+                      time: '1 day ago'
+                    },
+                    {
+                      id: 6,
+                      category: 'Policy',
+                      categoryColor: 'red',
+                      headline: 'EPA Finalizes Carbon Emission Standards for Power Plants',
+                      summary: 'New federal regulations set stricter emissions limits for existing power facilities.',
+                      source: 'Environmental Protection Agency',
+                      region: 'Federal',
+                      time: '2 days ago'
+                    },
+                    {
+                      id: 7,
+                      category: 'Market',
+                      categoryColor: 'emerald',
+                      headline: 'Natural Gas Prices Drop 15% Amid Warm Weather Forecast',
+                      summary: 'Seasonal weather patterns contribute to significant price decline.',
+                      source: 'Energy Trading Desk',
+                      region: 'Regional',
+                      time: '2 days ago'
+                    },
+                    {
+                      id: 8,
+                      category: 'Corporate',
+                      categoryColor: 'orange',
+                      headline: 'NextEra Energy Acquires 200 MW Solar Portfolio in Virginia',
+                      summary: 'Strategic acquisition expands renewable generation capacity in the state.',
+                      source: 'NextEra Energy',
+                      region: 'VA',
+                      time: '3 days ago'
+                    }
+                  ].map((news) => (
+                    <div
+                      key={news.id}
+                      onClick={() => setSelectedNewsItem(news)}
+                      className="p-4 bg-gray-800/50 hover:bg-gray-800 rounded-lg border border-gray-700 hover:border-blue-500/50 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`px-2 py-0.5 bg-${news.categoryColor}-500/20 text-${news.categoryColor}-400 text-xs font-semibold rounded`}>
+                              {news.category}
+                            </span>
+                            <span className="text-xs text-gray-500">•</span>
+                            <span className="text-xs text-gray-500">{news.time}</span>
+                          </div>
+                          <h4 className="text-white text-base font-semibold mb-1 group-hover:text-blue-400 transition-colors">
+                            {news.headline}
+                          </h4>
+                          <p className="text-gray-400 text-sm mb-2">
+                            {news.summary}
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {news.source} • {news.region}
+                          </p>
+                        </div>
+                        <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-400 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            {selectedNewsItem && (
+              <div className="p-6 border-t border-gray-700 bg-gray-800/50">
+                <button
+                  onClick={() => setSelectedNewsItem(null)}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all text-sm font-medium"
+                >
+                  ← Back to All News
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -3975,6 +4188,219 @@ function UtilityAnalysisInline({ utility }: { utility: any }) {
           </div>
         </div>
       )}
+
+      {/* News Modal */}
+      {showNewsModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowNewsModal(false)}>
+          <div className="bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-gray-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 border-b border-gray-700">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                  </svg>
+                  <h3 className="text-2xl font-bold text-white">
+                    {selectedNewsItem ? 'News Detail' : 'All Market News'}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowNewsModal(false)}
+                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                >
+                  <svg className="w-6 h-6 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+              {selectedNewsItem ? (
+                // Single News Detail View
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className={`px-3 py-1 bg-${selectedNewsItem.categoryColor}-500/20 text-${selectedNewsItem.categoryColor}-400 text-sm font-semibold rounded`}>
+                      {selectedNewsItem.category}
+                    </span>
+                    <span className="text-sm text-gray-500">•</span>
+                    <span className="text-sm text-gray-400">{selectedNewsItem.time}</span>
+                    <span className="text-sm text-gray-500">•</span>
+                    <span className="px-2 py-1 bg-gray-700 text-gray-300 text-sm font-semibold rounded">
+                      {selectedNewsItem.region}
+                    </span>
+                  </div>
+
+                  <h2 className="text-3xl font-bold text-white mb-4">
+                    {selectedNewsItem.headline}
+                  </h2>
+
+                  <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-700">
+                    <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+                      <span className="text-blue-400 text-sm font-bold">{selectedNewsItem.region}</span>
+                    </div>
+                    <div>
+                      <p className="text-white font-semibold">{selectedNewsItem.source}</p>
+                      <p className="text-gray-400 text-sm">{selectedNewsItem.time}</p>
+                    </div>
+                  </div>
+
+                  <div className="prose prose-invert max-w-none">
+                    <p className="text-gray-300 text-base leading-relaxed mb-4">
+                      {selectedNewsItem.summary}
+                    </p>
+                    <p className="text-gray-300 text-base leading-relaxed mb-4">
+                      This development represents a significant shift in the regional energy landscape. Industry experts suggest this could have far-reaching implications for market dynamics, infrastructure investment, and regulatory frameworks across the {selectedNewsItem.region} region.
+                    </p>
+                    <p className="text-gray-300 text-base leading-relaxed">
+                      Market participants are closely monitoring the situation as it develops, with potential impacts on capacity markets, energy pricing, and long-term supply contracts. Further updates are expected in the coming weeks as stakeholders assess the full scope of implications.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <p className="text-xs text-gray-400 mb-2">Related Topics</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Energy Policy</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Market Analysis</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">{selectedNewsItem.region} Region</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Infrastructure</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // All News List View
+                <div className="space-y-3">
+                  {[
+                    {
+                      id: 1,
+                      category: 'Regulation',
+                      categoryColor: 'blue',
+                      headline: 'Virginia Clean Energy Act Amendments Proposed for 2025',
+                      summary: 'State legislators introduce comprehensive amendments to accelerate renewable energy targets.',
+                      source: 'Virginia State Government',
+                      region: 'VA',
+                      time: '2 hours ago'
+                    },
+                    {
+                      id: 2,
+                      category: 'Market',
+                      categoryColor: 'emerald',
+                      headline: 'PJM Capacity Auction Clears at $269.92/MW-day',
+                      summary: 'Record-high capacity prices signal tight supply conditions across the Mid-Atlantic region.',
+                      source: 'PJM Interconnection',
+                      region: 'Regional',
+                      time: '4 hours ago'
+                    },
+                    {
+                      id: 3,
+                      category: 'Investment',
+                      categoryColor: 'purple',
+                      headline: 'Dominion Energy Commits $3.2B to Offshore Wind',
+                      summary: '2.6 GW Coastal Virginia Offshore Wind project secures final financial approval.',
+                      source: 'Dominion Energy',
+                      region: 'VA',
+                      time: '6 hours ago'
+                    },
+                    {
+                      id: 4,
+                      category: 'Technology',
+                      categoryColor: 'cyan',
+                      headline: 'AES Announces 500 MW Battery Storage Project',
+                      summary: 'Grid-scale lithium-ion facility to enhance regional reliability.',
+                      source: 'AES Corporation',
+                      region: 'VA',
+                      time: '1 day ago'
+                    },
+                    {
+                      id: 5,
+                      category: 'Grid',
+                      categoryColor: 'indigo',
+                      headline: 'FERC Approves New Transmission Line for Renewable Integration',
+                      summary: 'Federal regulators approve critical transmission infrastructure.',
+                      source: 'Federal Energy Regulatory Commission',
+                      region: 'Federal',
+                      time: '1 day ago'
+                    },
+                    {
+                      id: 6,
+                      category: 'Policy',
+                      categoryColor: 'red',
+                      headline: 'EPA Finalizes Carbon Emission Standards for Power Plants',
+                      summary: 'New federal regulations set stricter emissions limits for existing power facilities.',
+                      source: 'Environmental Protection Agency',
+                      region: 'Federal',
+                      time: '2 days ago'
+                    },
+                    {
+                      id: 7,
+                      category: 'Market',
+                      categoryColor: 'emerald',
+                      headline: 'Natural Gas Prices Drop 15% Amid Warm Weather Forecast',
+                      summary: 'Seasonal weather patterns contribute to significant price decline.',
+                      source: 'Energy Trading Desk',
+                      region: 'Regional',
+                      time: '2 days ago'
+                    },
+                    {
+                      id: 8,
+                      category: 'Corporate',
+                      categoryColor: 'orange',
+                      headline: 'NextEra Energy Acquires 200 MW Solar Portfolio in Virginia',
+                      summary: 'Strategic acquisition expands renewable generation capacity in the state.',
+                      source: 'NextEra Energy',
+                      region: 'VA',
+                      time: '3 days ago'
+                    }
+                  ].map((news) => (
+                    <div
+                      key={news.id}
+                      onClick={() => setSelectedNewsItem(news)}
+                      className="p-4 bg-gray-800/50 hover:bg-gray-800 rounded-lg border border-gray-700 hover:border-blue-500/50 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`px-2 py-0.5 bg-${news.categoryColor}-500/20 text-${news.categoryColor}-400 text-xs font-semibold rounded`}>
+                              {news.category}
+                            </span>
+                            <span className="text-xs text-gray-500">•</span>
+                            <span className="text-xs text-gray-500">{news.time}</span>
+                          </div>
+                          <h4 className="text-white text-base font-semibold mb-1 group-hover:text-blue-400 transition-colors">
+                            {news.headline}
+                          </h4>
+                          <p className="text-gray-400 text-sm mb-2">
+                            {news.summary}
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {news.source} • {news.region}
+                          </p>
+                        </div>
+                        <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-400 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            {selectedNewsItem && (
+              <div className="p-6 border-t border-gray-700 bg-gray-800/50">
+                <button
+                  onClick={() => setSelectedNewsItem(null)}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all text-sm font-medium"
+                >
+                  ← Back to All News
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -4663,6 +5089,219 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* News Modal */}
+      {showNewsModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowNewsModal(false)}>
+          <div className="bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-gray-700 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 border-b border-gray-700">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                  </svg>
+                  <h3 className="text-2xl font-bold text-white">
+                    {selectedNewsItem ? 'News Detail' : 'All Market News'}
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setShowNewsModal(false)}
+                  className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                >
+                  <svg className="w-6 h-6 text-gray-400 hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+              {selectedNewsItem ? (
+                // Single News Detail View
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className={`px-3 py-1 bg-${selectedNewsItem.categoryColor}-500/20 text-${selectedNewsItem.categoryColor}-400 text-sm font-semibold rounded`}>
+                      {selectedNewsItem.category}
+                    </span>
+                    <span className="text-sm text-gray-500">•</span>
+                    <span className="text-sm text-gray-400">{selectedNewsItem.time}</span>
+                    <span className="text-sm text-gray-500">•</span>
+                    <span className="px-2 py-1 bg-gray-700 text-gray-300 text-sm font-semibold rounded">
+                      {selectedNewsItem.region}
+                    </span>
+                  </div>
+
+                  <h2 className="text-3xl font-bold text-white mb-4">
+                    {selectedNewsItem.headline}
+                  </h2>
+
+                  <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-700">
+                    <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+                      <span className="text-blue-400 text-sm font-bold">{selectedNewsItem.region}</span>
+                    </div>
+                    <div>
+                      <p className="text-white font-semibold">{selectedNewsItem.source}</p>
+                      <p className="text-gray-400 text-sm">{selectedNewsItem.time}</p>
+                    </div>
+                  </div>
+
+                  <div className="prose prose-invert max-w-none">
+                    <p className="text-gray-300 text-base leading-relaxed mb-4">
+                      {selectedNewsItem.summary}
+                    </p>
+                    <p className="text-gray-300 text-base leading-relaxed mb-4">
+                      This development represents a significant shift in the regional energy landscape. Industry experts suggest this could have far-reaching implications for market dynamics, infrastructure investment, and regulatory frameworks across the {selectedNewsItem.region} region.
+                    </p>
+                    <p className="text-gray-300 text-base leading-relaxed">
+                      Market participants are closely monitoring the situation as it develops, with potential impacts on capacity markets, energy pricing, and long-term supply contracts. Further updates are expected in the coming weeks as stakeholders assess the full scope of implications.
+                    </p>
+                  </div>
+
+                  <div className="mt-8 p-4 bg-gray-800/50 rounded-lg border border-gray-700">
+                    <p className="text-xs text-gray-400 mb-2">Related Topics</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Energy Policy</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Market Analysis</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">{selectedNewsItem.region} Region</span>
+                      <span className="px-3 py-1 bg-gray-700 text-gray-300 text-xs rounded-full">Infrastructure</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // All News List View
+                <div className="space-y-3">
+                  {[
+                    {
+                      id: 1,
+                      category: 'Regulation',
+                      categoryColor: 'blue',
+                      headline: 'Virginia Clean Energy Act Amendments Proposed for 2025',
+                      summary: 'State legislators introduce comprehensive amendments to accelerate renewable energy targets.',
+                      source: 'Virginia State Government',
+                      region: 'VA',
+                      time: '2 hours ago'
+                    },
+                    {
+                      id: 2,
+                      category: 'Market',
+                      categoryColor: 'emerald',
+                      headline: 'PJM Capacity Auction Clears at $269.92/MW-day',
+                      summary: 'Record-high capacity prices signal tight supply conditions across the Mid-Atlantic region.',
+                      source: 'PJM Interconnection',
+                      region: 'Regional',
+                      time: '4 hours ago'
+                    },
+                    {
+                      id: 3,
+                      category: 'Investment',
+                      categoryColor: 'purple',
+                      headline: 'Dominion Energy Commits $3.2B to Offshore Wind',
+                      summary: '2.6 GW Coastal Virginia Offshore Wind project secures final financial approval.',
+                      source: 'Dominion Energy',
+                      region: 'VA',
+                      time: '6 hours ago'
+                    },
+                    {
+                      id: 4,
+                      category: 'Technology',
+                      categoryColor: 'cyan',
+                      headline: 'AES Announces 500 MW Battery Storage Project',
+                      summary: 'Grid-scale lithium-ion facility to enhance regional reliability.',
+                      source: 'AES Corporation',
+                      region: 'VA',
+                      time: '1 day ago'
+                    },
+                    {
+                      id: 5,
+                      category: 'Grid',
+                      categoryColor: 'indigo',
+                      headline: 'FERC Approves New Transmission Line for Renewable Integration',
+                      summary: 'Federal regulators approve critical transmission infrastructure.',
+                      source: 'Federal Energy Regulatory Commission',
+                      region: 'Federal',
+                      time: '1 day ago'
+                    },
+                    {
+                      id: 6,
+                      category: 'Policy',
+                      categoryColor: 'red',
+                      headline: 'EPA Finalizes Carbon Emission Standards for Power Plants',
+                      summary: 'New federal regulations set stricter emissions limits for existing power facilities.',
+                      source: 'Environmental Protection Agency',
+                      region: 'Federal',
+                      time: '2 days ago'
+                    },
+                    {
+                      id: 7,
+                      category: 'Market',
+                      categoryColor: 'emerald',
+                      headline: 'Natural Gas Prices Drop 15% Amid Warm Weather Forecast',
+                      summary: 'Seasonal weather patterns contribute to significant price decline.',
+                      source: 'Energy Trading Desk',
+                      region: 'Regional',
+                      time: '2 days ago'
+                    },
+                    {
+                      id: 8,
+                      category: 'Corporate',
+                      categoryColor: 'orange',
+                      headline: 'NextEra Energy Acquires 200 MW Solar Portfolio in Virginia',
+                      summary: 'Strategic acquisition expands renewable generation capacity in the state.',
+                      source: 'NextEra Energy',
+                      region: 'VA',
+                      time: '3 days ago'
+                    }
+                  ].map((news) => (
+                    <div
+                      key={news.id}
+                      onClick={() => setSelectedNewsItem(news)}
+                      className="p-4 bg-gray-800/50 hover:bg-gray-800 rounded-lg border border-gray-700 hover:border-blue-500/50 transition-all cursor-pointer group"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`px-2 py-0.5 bg-${news.categoryColor}-500/20 text-${news.categoryColor}-400 text-xs font-semibold rounded`}>
+                              {news.category}
+                            </span>
+                            <span className="text-xs text-gray-500">•</span>
+                            <span className="text-xs text-gray-500">{news.time}</span>
+                          </div>
+                          <h4 className="text-white text-base font-semibold mb-1 group-hover:text-blue-400 transition-colors">
+                            {news.headline}
+                          </h4>
+                          <p className="text-gray-400 text-sm mb-2">
+                            {news.summary}
+                          </p>
+                          <p className="text-gray-500 text-xs">
+                            {news.source} • {news.region}
+                          </p>
+                        </div>
+                        <svg className="w-5 h-5 text-gray-600 group-hover:text-blue-400 flex-shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            {selectedNewsItem && (
+              <div className="p-6 border-t border-gray-700 bg-gray-800/50">
+                <button
+                  onClick={() => setSelectedNewsItem(null)}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all text-sm font-medium"
+                >
+                  ← Back to All News
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
