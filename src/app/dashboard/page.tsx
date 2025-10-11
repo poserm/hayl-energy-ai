@@ -126,6 +126,7 @@ export default function DashboardPage() {
   const [supplyExpanded, setSupplyExpanded] = useState(false)
   const [demandExpanded, setDemandExpanded] = useState(false)
   const [pricesExpanded, setPricesExpanded] = useState(false)
+  const [newsExpanded, setNewsExpanded] = useState(false)
   const [selectedTechnology, setSelectedTechnology] = useState<string>('All Technologies')
   const [supplyView, setSupplyView] = useState<'current' | 'pipeline' | 'retirements'>('current')
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
@@ -759,73 +760,79 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Latest News - Top Headlines */}
-        <div className="bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-700 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
+        {/* Latest News - Collapsible */}
+        <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 mb-6 overflow-hidden">
+          <button
+            onClick={() => setNewsExpanded(!newsExpanded)}
+            className="w-full p-5 flex items-center justify-between hover:bg-gray-750 transition-colors"
+          >
+            <div className="flex items-center space-x-3">
               <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
               </svg>
-              <span className="text-white text-base font-semibold">{region} Market News</span>
+              <h3 className="text-lg font-bold text-white">Market News</h3>
+              <span className="text-xs text-gray-400 bg-blue-600/20 px-2 py-1 rounded">3 Latest</span>
             </div>
-            <span className="text-xs text-gray-400">Today's Top Stories</span>
-          </div>
+            <svg
+              className={`w-5 h-5 text-gray-400 transition-transform ${newsExpanded ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
 
-          <div className="space-y-3 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-            {[
-              {
-                title: 'PJM Capacity Auction Results: Prices Rise 10% for 2025/2026',
-                source: 'S&P Global',
-                time: '2h ago',
-                category: 'Markets'
-              },
-              {
-                title: 'Dominion Energy Secures $3.2B for Offshore Wind Expansion',
-                source: 'Bloomberg',
-                time: '4h ago',
-                category: 'Investment'
-              },
-              {
-                title: 'Grid Reliability Concerns as Heat Wave Approaches Mid-Atlantic',
-                source: 'Reuters',
-                time: '5h ago',
-                category: 'Operations'
-              },
-              {
-                title: 'Natural Gas Prices Surge 15% on Supply Constraints',
-                source: 'Energy Wire',
-                time: '6h ago',
-                category: 'Commodities'
-              },
-              {
-                title: 'VA Legislature Approves Fast-Track for Battery Storage Projects',
-                source: 'Utility Dive',
-                time: '7h ago',
-                category: 'Policy'
-              }
-            ].map((news, index) => (
-              <div
-                key={index}
-                className="group bg-gray-750 hover:bg-gray-700 p-3 rounded-lg cursor-pointer transition-all border border-gray-700 hover:border-blue-500"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-white text-sm font-medium group-hover:text-blue-400 transition-colors line-clamp-2">
-                      {news.title}
-                    </h4>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <span className="text-xs text-gray-400">{news.source}</span>
-                      <span className="text-gray-600">•</span>
-                      <span className="text-xs text-gray-500">{news.time}</span>
+          {newsExpanded && (
+            <div className="px-5 pb-5 space-y-3 border-t border-gray-700 pt-4">
+              {[
+                {
+                  company: 'Dominion Energy',
+                  state: 'VA',
+                  headline: 'Announces $3.2B Offshore Wind Investment',
+                  date: 'Dec 15, 2024',
+                  time: '2h ago'
+                },
+                {
+                  company: 'PJM Interconnection',
+                  state: 'Regional',
+                  headline: 'Capacity Auction Clears at Record High Prices',
+                  date: 'Dec 15, 2024',
+                  time: '4h ago'
+                },
+                {
+                  company: 'AES Corporation',
+                  state: 'VA',
+                  headline: '500 MW Battery Storage Project Approved',
+                  date: 'Dec 14, 2024',
+                  time: '1d ago'
+                }
+              ].map((news, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-900 hover:bg-gray-850 p-4 rounded-lg cursor-pointer transition-all border border-gray-700 hover:border-blue-500 group"
+                >
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-blue-400 font-bold text-base">{news.company}</span>
+                        <span className="px-2 py-0.5 bg-gray-700 text-gray-300 text-xs font-semibold rounded">
+                          {news.state}
+                        </span>
+                      </div>
+                      <h4 className="text-white text-sm font-medium leading-relaxed group-hover:text-blue-300 transition-colors">
+                        {news.headline}
+                      </h4>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-gray-400 text-xs font-medium">{news.date}</div>
+                      <div className="text-gray-500 text-xs mt-0.5">{news.time}</div>
                     </div>
                   </div>
-                  <span className="text-xs px-2 py-1 bg-blue-600/20 text-blue-400 rounded flex-shrink-0">
-                    {news.category}
-                  </span>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Power Market Overview - 3 Pillars */}
@@ -1116,39 +1123,16 @@ export default function DashboardPage() {
                       </h4>
                     </div>
 
-                    {/* View Controls + Map Button */}
-                    <div className="flex items-center gap-3">
-                      <div className="flex gap-2 bg-gray-800/50 rounded-lg p-1.5">
-                        {[
-                          { key: 'current' as const, label: 'Current', icon: '📊' },
-                          { key: 'pipeline' as const, label: 'Pipeline', icon: '🔨' },
-                          { key: 'retirements' as const, label: 'Retiring', icon: '🔻' }
-                        ].map((view) => (
-                          <button
-                            key={view.key}
-                            onClick={() => setSupplyView(view.key)}
-                            className={`px-4 py-2 rounded-md text-sm font-semibold transition-all ${
-                              supplyView === view.key
-                                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20'
-                                : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
-                            }`}
-                          >
-                            <span className="mr-1.5">{view.icon}</span>
-                            {view.label}
-                          </button>
-                        ))}
-                      </div>
-
-                      <button
-                        onClick={() => setShowMapModal(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-700/50 hover:bg-gray-600 text-gray-300 hover:text-white rounded-xl transition-all border border-gray-600 hover:border-gray-500"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                        </svg>
-                        View Map
-                      </button>
-                    </div>
+                    {/* Map Button */}
+                    <button
+                      onClick={() => setShowMapModal(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-gray-700/50 hover:bg-gray-600 text-gray-300 hover:text-white rounded-xl transition-all border border-gray-600 hover:border-gray-500"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                      View Map
+                    </button>
                   </div>
 
                   {/* EIA Supply Charts - Real-time data */}
@@ -4451,8 +4435,8 @@ function CorporateAnalysisInline({ corporate, region }: { corporate: any; region
 
               {/* Current RFP/Partnership Opportunities */}
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <span className="w-1.5 h-6 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
+                <h3 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                  <span className="w-1.5 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></span>
                   {region} Active Opportunities
                 </h3>
                 <div className="space-y-4">
